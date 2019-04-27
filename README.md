@@ -1,2 +1,2 @@
-# crosierapp-helloworld
-Projeto de exemplo para um CrosierApp
+# crosierapp-iapo
+CrosierApp para a Iapó
