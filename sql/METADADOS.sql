@@ -1,26 +1,30 @@
-DROP TABLE IF EXISTS `hw_coisa`;
+DROP TABLE IF EXISTS `ip_rh_refeicao`;
 
-CREATE TABLE `hw_coisa` (
-  `id` bigint(20) AUTO_INCREMENT NOT NULL,
-  `nome` varchar(200) COLLATE utf8_swedish_ci NOT NULL,
-  `obs` varchar(3000) COLLATE utf8_swedish_ci NULL,
-  `dt_coisa` datetime NOT NULL,
-  `ordem` int NOT NULL,
-  `importante` boolean NOT NULL,
 
-  `estabelecimento_id` bigint(20) NOT NULL,
-  `inserted` datetime NOT NULL,
-  `updated` datetime NOT NULL,
-  `user_inserted_id` bigint(20) NOT NULL,
-  `user_updated_id` bigint(20) NOT NULL,
+CREATE TABLE `ip_rh_refeicao` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `colaborador_id` bigint(20) NOT NULL,
+  `data` date DEFAULT NULL,
+  `qtde` int(11) DEFAULT NULL,
+  `almoco` int(1) DEFAULT NULL,
+  `jantar` int(1) DEFAULT NULL,
+  `cafe_manha` int(1) DEFAULT NULL,
+  `cafe_tarde` int(1) DEFAULT NULL,
+
+  `updated` datetime DEFAULT NULL,
+  `inserted` datetime DEFAULT NULL,
+  `user_inserted_id` bigint(20) DEFAULT NULL,
+  `user_updated_id` bigint(20) DEFAULT NULL,
+  `estabelecimento_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_hw_coisa` (`nome`),
-  KEY `K_hw_coisa_estabelecimento` (`estabelecimento_id`),
-  KEY `K_hw_coisa_user_inserted` (`user_inserted_id`),
-  KEY `K_hw_coisa_user_updated` (`user_updated_id`),
-  CONSTRAINT `FK_hw_coisa_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
-  CONSTRAINT `FK_hw_coisa_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
-  CONSTRAINT `FK_hw_coisa_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`)
+  UNIQUE KEY `UK_ip_rh_refeicao` (`data`,`colaborador_id`),
+
+  KEY `K_ip_rh_refeicao_colaborador` (`colaborador_id`),
+  KEY `K_ip_rh_refeicao_estabelecimento` (`estabelecimento_id`),
+  KEY `K_ip_rh_refeicao_inserted` (`user_inserted_id`),
+  KEY `K_ip_rh_refeicao_updated` (`user_updated_id`),
+  CONSTRAINT `FK_ip_rh_refeicao_colaborador` FOREIGN KEY (`colaborador_id`) REFERENCES `rh_colaborador` (`id`),
+  CONSTRAINT `FK_ip_rh_refeicao_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_ip_rh_refeicao_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+  CONSTRAINT `FK_ip_rh_refeicao_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
-
-
