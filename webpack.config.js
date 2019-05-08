@@ -29,7 +29,7 @@ Encore
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
     // .createSharedEntry('bse_layout', './assets/js/bse/layout.js')
-    .addEntry('coisaList', './assets/js/coisaList.js')
+    .addEntry('refeicaoList', './assets/js/refeicaoList.js')
 
 
 
