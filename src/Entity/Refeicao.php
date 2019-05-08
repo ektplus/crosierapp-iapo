@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Entidade 'Movimentação'.
  *
  * @ORM\Entity(repositoryClass="App\Repository\RefeicaoRepository")
- * @ORM\Table(name="ip_refeicao")
+ * @ORM\Table(name="ip_rh_refeicao")
  *
  * @author Andreia Maritsa Azevedo
  */
@@ -22,20 +22,12 @@ class Refeicao implements EntityId
     use EntityIdTrait;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer", name="id")
-     * @Groups("entity")
-     */
-    private $id;
-
-    /**
      * @ORM\Column(type="integer", name="colaborador_id")
      * @Groups("entity")
      *
      * @var Integer|null
      */
-    private $colaborador_id;
+    private $colaboradorId;
 
     /**
      * @ORM\Column(type="date", nullable=true, name="data")
@@ -75,7 +67,7 @@ class Refeicao implements EntityId
      *
      * @var boolean|null
      */
-    private $cafe_manha = false;
+    private $cafeManha = false;
 
     /**
      * @ORM\Column(type="boolean", nullable=true, name="cafe_tarde")
@@ -83,67 +75,24 @@ class Refeicao implements EntityId
      *
      * @var boolean|null
      */
-    private $cafe_tarde = false;
+    private $cafeTarde = false;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true, name="updated")
-     * @Groups("entity")
-     *
-     * @var \DateTime|null
+     * @return null|Integer
      */
-    private $updated;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true, name="inserted")
-     * @Groups("entity")
-     *
-     * @var \DateTime|null
-     */
-    private $inserted;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="user_inserted_id")
-     * @Groups("entity")
-     *
-     * @var integer|null
-     */
-    private $user_inserted_id;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="user_updated_id")
-     * @Groups("entity")
-     *
-     * @var integer|null
-     */
-    private $user_updated_id;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true, name="estabelecimento_id")
-     * @Groups("entity")
-     *
-     * @var integer|null
-     */
-    private $estabelecimento_id;
-
-    public function getId(): ?int
+    public function getColaboradorId(): ?Integer
     {
-        return $this->id;
+        return $this->colaboradorId;
     }
 
     /**
-     * @return int|null
+     * @param null|Integer $colaboradorId
+     * @return Refeicao
      */
-    public function getColaboradorId(): ?int
+    public function setColaboradorId(?Integer $colaboradorId): Refeicao
     {
-        return $this->colaborador_id;
-    }
-
-    /**
-     * @param int $colaborador_id
-     */
-    public function setColaboradorId(int $colaborador_id): void
-    {
-        $this->colaborador_id = $colaborador_id;
+        $this->colaboradorId = $colaboradorId;
+        return $this;
     }
 
     /**
@@ -156,26 +105,30 @@ class Refeicao implements EntityId
 
     /**
      * @param \DateTime|null $data
+     * @return Refeicao
      */
-    public function setData(?\DateTime $data): void
+    public function setData(?\DateTime $data): Refeicao
     {
         $this->data = $data;
+        return $this;
     }
 
     /**
-     * @return int|null
+     * @return null|Integer
      */
-    public function getQtde(): ?int
+    public function getQtde(): ?Integer
     {
         return $this->qtde;
     }
 
     /**
-     * @param int|null $qtde
+     * @param null|Integer $qtde
+     * @return Refeicao
      */
-    public function setQtde(?int $qtde): void
+    public function setQtde(?Integer $qtde): Refeicao
     {
         $this->qtde = $qtde;
+        return $this;
     }
 
     /**
@@ -188,10 +141,12 @@ class Refeicao implements EntityId
 
     /**
      * @param bool|null $almoco
+     * @return Refeicao
      */
-    public function setAlmoco(?bool $almoco): void
+    public function setAlmoco(?bool $almoco): Refeicao
     {
         $this->almoco = $almoco;
+        return $this;
     }
 
     /**
@@ -204,10 +159,12 @@ class Refeicao implements EntityId
 
     /**
      * @param bool|null $jantar
+     * @return Refeicao
      */
-    public function setJantar(?bool $jantar): void
+    public function setJantar(?bool $jantar): Refeicao
     {
         $this->jantar = $jantar;
+        return $this;
     }
 
     /**
@@ -215,15 +172,17 @@ class Refeicao implements EntityId
      */
     public function getCafeManha(): ?bool
     {
-        return $this->cafe_manha;
+        return $this->cafeManha;
     }
 
     /**
-     * @param bool|null $cafe_manha
+     * @param bool|null $cafeManha
+     * @return Refeicao
      */
-    public function setCafeManha(?bool $cafe_manha): void
+    public function setCafeManha(?bool $cafeManha): Refeicao
     {
-        $this->cafe_manha = $cafe_manha;
+        $this->cafeManha = $cafeManha;
+        return $this;
     }
 
     /**
@@ -231,14 +190,18 @@ class Refeicao implements EntityId
      */
     public function getCafeTarde(): ?bool
     {
-        return $this->cafe_tarde;
+        return $this->cafeTarde;
     }
 
     /**
-     * @param bool|null $cafe_tarde
+     * @param bool|null $cafeTarde
+     * @return Refeicao
      */
-    public function setCafeTarde(?bool $cafe_tarde): void
+    public function setCafeTarde(?bool $cafeTarde): Refeicao
     {
-        $this->cafe_tarde = $cafe_tarde;
+        $this->cafeTarde = $cafeTarde;
+        return $this;
     }
+
+
 }
