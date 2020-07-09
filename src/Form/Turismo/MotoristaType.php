@@ -41,6 +41,7 @@ class MotoristaType extends AbstractType
             'label' => 'Dt Vencto CNH',
             'widget' => 'single_text',
             'required' => true,
+            'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'
@@ -51,6 +52,7 @@ class MotoristaType extends AbstractType
             'label' => 'Dt Vencto Carteira Saúde',
             'widget' => 'single_text',
             'required' => true,
+            'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'
@@ -61,6 +63,7 @@ class MotoristaType extends AbstractType
             'label' => 'Dt Vencto Curso Transporte de Passageiros',
             'widget' => 'single_text',
             'required' => true,
+            'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'

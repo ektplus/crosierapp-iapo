@@ -49,6 +49,7 @@ class VeiculoType extends AbstractType
             'label' => 'Dt Vencto DER',
             'widget' => 'single_text',
             'required' => true,
+            'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'
@@ -59,6 +60,7 @@ class VeiculoType extends AbstractType
             'label' => 'Dt Vencto ANTT',
             'widget' => 'single_text',
             'required' => true,
+            'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'
@@ -69,6 +71,7 @@ class VeiculoType extends AbstractType
             'label' => 'Dt Vencto Tacógrafo',
             'widget' => 'single_text',
             'required' => true,
+            'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'
@@ -79,6 +82,7 @@ class VeiculoType extends AbstractType
             'label' => 'Dt Vencto Seguro',
             'widget' => 'single_text',
             'required' => true,
+            'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'

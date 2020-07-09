@@ -42,6 +42,7 @@ class PassageiroType extends AbstractType
             'label' => 'Dt Nascimento',
             'widget' => 'single_text',
             'required' => true,
+            'html5' => false,
             'format' => 'dd/MM/yyyy',
             'attr' => [
                 'class' => 'crsr-date'
