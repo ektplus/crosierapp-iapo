@@ -43,7 +43,7 @@ class AgenciaController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function form(Request $request, Agencia $agencia = null)
     {
@@ -63,7 +63,7 @@ class AgenciaController extends FormListController
      * @return Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function list(Request $request): Response
     {
@@ -87,7 +87,7 @@ class AgenciaController extends FormListController
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -101,7 +101,7 @@ class AgenciaController extends FormListController
      * @param Agencia $agencia
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function delete(Request $request, Agencia $agencia): \Symfony\Component\HttpFoundation\RedirectResponse
     {

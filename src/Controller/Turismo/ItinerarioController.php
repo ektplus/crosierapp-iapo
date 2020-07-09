@@ -43,7 +43,7 @@ class ItinerarioController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function form(Request $request, Itinerario $itinerario = null)
     {
@@ -63,7 +63,7 @@ class ItinerarioController extends FormListController
      * @return Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function list(Request $request): Response
     {
@@ -87,7 +87,7 @@ class ItinerarioController extends FormListController
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -101,7 +101,7 @@ class ItinerarioController extends FormListController
      * @param Itinerario $itinerario
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function delete(Request $request, Itinerario $itinerario): \Symfony\Component\HttpFoundation\RedirectResponse
     {

@@ -62,7 +62,7 @@ class ViagemController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function form(Request $request, Viagem $viagem = null)
     {
@@ -82,7 +82,7 @@ class ViagemController extends FormListController
      * @return Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function list(Request $request): Response
     {
@@ -106,7 +106,7 @@ class ViagemController extends FormListController
      * @return Response
      * @throws ViewException
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -120,7 +120,7 @@ class ViagemController extends FormListController
      * @param Viagem $viagem
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function delete(Request $request, Viagem $viagem): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -139,7 +139,7 @@ class ViagemController extends FormListController
      * @param Passageiro|null $passageiro
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function passageiroForm(Request $request, Viagem $viagem, ?Passageiro $passageiro = null)
     {
@@ -200,7 +200,7 @@ class ViagemController extends FormListController
      * @param Passageiro $passageiro
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function passageiroDelete(Request $request, Passageiro $passageiro): \Symfony\Component\HttpFoundation\RedirectResponse
     {

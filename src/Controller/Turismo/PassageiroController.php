@@ -46,7 +46,7 @@ class PassageiroController extends FormListController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function form(Request $request, Passageiro $passageiro = null)
     {
@@ -66,7 +66,7 @@ class PassageiroController extends FormListController
      * @return Response
      * @throws \Exception
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function list(Request $request): Response
     {
@@ -90,7 +90,7 @@ class PassageiroController extends FormListController
      * @return Response
      * @throws \CrosierSource\CrosierLibBaseBundle\Exception\ViewException
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function datatablesJsList(Request $request): Response
     {
@@ -104,7 +104,7 @@ class PassageiroController extends FormListController
      * @param Passageiro $passageiro
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function delete(Request $request, Passageiro $passageiro): \Symfony\Component\HttpFoundation\RedirectResponse
     {
@@ -118,7 +118,7 @@ class PassageiroController extends FormListController
      * @param Request $request
      * @param EntityIdUtils $entityIdUtils
      * @return JsonResponse
-     * @IsGranted({"ROLE_TURISMO_ADMIN"}, statusCode=403)
+     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
     public function findPassageiroBy(Request $request, EntityIdUtils $entityIdUtils): JsonResponse
     {
