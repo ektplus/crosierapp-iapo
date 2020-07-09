@@ -11,7 +11,6 @@ use App\Repository\Turismo\ItinerarioRepository;
 use App\Repository\Turismo\MotoristaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -53,6 +52,7 @@ class ViagemType extends AbstractType
         $builder->add('dtHrSaida', DateTimeType::class, [
             'label' => 'Dt/Hr Saída',
             'widget' => 'single_text',
+            'html5' => false,
             'required' => true,
             'format' => 'dd/MM/yyyy HH:mm:ss',
             'help' => 'Informar com dd/mm/yyyy hh:mm:ss',
@@ -66,6 +66,7 @@ class ViagemType extends AbstractType
             'widget' => 'single_text',
             'required' => true,
             'format' => 'dd/MM/yyyy HH:mm:ss',
+            'html5' => false,
             'help' => 'Informar com dd/mm/yyyy hh:mm:ss',
             'attr' => [
                 'class' => 'crsr-datetime'
