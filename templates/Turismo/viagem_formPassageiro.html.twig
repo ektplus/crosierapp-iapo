@@ -1,0 +1,11 @@
+{% extends '@CrosierLibBase/form.html.twig' %}
+
+
+{% block btns %}
+    {{ parent() }}
+
+    <button type="button" class="btn btn-secondary"
+            onclick="window.location.href='{{ url('viagem_form',{'id':viagem.id}) }}'">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </button>
+{% endblock %}

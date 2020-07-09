@@ -1,0 +1,93 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+    <div class="container" style="margin-bottom: 50px">
+        <div class="card">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col-8">
+                        <h3>Viagem</h3>
+                    </div>
+                    <div class="col-4 text-right">
+                        <button type="button" class="btn btn-primary"
+                                onclick="window.location.href='{{ url('viagem_form') }}'">
+                            <i class="fas fa-file" aria-hidden="true"></i> Novo
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <ul class="nav nav-tabs" id="principal" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="cabecalho-tab" data-toggle="tab" href="#cabecalho"
+                           role="tab" aria-controls="home" aria-selected="true">Dados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="passageiros-tab" data-toggle="tab" href="#passageiros" role="tab"
+                           aria-controls="profile" aria-selected="false">Passageiros</a>
+                    </li>
+                </ul>
+
+                <div class="form-group row">
+                </div>
+
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col">
+                        {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                    </div>
+                </div>
+
+                {% form_theme form 'bootstrap_4_horizontal_layout.html.twig' %}
+
+                {{ form_start(form) }}
+
+                <div class="tab-content" id="myTabContent">
+
+                    {{ include('Turismo/viagem_form_cabecalho.html.twig') }}
+                    {{ include('Turismo/viagem_form_passageiros.html.twig') }}
+
+                </div>
+
+                <div class="row">
+                    <div class="col-12">&nbsp;</div>
+                </div>
+
+                <div class="row">
+                    <div class="col text-right">
+
+
+                        <button type="submit" class="btn btn-primary" value="Salvar">
+                            <i class="fas fa-save" aria-hidden="true"></i> Salvar
+                        </button>
+
+                        <button type="button" value="Resetar" class="btn btn-secondary"
+                                data-url="{{ url('viagem_form', {id: e.id}) }}"
+                                data-target="#confirmationModal" data-toggle="modal">
+                            <i class="fas fa-undo" aria-hidden="true"></i> Recarregar
+                        </button>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">&nbsp;</div>
+                </div>
+
+                {{ form_end(form, {'render_rest': false}) }}
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+
