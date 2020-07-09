@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 /**
  *
  * @ORM\Entity(repositoryClass="App\Repository\Turismo\PassageiroRepository")
- * @ORM\Table(name="rtr_tur_passageiro")
+ * @ORM\Table(name="iapo_tur_passageiro")
  *
  * @author Carlos Eduardo Pauluk
  */

@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  *
  * @ORM\Entity(repositoryClass="App\Repository\Turismo\ItinerarioRepository")
- * @ORM\Table(name="rtr_tur_itinerario")
+ * @ORM\Table(name="iapo_tur_itinerario")
  *
  * @author Carlos Eduardo Pauluk
  */

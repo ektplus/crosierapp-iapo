@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  *
  * @ORM\Entity(repositoryClass="App\Repository\Turismo\MotoristaRepository")
- * @ORM\Table(name="rtr_tur_motorista")
+ * @ORM\Table(name="iapo_tur_motorista")
  *
  * @author Carlos Eduardo Pauluk
  */
