@@ -28,7 +28,7 @@ class Viagem implements EntityId
      *
      * @Groups("entity")
      */
-    private $pedido;
+    public ?string $pedido;
 
     /**
      *
@@ -37,7 +37,7 @@ class Viagem implements EntityId
      *
      * @Groups("entity")
      */
-    private $dtHrSaida;
+    public ?\DateTime $dtHrSaida;
 
     /**
      *
@@ -46,7 +46,7 @@ class Viagem implements EntityId
      *
      * @Groups("entity")
      */
-    private $dtHrRetorno;
+    public ?\DateTime $dtHrRetorno;
 
     /**
      *
@@ -56,7 +56,7 @@ class Viagem implements EntityId
      *
      * @var Veiculo|null
      */
-    private $veiculo;
+    public ?Veiculo $veiculo;
 
     /**
      *
@@ -66,7 +66,7 @@ class Viagem implements EntityId
      *
      * @var Itinerario|null
      */
-    private $itinerario;
+    public ?Itinerario $itinerario;
 
     /**
      *
@@ -75,7 +75,7 @@ class Viagem implements EntityId
      *
      * @var string|null
      */
-    private $flagFinanceiro;
+    public ?string $flagFinanceiro;
 
     /**
      *
@@ -84,7 +84,7 @@ class Viagem implements EntityId
      *
      * @var string|null
      */
-    private $flagContrato;
+    public ?string $flagContrato;
 
     /**
      *
@@ -93,7 +93,7 @@ class Viagem implements EntityId
      *
      * @var float|null
      */
-    private $valor;
+    public ?float $valor;
 
     /**
      *
@@ -103,7 +103,7 @@ class Viagem implements EntityId
      *
      * @var Agencia|null
      */
-    private $agencia;
+    public ?Agencia $agencia;
 
     /**
      *
@@ -113,7 +113,7 @@ class Viagem implements EntityId
      *
      * @var Motorista|null
      */
-    private $motorista;
+    public ?Motorista $motorista;
 
     /**
      *
@@ -122,7 +122,7 @@ class Viagem implements EntityId
      *
      * @var string|null
      */
-    private $obs;
+    public ?string $obs;
 
     /**
      *
@@ -131,8 +131,34 @@ class Viagem implements EntityId
      *
      * @var string|null
      */
-    private $status;
+    public ?string $status;
 
+    /**
+     *
+     * @ORM\Column(name="valor_poltrona", type="decimal", nullable=true)
+     * @Groups("entity")
+     *
+     * @var float|null
+     */
+    public ?float $valorPoltrona;
+
+    /**
+     *
+     * @ORM\Column(name="valor_taxas", type="decimal", nullable=true)
+     * @Groups("entity")
+     *
+     * @var float|null
+     */
+    public ?float $valorTaxas;
+
+    /**
+     *
+     * @ORM\Column(name="valor_bagagem", type="decimal", nullable=true)
+     * @Groups("entity")
+     *
+     * @var float|null
+     */
+    public ?float $valorBagagem;
 
     /**
      *
@@ -143,247 +169,12 @@ class Viagem implements EntityId
      * @var null|Passageiro[]|array|Collection
      * @Groups("entity")
      */
-    private $passageiros;
+    public $passageiros;
 
 
     public function __construct()
     {
         $this->passageiros = new ArrayCollection();
     }
-
-    /**
-     * @return string|null
-     */
-    public function getPedido(): ?string
-    {
-        return $this->pedido;
-    }
-
-    /**
-     * @param string|null $pedido
-     * @return Viagem
-     */
-    public function setPedido(?string $pedido): Viagem
-    {
-        $this->pedido = $pedido;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtHrSaida(): ?\DateTime
-    {
-        return $this->dtHrSaida;
-    }
-
-    /**
-     * @param \DateTime|null $dtHrSaida
-     * @return Viagem
-     */
-    public function setDtHrSaida(?\DateTime $dtHrSaida): Viagem
-    {
-        $this->dtHrSaida = $dtHrSaida;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtHrRetorno(): ?\DateTime
-    {
-        return $this->dtHrRetorno;
-    }
-
-    /**
-     * @param \DateTime|null $dtHrRetorno
-     * @return Viagem
-     */
-    public function setDtHrRetorno(?\DateTime $dtHrRetorno): Viagem
-    {
-        $this->dtHrRetorno = $dtHrRetorno;
-        return $this;
-    }
-
-    /**
-     * @return Veiculo|null
-     */
-    public function getVeiculo(): ?Veiculo
-    {
-        return $this->veiculo;
-    }
-
-    /**
-     * @param Veiculo|null $veiculo
-     * @return Viagem
-     */
-    public function setVeiculo(?Veiculo $veiculo): Viagem
-    {
-        $this->veiculo = $veiculo;
-        return $this;
-    }
-
-    /**
-     * @return Itinerario|null
-     */
-    public function getItinerario(): ?Itinerario
-    {
-        return $this->itinerario;
-    }
-
-    /**
-     * @param Itinerario|null $itinerario
-     * @return Viagem
-     */
-    public function setItinerario(?Itinerario $itinerario): Viagem
-    {
-        $this->itinerario = $itinerario;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFlagFinanceiro(): ?string
-    {
-        return $this->flagFinanceiro;
-    }
-
-    /**
-     * @param string|null $flagFinanceiro
-     * @return Viagem
-     */
-    public function setFlagFinanceiro(?string $flagFinanceiro): Viagem
-    {
-        $this->flagFinanceiro = $flagFinanceiro;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFlagContrato(): ?string
-    {
-        return $this->flagContrato;
-    }
-
-    /**
-     * @param string|null $flagContrato
-     * @return Viagem
-     */
-    public function setFlagContrato(?string $flagContrato): Viagem
-    {
-        $this->flagContrato = $flagContrato;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getValor(): ?float
-    {
-        return $this->valor;
-    }
-
-    /**
-     * @param float|null $valor
-     * @return Viagem
-     */
-    public function setValor(?float $valor): Viagem
-    {
-        $this->valor = $valor;
-        return $this;
-    }
-
-    /**
-     * @return Agencia|null
-     */
-    public function getAgencia(): ?Agencia
-    {
-        return $this->agencia;
-    }
-
-    /**
-     * @param Agencia|null $agencia
-     * @return Viagem
-     */
-    public function setAgencia(?Agencia $agencia): Viagem
-    {
-        $this->agencia = $agencia;
-        return $this;
-    }
-
-    /**
-     * @return Motorista|null
-     */
-    public function getMotorista(): ?Motorista
-    {
-        return $this->motorista;
-    }
-
-    /**
-     * @param Motorista|null $motorista
-     * @return Viagem
-     */
-    public function setMotorista(?Motorista $motorista): Viagem
-    {
-        $this->motorista = $motorista;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param string|null $obs
-     * @return Viagem
-     */
-    public function setObs(?string $obs): Viagem
-    {
-        $this->obs = $obs;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param string|null $status
-     * @return Viagem
-     */
-    public function setStatus(?string $status): Viagem
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    /**
-     * @return Passageiro[]|array|Collection|null
-     */
-    public function getPassageiros()
-    {
-        return $this->passageiros;
-    }
-
-    /**
-     * @param Passageiro[]|array|Collection|null $passageiros
-     * @return Viagem
-     */
-    public function setPassageiros($passageiros)
-    {
-        $this->passageiros = $passageiros;
-        return $this;
-    }
-
 
 }

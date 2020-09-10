@@ -29,7 +29,7 @@ class MotoristaType extends AbstractType
             'label' => 'RG',
         ]);
 
-        $builder->add('Nome', TextType::class, [
+        $builder->add('nome', TextType::class, [
             'label' => 'Nome',
         ]);
 

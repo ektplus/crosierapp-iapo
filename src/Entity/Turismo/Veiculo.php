@@ -27,7 +27,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    private $prefixo;
+    public ?string $prefixo;
 
     /**
      *
@@ -36,7 +36,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    private $apelido;
+    public ?string $apelido;
 
     /**
      *
@@ -45,7 +45,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    private $placa;
+    public ?string $placa;
 
     /**
      *
@@ -54,7 +54,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    private $status;
+    public ?string $status;
 
     /**
      *
@@ -63,7 +63,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    private $renavan;
+    public ?string $renavan;
 
     /**
      *
@@ -72,7 +72,7 @@ class Veiculo implements EntityId
      *
      * @var null|\DateTime
      */
-    private $dtVenctoDer;
+    public ?\DateTime $dtVenctoDer;
 
     /**
      *
@@ -81,7 +81,7 @@ class Veiculo implements EntityId
      *
      * @var null|\DateTime
      */
-    private $dtVenctoAntt;
+    public ?\DateTime $dtVenctoAntt;
 
     /**
      *
@@ -90,7 +90,7 @@ class Veiculo implements EntityId
      *
      * @var null|\DateTime
      */
-    private $dtVenctoTacografo;
+    public ?\DateTime $dtVenctoTacografo;
 
     /**
      *
@@ -99,7 +99,7 @@ class Veiculo implements EntityId
      *
      * @var null|\DateTime
      */
-    private $dtVenctoSeguro;
+    public ?\DateTime $dtVenctoSeguro;
 
     /**
      *
@@ -108,187 +108,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    private $obs;
+    public ?string $obs;
 
-    /**
-     * @return string|null
-     */
-    public function getPrefixo(): ?string
-    {
-        return $this->prefixo;
-    }
-
-    /**
-     * @param string|null $prefixo
-     * @return Veiculo
-     */
-    public function setPrefixo(?string $prefixo): Veiculo
-    {
-        $this->prefixo = $prefixo;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getApelido(): ?string
-    {
-        return $this->apelido;
-    }
-
-    /**
-     * @param string|null $apelido
-     * @return Veiculo
-     */
-    public function setApelido(?string $apelido): Veiculo
-    {
-        $this->apelido = $apelido;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPlaca(): ?string
-    {
-        return $this->placa;
-    }
-
-    /**
-     * @param string|null $placa
-     * @return Veiculo
-     */
-    public function setPlaca(?string $placa): Veiculo
-    {
-        $this->placa = $placa;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param string|null $status
-     * @return Veiculo
-     */
-    public function setStatus(?string $status): Veiculo
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getRenavan(): ?string
-    {
-        return $this->renavan;
-    }
-
-    /**
-     * @param string|null $renavan
-     * @return Veiculo
-     */
-    public function setRenavan(?string $renavan): Veiculo
-    {
-        $this->renavan = $renavan;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtVenctoDer(): ?\DateTime
-    {
-        return $this->dtVenctoDer;
-    }
-
-    /**
-     * @param \DateTime|null $dtVenctoDer
-     * @return Veiculo
-     */
-    public function setDtVenctoDer(?\DateTime $dtVenctoDer): Veiculo
-    {
-        $this->dtVenctoDer = $dtVenctoDer;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtVenctoAntt(): ?\DateTime
-    {
-        return $this->dtVenctoAntt;
-    }
-
-    /**
-     * @param \DateTime|null $dtVenctoAntt
-     * @return Veiculo
-     */
-    public function setDtVenctoAntt(?\DateTime $dtVenctoAntt): Veiculo
-    {
-        $this->dtVenctoAntt = $dtVenctoAntt;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtVenctoTacografo(): ?\DateTime
-    {
-        return $this->dtVenctoTacografo;
-    }
-
-    /**
-     * @param \DateTime|null $dtVenctoTacografo
-     * @return Veiculo
-     */
-    public function setDtVenctoTacografo(?\DateTime $dtVenctoTacografo): Veiculo
-    {
-        $this->dtVenctoTacografo = $dtVenctoTacografo;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtVenctoSeguro(): ?\DateTime
-    {
-        return $this->dtVenctoSeguro;
-    }
-
-    /**
-     * @param \DateTime|null $dtVenctoSeguro
-     * @return Veiculo
-     */
-    public function setDtVenctoSeguro(?\DateTime $dtVenctoSeguro): Veiculo
-    {
-        $this->dtVenctoSeguro = $dtVenctoSeguro;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param string|null $obs
-     * @return Veiculo
-     */
-    public function setObs(?string $obs): Veiculo
-    {
-        $this->obs = $obs;
-        return $this;
-    }
-
-
+    
 }

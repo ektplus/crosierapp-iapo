@@ -39,9 +39,7 @@ CREATE TABLE `iapo_tur_veiculo`
     CONSTRAINT `FK_iapo_tur_veiculo_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_iapo_tur_veiculo_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
+);
 
 
 
@@ -81,9 +79,7 @@ CREATE TABLE `iapo_tur_motorista`
     CONSTRAINT `FK_iapo_tur_motorista_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_iapo_tur_motorista_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
+);
 
 
 DROP TABLE IF EXISTS `iapo_tur_agencia`;
@@ -124,9 +120,7 @@ CREATE TABLE `iapo_tur_agencia`
     CONSTRAINT `FK_iapo_tur_agencia_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_iapo_tur_agencia_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
+);
 
 
 
@@ -142,7 +136,7 @@ CREATE TABLE `iapo_tur_itinerario`
     `cidade_destino`     varchar(250) NOT NULL,
     `estado_destino`     char(2)      NOT NULL,
 
-    `veiculo_id`         bigint(20) NOT NULL,
+    `veiculo_id`         bigint(20)   NOT NULL,
 
     `preco_min`          decimal(15, 2),
     `preco_max`          decimal(15, 2),
@@ -168,9 +162,7 @@ CREATE TABLE `iapo_tur_itinerario`
     CONSTRAINT `FK_iapo_tur_itinerario_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_iapo_tur_itinerario_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
+);
 
 
 
@@ -191,6 +183,10 @@ CREATE TABLE `iapo_tur_viagem`
     `itinerario_id`      BIGINT(20)  NOT NULL,
     `flg_financeiro`     char(1),
     `flg_contrato`       char(1),
+
+    `valor_poltrona`     decimal(15, 2),
+    `valor_taxas`        decimal(15, 2),
+    `valor_bagagem`      decimal(15, 2),
 
     `valor`              decimal(15, 2),
     `obs`                varchar(3000),
@@ -227,9 +223,7 @@ CREATE TABLE `iapo_tur_viagem`
     CONSTRAINT `FK_iapo_tur_viagem_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_iapo_tur_viagem_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
+);
 
 
 --
@@ -274,6 +268,4 @@ CREATE TABLE `iapo_tur_passageiro`
     CONSTRAINT `FK_iapo_tur_passageiro_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
     CONSTRAINT `FK_iapo_tur_passageiro_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8
-  COLLATE = utf8_swedish_ci;
+);

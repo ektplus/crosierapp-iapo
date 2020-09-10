@@ -18,7 +18,7 @@ class MotoristaEntityHandler extends EntityHandler
 
     public function beforeSave(/** @var Motorista $motorista */ $motorista)
     {
-        $motorista->setCpf(preg_replace("/[^0-9]/", "", $motorista->getCpf()));
+        $motorista->cpf = preg_replace("/[^0-9]/", "", $motorista->cpf);
     }
 
 

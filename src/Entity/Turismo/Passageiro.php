@@ -31,7 +31,7 @@ class Passageiro implements EntityId
      *
      * @var Viagem|null
      */
-    private $viagem;
+    public ?Viagem $viagem;
 
 
     /**
@@ -41,7 +41,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    private $cpf;
+    public ?string $cpf;
 
     /**
      *
@@ -50,7 +50,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    private $rg;
+    public ?string $rg;
 
     /**
      *
@@ -59,7 +59,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    private $nome;
+    public ?string $nome;
 
     /**
      *
@@ -68,7 +68,7 @@ class Passageiro implements EntityId
      *
      * @Groups("entity")
      */
-    private $dtNascimento;
+    public ?\DateTime $dtNascimento;
 
     /**
      *
@@ -77,7 +77,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    private $foneFixo;
+    public ?string $foneFixo;
 
     /**
      *
@@ -86,7 +86,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    private $foneCelular;
+    public ?string $foneCelular;
 
     /**
      *
@@ -95,7 +95,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    private $foneWhatsapp;
+    public ?string $foneWhatsapp;
 
     /**
      *
@@ -104,7 +104,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    private $foneRecados;
+    public ?string $foneRecados;
 
     /**
      *
@@ -113,7 +113,7 @@ class Passageiro implements EntityId
      *
      * @Groups("entity")
      */
-    private $email;
+    public ?string $email;
 
     /**
      *
@@ -122,206 +122,6 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    private $obs;
-
-    /**
-     * @return Viagem|null
-     */
-    public function getViagem(): ?Viagem
-    {
-        return $this->viagem;
-    }
-
-    /**
-     * @param Viagem|null $viagem
-     * @return Passageiro
-     */
-    public function setViagem(?Viagem $viagem): Passageiro
-    {
-        $this->viagem = $viagem;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCpf(): ?string
-    {
-        return StringUtils::mascararCnpjCpf($this->cpf);
-    }
-
-    /**
-     * @param string|null $cpf
-     * @return Passageiro
-     */
-    public function setCpf(?string $cpf): Passageiro
-    {
-        $cpf = preg_replace("/[^0-9]/", "", $cpf);
-        $this->cpf = $cpf;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getRg(): ?string
-    {
-        return $this->rg;
-    }
-
-    /**
-     * @param string|null $rg
-     * @return Passageiro
-     */
-    public function setRg(?string $rg): Passageiro
-    {
-        $this->rg = $rg;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNome(): ?string
-    {
-        return $this->nome;
-    }
-
-    /**
-     * @param string|null $nome
-     * @return Passageiro
-     */
-    public function setNome(?string $nome): Passageiro
-    {
-        $this->nome = $nome;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtNascimento(): ?\DateTime
-    {
-        return $this->dtNascimento;
-    }
-
-    /**
-     * @param \DateTime|null $dtNascimento
-     * @return Passageiro
-     */
-    public function setDtNascimento(?\DateTime $dtNascimento): Passageiro
-    {
-        $this->dtNascimento = $dtNascimento;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFoneFixo(): ?string
-    {
-        return $this->foneFixo;
-    }
-
-    /**
-     * @param string|null $foneFixo
-     * @return Passageiro
-     */
-    public function setFoneFixo(?string $foneFixo): Passageiro
-    {
-        $this->foneFixo = $foneFixo;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFoneCelular(): ?string
-    {
-        return $this->foneCelular;
-    }
-
-    /**
-     * @param string|null $foneCelular
-     * @return Passageiro
-     */
-    public function setFoneCelular(?string $foneCelular): Passageiro
-    {
-        $this->foneCelular = $foneCelular;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFoneWhatsapp(): ?string
-    {
-        return $this->foneWhatsapp;
-    }
-
-    /**
-     * @param string|null $foneWhatsapp
-     * @return Passageiro
-     */
-    public function setFoneWhatsapp(?string $foneWhatsapp): Passageiro
-    {
-        $this->foneWhatsapp = $foneWhatsapp;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFoneRecados(): ?string
-    {
-        return $this->foneRecados;
-    }
-
-    /**
-     * @param string|null $foneRecados
-     * @return Passageiro
-     */
-    public function setFoneRecados(?string $foneRecados): Passageiro
-    {
-        $this->foneRecados = $foneRecados;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string|null $email
-     * @return Passageiro
-     */
-    public function setEmail(?string $email): Passageiro
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param string|null $obs
-     * @return Passageiro
-     */
-    public function setObs(?string $obs): Passageiro
-    {
-        $this->obs = $obs;
-        return $this;
-    }
-
+    public ?string $obs;
 
 }

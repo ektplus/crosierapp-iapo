@@ -28,7 +28,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    private $cpf;
+    public ?string $cpf;
 
     /**
      *
@@ -37,7 +37,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    private $rg;
+    public ?string $rg;
 
     /**
      *
@@ -46,7 +46,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    private $nome;
+    public ?string $nome;
 
     /**
      *
@@ -55,7 +55,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    private $cnh;
+    public ?string $cnh;
 
     /**
      *
@@ -64,7 +64,7 @@ class Motorista implements EntityId
      *
      * @var null|\DateTime
      */
-    private $dtVenctoCnh;
+    public ?\DateTime $dtVenctoCnh;
 
     /**
      *
@@ -73,7 +73,7 @@ class Motorista implements EntityId
      *
      * @var null|\DateTime
      */
-    private $dtVenctoCarteiraSaude;
+    public ?\DateTime $dtVenctoCarteiraSaude;
 
     /**
      *
@@ -82,7 +82,7 @@ class Motorista implements EntityId
      *
      * @var null|\DateTime
      */
-    private $dtValidadeCursoTranspPassag;
+    public ?\DateTime $dtValidadeCursoTranspPassag;
 
     /**
      *
@@ -91,7 +91,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    private $foneFixo;
+    public ?string $foneFixo;
 
     /**
      *
@@ -100,7 +100,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    private $foneCelular;
+    public ?string $foneCelular;
 
     /**
      *
@@ -109,7 +109,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    private $foneWhatsapp;
+    public ?string $foneWhatsapp;
 
     /**
      *
@@ -118,7 +118,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    private $foneRecados;
+    public ?string $foneRecados;
 
     /**
      *
@@ -127,225 +127,6 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    private $obs;
-
-    /**
-     * @return string|null
-     */
-    public function getCpf(): ?string
-    {
-        $this->cpf = StringUtils::mascararCnpjCpf($this->cpf);
-        return $this->cpf;
-    }
-
-    /**
-     * @param string|null $cpf
-     * @return Motorista
-     */
-    public function setCpf(?string $cpf): Motorista
-    {
-        $cpf = preg_replace("/[^0-9]/", "", $cpf);
-        $this->cpf = $cpf;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getRg(): ?string
-    {
-        return $this->rg;
-    }
-
-    /**
-     * @param string|null $rg
-     * @return Motorista
-     */
-    public function setRg(?string $rg): Motorista
-    {
-        $this->rg = $rg;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getNome(): ?string
-    {
-        return $this->nome;
-    }
-
-    /**
-     * @param string|null $nome
-     * @return Motorista
-     */
-    public function setNome(?string $nome): Motorista
-    {
-        $this->nome = $nome;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getCnh(): ?string
-    {
-        return $this->cnh;
-    }
-
-    /**
-     * @param string|null $cnh
-     * @return Motorista
-     */
-    public function setCnh(?string $cnh): Motorista
-    {
-        $this->cnh = $cnh;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtVenctoCnh(): ?\DateTime
-    {
-        return $this->dtVenctoCnh;
-    }
-
-    /**
-     * @param \DateTime|null $dtVenctoCnh
-     * @return Motorista
-     */
-    public function setDtVenctoCnh(?\DateTime $dtVenctoCnh): Motorista
-    {
-        $this->dtVenctoCnh = $dtVenctoCnh;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtVenctoCarteiraSaude(): ?\DateTime
-    {
-        return $this->dtVenctoCarteiraSaude;
-    }
-
-    /**
-     * @param \DateTime|null $dtVenctoCarteiraSaude
-     * @return Motorista
-     */
-    public function setDtVenctoCarteiraSaude(?\DateTime $dtVenctoCarteiraSaude): Motorista
-    {
-        $this->dtVenctoCarteiraSaude = $dtVenctoCarteiraSaude;
-        return $this;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getDtValidadeCursoTranspPassag(): ?\DateTime
-    {
-        return $this->dtValidadeCursoTranspPassag;
-    }
-
-    /**
-     * @param \DateTime|null $dtValidadeCursoTranspPassag
-     * @return Motorista
-     */
-    public function setDtValidadeCursoTranspPassag(?\DateTime $dtValidadeCursoTranspPassag): Motorista
-    {
-        $this->dtValidadeCursoTranspPassag = $dtValidadeCursoTranspPassag;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFoneFixo(): ?string
-    {
-        return $this->foneFixo;
-    }
-
-    /**
-     * @param string|null $foneFixo
-     * @return Motorista
-     */
-    public function setFoneFixo(?string $foneFixo): Motorista
-    {
-        $this->foneFixo = $foneFixo;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFoneCelular(): ?string
-    {
-        return $this->foneCelular;
-    }
-
-    /**
-     * @param string|null $foneCelular
-     * @return Motorista
-     */
-    public function setFoneCelular(?string $foneCelular): Motorista
-    {
-        $this->foneCelular = $foneCelular;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFoneWhatsapp(): ?string
-    {
-        return $this->foneWhatsapp;
-    }
-
-    /**
-     * @param string|null $foneWhatsapp
-     * @return Motorista
-     */
-    public function setFoneWhatsapp(?string $foneWhatsapp): Motorista
-    {
-        $this->foneWhatsapp = $foneWhatsapp;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFoneRecados(): ?string
-    {
-        return $this->foneRecados;
-    }
-
-    /**
-     * @param string|null $foneRecados
-     * @return Motorista
-     */
-    public function setFoneRecados(?string $foneRecados): Motorista
-    {
-        $this->foneRecados = $foneRecados;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param string|null $obs
-     * @return Motorista
-     */
-    public function setObs(?string $obs): Motorista
-    {
-        $this->obs = $obs;
-        return $this;
-    }
-
+    public ?string $obs;
 
 }

@@ -27,7 +27,7 @@ class Itinerario implements EntityId
      *
      * @Groups("entity")
      */
-    private $origemCidade;
+    public ?string $origemCidade;
 
     /**
      *
@@ -36,7 +36,7 @@ class Itinerario implements EntityId
      *
      * @Groups("entity")
      */
-    private $origemEstado;
+    public ?string $origemEstado;
 
     /**
      *
@@ -45,7 +45,7 @@ class Itinerario implements EntityId
      *
      * @Groups("entity")
      */
-    private $destinoCidade;
+    public ?string $destinoCidade;
 
     /**
      *
@@ -54,7 +54,7 @@ class Itinerario implements EntityId
      *
      * @Groups("entity")
      */
-    private $destinoEstado;
+    public ?string $destinoEstado;
 
     /**
      *
@@ -64,7 +64,7 @@ class Itinerario implements EntityId
      *
      * @var Veiculo|null
      */
-    private $veiculo;
+    public ?Veiculo $veiculo;
 
     /**
      *
@@ -73,7 +73,7 @@ class Itinerario implements EntityId
      *
      * @var float|null
      */
-    private $precoMin;
+    public ?float $precoMin;
 
     /**
      *
@@ -82,7 +82,7 @@ class Itinerario implements EntityId
      *
      * @var float|null
      */
-    private $precoMax;
+    public ?float $precoMax;
 
     /**
      *
@@ -91,7 +91,7 @@ class Itinerario implements EntityId
      *
      * @var string|null
      */
-    private $obs;
+    public ?string $obs;
 
     /**
      * Transient.
@@ -99,169 +99,16 @@ class Itinerario implements EntityId
      *
      * @var string|null
      */
-    private $descricaoMontada;
+    public ?string $descricaoMontada;
 
-    /**
-     * @return string|null
-     */
-    public function getOrigemCidade(): ?string
-    {
-        return $this->origemCidade;
-    }
-
-    /**
-     * @param string|null $origemCidade
-     * @return Itinerario
-     */
-    public function setOrigemCidade(?string $origemCidade): Itinerario
-    {
-        $this->origemCidade = $origemCidade;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getOrigemEstado(): ?string
-    {
-        return $this->origemEstado;
-    }
-
-    /**
-     * @param string|null $origemEstado
-     * @return Itinerario
-     */
-    public function setOrigemEstado(?string $origemEstado): Itinerario
-    {
-        $this->origemEstado = $origemEstado;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDestinoCidade(): ?string
-    {
-        return $this->destinoCidade;
-    }
-
-    /**
-     * @param string|null $destinoCidade
-     * @return Itinerario
-     */
-    public function setDestinoCidade(?string $destinoCidade): Itinerario
-    {
-        $this->destinoCidade = $destinoCidade;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getDestinoEstado(): ?string
-    {
-        return $this->destinoEstado;
-    }
-
-    /**
-     * @param string|null $destinoEstado
-     * @return Itinerario
-     */
-    public function setDestinoEstado(?string $destinoEstado): Itinerario
-    {
-        $this->destinoEstado = $destinoEstado;
-        return $this;
-    }
-
-    /**
-     * @return Veiculo|null
-     */
-    public function getVeiculo(): ?Veiculo
-    {
-        return $this->veiculo;
-    }
-
-    /**
-     * @param Veiculo|null $veiculo
-     * @return Itinerario
-     */
-    public function setVeiculo(?Veiculo $veiculo): Itinerario
-    {
-        $this->veiculo = $veiculo;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPrecoMin(): ?float
-    {
-        return $this->precoMin;
-    }
-
-    /**
-     * @param float|null $precoMin
-     * @return Itinerario
-     */
-    public function setPrecoMin(?float $precoMin): Itinerario
-    {
-        $this->precoMin = $precoMin;
-        return $this;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getPrecoMax(): ?float
-    {
-        return $this->precoMax;
-    }
-
-    /**
-     * @param float|null $precoMax
-     * @return Itinerario
-     */
-    public function setPrecoMax(?float $precoMax): Itinerario
-    {
-        $this->precoMax = $precoMax;
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getObs(): ?string
-    {
-        return $this->obs;
-    }
-
-    /**
-     * @param string|null $obs
-     * @return Itinerario
-     */
-    public function setObs(?string $obs): Itinerario
-    {
-        $this->obs = $obs;
-        return $this;
-    }
 
     /**
      * @return string|null
      */
     public function getDescricaoMontada(): ?string
     {
-        $this->descricaoMontada = 'De ' . $this->getOrigemCidade() . '-' . $this->getOrigemEstado() . ' até ' . $this->getDestinoCidade() . '-' . $this->getDestinoEstado() . ' (' . $this->getVeiculo()->getApelido() . ')';
+        $this->descricaoMontada = 'De ' . $this->origemCidade . '-' . $this->origemEstado . ' até ' . $this->destinoCidade . '-' . $this->destinoEstado . ' (' . $this->veiculo->apelido . ')';
         return $this->descricaoMontada;
-    }
-
-    /**
-     * @param string|null $descricaoMontada
-     * @return Itinerario
-     */
-    public function setDescricaoMontada(?string $descricaoMontada): Itinerario
-    {
-        $this->descricaoMontada = $descricaoMontada;
-        return $this;
     }
 
 
