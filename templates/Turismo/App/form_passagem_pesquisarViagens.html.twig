@@ -5,7 +5,7 @@
 
 {% block body %}
 
-    <div class="container" style="margin-bottom: 50px">
+    <div class="container-sm" style="margin-bottom: 50px">
 
         <div class="row mb-2">
             <div class="col-12 text-center">
@@ -28,7 +28,18 @@
 
             </div>
 
-            <div class="card-body"></div>
+            <div class="card-body">
+
+                <div class="form-group">
+                    <label for="filter_dtsVenda" class="required">Data</label>
+                    <input type="text" id="filter_dts" name="filter[dts]"
+                           data-mask="00/00/0000 - 00/00/0000"
+                           style="text-align: center"
+                           class="form-control"
+                           value="{{ filter['dts']|default('') }}">
+                </div>
+
+            </div>
         </div>
 
 
@@ -37,3 +48,6 @@
 
 {% endblock %}
 
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Turismo/App/form_passagem_pesquisarViagens') }}
+{% endblock %}
