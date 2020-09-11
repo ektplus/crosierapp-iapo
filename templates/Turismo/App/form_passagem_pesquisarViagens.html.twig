@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="filter_dtsVenda" class="required">Data</label>
+                            <label for="filter_dts" class="required">Data</label>
                             <input type="text" id="filter_dts" name="filter[dts]"
                                    data-mask="00/00/0000 - 00/00/0000"
                                    style="text-align: center"
@@ -44,11 +44,33 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-sm-12 col-md-6">
                         <div class="form-group">
-                            <label for="filter_mes" class="required">Mês</label>
-                            <input type="month" id="filter_mes" >
+                            <label for="filter_cidadeOrigem" class="required">Origem</label>
+                            <select id="filter_cidadeOrigem" name="filter[cidadeOrigem]"
+                                    class="form-control" data-options="{{ cidadesOrigens }}"
+                                    data-val="{{ filter['cidadeOrigem']|default('') }}">
+                            </select>
                         </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label for="filter_cidadeDestino" class="required">Destino</label>
+                            <select id="filter_cidadeDestino" name="filter[cidadeDestino]"
+                                    class="form-control"
+                                    data-val="{{ filter['cidadeDestino']|default('') }}">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="btnFiltrar">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary btn-block" id="btnFiltrar" title="Pesquisar">
+                            <i class="fas fa-search"></i> Pesquisar
+                        </button>
                     </div>
                 </div>
 

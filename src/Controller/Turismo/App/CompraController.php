@@ -8,6 +8,7 @@ use App\EntityHandler\Turismo\PassageiroEntityHandler;
 use App\EntityHandler\Turismo\ViagemEntityHandler;
 use App\Form\Turismo\PassageiroType;
 use App\Form\Turismo\ViagemType;
+use App\Repository\Turismo\ViagemRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
@@ -35,10 +36,16 @@ class CompraController extends FormListController
      * @throws \Exception
      *
      */
-    public function form(Request $request)
+    public function ini(Request $request)
     {
+        $params = [];
 
-        return $this->render('Turismo/App/form_passagem_pesquisarViagens.html.twig');
+        /** @var ViagemRepository $repoViagens */
+        $repoViagens = $this->getDoctrine()->getRepository(Viagem::class);
+        $cidadesOrigens = $repoViagens->buildSelect2CidadesOrigensViagensProgramadas();
+
+        $params['cidadesOrigens'] = json_encode($cidadesOrigens);
+        return $this->render('Turismo/App/form_passagem_pesquisarViagens.html.twig', $params);
     }
 
 
