@@ -27,7 +27,7 @@ class Itinerario implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $origemCidade;
+    public ?string $origemCidade = null;
 
     /**
      *
@@ -36,7 +36,7 @@ class Itinerario implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $origemEstado;
+    public ?string $origemEstado = null;
 
     /**
      *
@@ -45,7 +45,7 @@ class Itinerario implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $destinoCidade;
+    public ?string $destinoCidade = null;
 
     /**
      *
@@ -54,7 +54,7 @@ class Itinerario implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $destinoEstado;
+    public ?string $destinoEstado = null;
 
     /**
      *
@@ -64,7 +64,7 @@ class Itinerario implements EntityId
      *
      * @var Veiculo|null
      */
-    public ?Veiculo $veiculo;
+    public ?Veiculo $veiculo = null;
 
     /**
      *
@@ -73,7 +73,7 @@ class Itinerario implements EntityId
      *
      * @var float|null
      */
-    public ?float $precoMin;
+    public ?float $precoMin = null;
 
     /**
      *
@@ -82,7 +82,7 @@ class Itinerario implements EntityId
      *
      * @var float|null
      */
-    public ?float $precoMax;
+    public ?float $precoMax = null;
 
     /**
      *
@@ -91,7 +91,7 @@ class Itinerario implements EntityId
      *
      * @var string|null
      */
-    public ?string $obs;
+    public ?string $obs = null;
 
     /**
      * Transient.
@@ -99,7 +99,7 @@ class Itinerario implements EntityId
      *
      * @var string|null
      */
-    public ?string $descricaoMontada;
+    public ?string $descricaoMontada = null;
 
 
     /**

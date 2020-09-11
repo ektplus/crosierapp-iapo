@@ -28,7 +28,7 @@ class Viagem implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $pedido;
+    public ?string $pedido = null;
 
     /**
      *
@@ -37,7 +37,7 @@ class Viagem implements EntityId
      *
      * @Groups("entity")
      */
-    public ?\DateTime $dtHrSaida;
+    public ?\DateTime $dtHrSaida = null;
 
     /**
      *
@@ -46,7 +46,7 @@ class Viagem implements EntityId
      *
      * @Groups("entity")
      */
-    public ?\DateTime $dtHrRetorno;
+    public ?\DateTime $dtHrRetorno = null;
 
     /**
      *
@@ -56,7 +56,7 @@ class Viagem implements EntityId
      *
      * @var Veiculo|null
      */
-    public ?Veiculo $veiculo;
+    public ?Veiculo $veiculo = null;
 
     /**
      *
@@ -66,7 +66,7 @@ class Viagem implements EntityId
      *
      * @var Itinerario|null
      */
-    public ?Itinerario $itinerario;
+    public ?Itinerario $itinerario = null;
 
     /**
      *
@@ -75,7 +75,7 @@ class Viagem implements EntityId
      *
      * @var string|null
      */
-    public ?string $flagFinanceiro;
+    public ?string $flagFinanceiro = null;
 
     /**
      *
@@ -84,7 +84,7 @@ class Viagem implements EntityId
      *
      * @var string|null
      */
-    public ?string $flagContrato;
+    public ?string $flagContrato = null;
 
     /**
      *
@@ -93,7 +93,7 @@ class Viagem implements EntityId
      *
      * @var float|null
      */
-    public ?float $valor;
+    public ?float $valor = null;
 
     /**
      *
@@ -103,7 +103,7 @@ class Viagem implements EntityId
      *
      * @var Agencia|null
      */
-    public ?Agencia $agencia;
+    public ?Agencia $agencia = null;
 
     /**
      *
@@ -113,7 +113,7 @@ class Viagem implements EntityId
      *
      * @var Motorista|null
      */
-    public ?Motorista $motorista;
+    public ?Motorista $motorista = null;
 
     /**
      *
@@ -122,7 +122,7 @@ class Viagem implements EntityId
      *
      * @var string|null
      */
-    public ?string $obs;
+    public ?string $obs = null;
 
     /**
      *
@@ -131,7 +131,7 @@ class Viagem implements EntityId
      *
      * @var string|null
      */
-    public ?string $status;
+    public ?string $status = null;
 
     /**
      *
@@ -140,7 +140,7 @@ class Viagem implements EntityId
      *
      * @var float|null
      */
-    public ?float $valorPoltrona;
+    public ?float $valorPoltrona = null;
 
     /**
      *
@@ -149,7 +149,7 @@ class Viagem implements EntityId
      *
      * @var float|null
      */
-    public ?float $valorTaxas;
+    public ?float $valorTaxas = null;
 
     /**
      *
@@ -158,7 +158,7 @@ class Viagem implements EntityId
      *
      * @var float|null
      */
-    public ?float $valorBagagem;
+    public ?float $valorBagagem = null;
 
     /**
      *
@@ -169,7 +169,7 @@ class Viagem implements EntityId
      * @var null|Passageiro[]|array|Collection
      * @Groups("entity")
      */
-    public $passageiros;
+    public $passageiros = null;
 
 
     public function __construct()

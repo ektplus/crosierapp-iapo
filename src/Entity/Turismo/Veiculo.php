@@ -27,7 +27,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    public ?string $prefixo;
+    public ?string $prefixo = null;
 
     /**
      *
@@ -36,7 +36,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    public ?string $apelido;
+    public ?string $apelido = null;
 
     /**
      *
@@ -45,7 +45,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    public ?string $placa;
+    public ?string $placa = null;
 
     /**
      *
@@ -54,7 +54,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    public ?string $status;
+    public ?string $status = null;
 
     /**
      *
@@ -63,7 +63,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    public ?string $renavan;
+    public ?string $renavan = null;
 
     /**
      *
@@ -72,7 +72,7 @@ class Veiculo implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtVenctoDer;
+    public ?\DateTime $dtVenctoDer = null;
 
     /**
      *
@@ -81,7 +81,7 @@ class Veiculo implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtVenctoAntt;
+    public ?\DateTime $dtVenctoAntt = null;
 
     /**
      *
@@ -90,7 +90,7 @@ class Veiculo implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtVenctoTacografo;
+    public ?\DateTime $dtVenctoTacografo = null;
 
     /**
      *
@@ -99,7 +99,7 @@ class Veiculo implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtVenctoSeguro;
+    public ?\DateTime $dtVenctoSeguro = null;
 
     /**
      *
@@ -108,7 +108,7 @@ class Veiculo implements EntityId
      *
      * @var string|null
      */
-    public ?string $obs;
+    public ?string $obs = null;
 
-    
+
 }

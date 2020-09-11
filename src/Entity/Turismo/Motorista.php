@@ -4,7 +4,6 @@ namespace App\Entity\Turismo;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
-use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -28,7 +27,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    public ?string $cpf;
+    public ?string $cpf = null;
 
     /**
      *
@@ -37,7 +36,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    public ?string $rg;
+    public ?string $rg = null;
 
     /**
      *
@@ -46,7 +45,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    public ?string $nome;
+    public ?string $nome = null;
 
     /**
      *
@@ -55,7 +54,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    public ?string $cnh;
+    public ?string $cnh = null;
 
     /**
      *
@@ -64,7 +63,7 @@ class Motorista implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtVenctoCnh;
+    public ?\DateTime $dtVenctoCnh = null;
 
     /**
      *
@@ -73,7 +72,7 @@ class Motorista implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtVenctoCarteiraSaude;
+    public ?\DateTime $dtVenctoCarteiraSaude = null;
 
     /**
      *
@@ -82,7 +81,7 @@ class Motorista implements EntityId
      *
      * @var null|\DateTime
      */
-    public ?\DateTime $dtValidadeCursoTranspPassag;
+    public ?\DateTime $dtValidadeCursoTranspPassag = null;
 
     /**
      *
@@ -91,7 +90,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneFixo;
+    public ?string $foneFixo = null;
 
     /**
      *
@@ -100,7 +99,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneCelular;
+    public ?string $foneCelular = null;
 
     /**
      *
@@ -109,7 +108,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneWhatsapp;
+    public ?string $foneWhatsapp = null;
 
     /**
      *
@@ -118,7 +117,7 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneRecados;
+    public ?string $foneRecados = null;
 
     /**
      *
@@ -127,6 +126,6 @@ class Motorista implements EntityId
      *
      * @var string|null
      */
-    public ?string $obs;
+    public ?string $obs = null;
 
 }

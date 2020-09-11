@@ -55,7 +55,7 @@ class ViagemType extends AbstractType
             'html5' => false,
             'required' => true,
             'format' => 'dd/MM/yyyy HH:mm:ss',
-            'help' => 'Informar com dd/mm/yyyy hh:mm:ss',
+            'help' => 'Informar com dd/mm/aaaa hh:mm:ss',
             'attr' => [
                 'class' => 'crsr-datetime'
             ]
@@ -67,7 +67,7 @@ class ViagemType extends AbstractType
             'required' => true,
             'format' => 'dd/MM/yyyy HH:mm:ss',
             'html5' => false,
-            'help' => 'Informar com dd/mm/yyyy hh:mm:ss',
+            'help' => 'Informar com dd/mm/aaaa hh:mm:ss',
             'attr' => [
                 'class' => 'crsr-datetime'
             ]
@@ -83,7 +83,7 @@ class ViagemType extends AbstractType
             },
             'choices' => $repoItinerario->findAll(['origemCidade' => 'ASC']),
             'attr' => ['class' => 'autoSelect2'],
-            'required' => false
+            'required' => true
         ]);
 
         $builder->add('flagFinanceiro', ChoiceType::class, [
@@ -120,13 +120,12 @@ class ViagemType extends AbstractType
             'label' => 'Agência',
             'class' => Agencia::class,
             'choice_label' => function (?Agencia $agencia) {
-                return $agencia ? $agencia->getNome() : null;
+                return $agencia ? $agencia->nome : null;
             },
             'choices' => $repoAgencia->findAll(['nome' => 'ASC']),
             'attr' => [
                 'class' => 'autoSelect2'
             ],
-            'required' => false
         ]);
 
         /** @var MotoristaRepository $repoMotorista */
@@ -135,22 +134,57 @@ class ViagemType extends AbstractType
             'label' => 'Motorista',
             'class' => Motorista::class,
             'choice_label' => function (?Motorista $motorista) {
-                return $motorista ? $motorista->getNome() : null;
+                return $motorista ? $motorista->nome : null;
             },
             'choices' => $repoMotorista->findAll(['nome' => 'ASC']),
             'attr' => [
                 'class' => 'autoSelect2'
             ],
-            'required' => false
+            'required' => true
         ]);
 
-        $builder->add('status', TextType::class, [
+        $builder->add('status', ChoiceType::class, [
             'label' => 'Status',
-            'required' => false,
+            'choices' => [
+                'NOVA' => 'NOVA',
+                'PROGRAMADA' => 'PROGRAMADA',
+                'CANCELADA' => 'CANCELADA',
+            ],
+            'attr' => ['class' => 'autoSelect2']
         ]);
 
         $builder->add('obs', TextareaType::class, [
             'label' => 'Obs',
+            'required' => false
+        ]);
+
+        $builder->add('valorPoltrona', MoneyType::class, [
+            'label' => 'Valor Poltrona',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'attr' => [
+                'class' => 'crsr-money'
+            ],
+            'required' => false
+        ]);
+
+        $builder->add('valorTaxas', MoneyType::class, [
+            'label' => 'Valor Taxas',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'attr' => [
+                'class' => 'crsr-money'
+            ],
+            'required' => false
+        ]);
+
+        $builder->add('valorBagagem', MoneyType::class, [
+            'label' => 'Valor Bagagem',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'attr' => [
+                'class' => 'crsr-money'
+            ],
             'required' => false
         ]);
 

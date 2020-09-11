@@ -26,7 +26,7 @@ class Agencia implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $nome;
+    public ?string $nome = null;
 
     /**
      *
@@ -35,7 +35,7 @@ class Agencia implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $email;
+    public ?string $email = null;
 
     /**
      *
@@ -44,7 +44,7 @@ class Agencia implements EntityId
      *
      * @var float|null
      */
-    public ?float $percComissao;
+    public ?float $percComissao = null;
 
 
     /**
@@ -54,7 +54,7 @@ class Agencia implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $cep;
+    public ?string $cep = null;
 
     /**
      *
@@ -63,7 +63,7 @@ class Agencia implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $logradouro;
+    public ?string $logradouro = null;
 
     /**
      *
@@ -72,7 +72,7 @@ class Agencia implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $numero;
+    public ?string $numero = null;
 
     /**
      *
@@ -81,7 +81,7 @@ class Agencia implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $complemento;
+    public ?string $complemento = null;
 
     /**
      *
@@ -90,7 +90,7 @@ class Agencia implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $bairro;
+    public ?string $bairro = null;
 
     /**
      *
@@ -99,7 +99,7 @@ class Agencia implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $cidade;
+    public ?string $cidade = null;
 
     /**
      *
@@ -108,7 +108,7 @@ class Agencia implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $estado;
+    public ?string $estado = null;
 
     /**
      *
@@ -117,7 +117,7 @@ class Agencia implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneFixo;
+    public ?string $foneFixo = null;
 
     /**
      *
@@ -126,7 +126,7 @@ class Agencia implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneCelular;
+    public ?string $foneCelular = null;
 
     /**
      *
@@ -135,7 +135,7 @@ class Agencia implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneWhatsapp;
+    public ?string $foneWhatsapp = null;
 
     /**
      *
@@ -144,6 +144,6 @@ class Agencia implements EntityId
      *
      * @var string|null
      */
-    public ?string $obs;
+    public ?string $obs = null;
 
 }

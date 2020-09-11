@@ -89,7 +89,7 @@ class VeiculoType extends AbstractType
             ]
         ));
 
-        $builder->add('Obs', TextareaType::class, [
+        $builder->add('obs', TextareaType::class, [
             'label' => 'Obs',
             'required' => false,
         ]);

@@ -31,7 +31,7 @@ class Passageiro implements EntityId
      *
      * @var Viagem|null
      */
-    public ?Viagem $viagem;
+    public ?Viagem $viagem = null;
 
 
     /**
@@ -41,7 +41,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    public ?string $cpf;
+    public ?string $cpf = null;
 
     /**
      *
@@ -50,7 +50,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    public ?string $rg;
+    public ?string $rg = null;
 
     /**
      *
@@ -59,7 +59,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    public ?string $nome;
+    public ?string $nome = null;
 
     /**
      *
@@ -68,7 +68,7 @@ class Passageiro implements EntityId
      *
      * @Groups("entity")
      */
-    public ?\DateTime $dtNascimento;
+    public ?\DateTime $dtNascimento = null;
 
     /**
      *
@@ -77,7 +77,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneFixo;
+    public ?string $foneFixo = null;
 
     /**
      *
@@ -86,7 +86,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneCelular;
+    public ?string $foneCelular = null;
 
     /**
      *
@@ -95,7 +95,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneWhatsapp;
+    public ?string $foneWhatsapp = null;
 
     /**
      *
@@ -104,7 +104,7 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    public ?string $foneRecados;
+    public ?string $foneRecados = null;
 
     /**
      *
@@ -113,7 +113,7 @@ class Passageiro implements EntityId
      *
      * @Groups("entity")
      */
-    public ?string $email;
+    public ?string $email = null;
 
     /**
      *
@@ -122,6 +122,6 @@ class Passageiro implements EntityId
      *
      * @var string|null
      */
-    public ?string $obs;
+    public ?string $obs = null;
 
 }

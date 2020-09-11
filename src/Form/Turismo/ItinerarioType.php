@@ -22,8 +22,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ItinerarioType extends AbstractType
 {
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
     /**
      * @required
@@ -39,7 +38,6 @@ class ItinerarioType extends AbstractType
 
         $builder->add('origemCidade', TextType::class, [
             'label' => 'Cidade (Origem)',
-            'required' => false,
             'attr' => ['class' => 'focusOnReady']
         ]);
 
@@ -74,14 +72,12 @@ class ItinerarioType extends AbstractType
                 'Sergipe' => 'SE',
                 'Tocantins' => 'TO'
             ],
-            'required' => false,
             'attr' => ['class' => 'autoSelect2']
         ]);
 
 
         $builder->add('destinoCidade', TextType::class, [
             'label' => 'Cidade (Destino)',
-            'required' => false
         ]);
 
         $builder->add('destinoEstado', ChoiceType::class, [
@@ -115,7 +111,6 @@ class ItinerarioType extends AbstractType
                 'Sergipe' => 'SE',
                 'Tocantins' => 'TO'
             ],
-            'required' => false,
             'attr' => ['class' => 'autoSelect2']
         ]);
 
@@ -125,13 +120,12 @@ class ItinerarioType extends AbstractType
             'label' => 'Veículo',
             'class' => Veiculo::class,
             'choice_label' => function (?Veiculo $veiculo) {
-                return $veiculo ? $veiculo->getApelido() : null;
+                return $veiculo ? $veiculo->apelido : null;
             },
             'choices' => $repoVeiculo->findAll(['apelido' => 'ASC']),
             'attr' => [
                 'class' => 'autoSelect2'
             ],
-            'required' => false
         ]);
 
         $builder->add('precoMin', MoneyType::class, [
