@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <form action="{{ url('tur_app_compra_informarDadosPassageiros') }}" method="get">
+                <form action="{{ url('tur_app_compra_pagtoIni') }}" method="post">
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
@@ -112,5 +112,4 @@
 {% endblock %}
 
 {% block down_scripts %}
-    {{ encore_entry_script_tags('Turismo/App/form_passagem_pesquisarViagens') }}
 {% endblock %}

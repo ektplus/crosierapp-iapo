@@ -1,0 +1,82 @@
+{% extends '@CrosierLibBase/base.html.twig' %}
+
+{% block up_scripts %}
+    <script src="https://assets.pagar.me/checkout/1.1.0/checkout.js"></script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-sm" style="margin-bottom: 50px">
+
+        <div class="row mb-2">
+            <div class="col-12 text-center">
+                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
+                     alt="Card image cap">
+            </div>
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Pagamento</h3>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col">
+                        {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+{% block down_scripts %}
+    <script>
+        $(document).ready(function () {
+            // inicia a instância do checkout
+            var checkout = new PagarMeCheckout.Checkout({
+                encryption_key: 'ek_test_PRZKk0lxBz2qE7boo7T1kqZnzdkKrL',
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                close: function () {
+                    console.log('The modal has been closed.');
+                }
+            });
+
+            checkout.open({
+                amount: {{ totais.geral|number_format(2,'','') }},
+                customerData: 'true',
+                createToken: 'true',
+                items: [{
+                    id: '1',
+                    title: 'VIACAO IAPO PASSAGENS',
+                    unit_price: {{ totais.geral|number_format(2,'','') }},
+                    quantity: 1,
+                    tangible: 'false',
+                }]
+            });
+        });
+
+
+    </script>
+{% endblock %}

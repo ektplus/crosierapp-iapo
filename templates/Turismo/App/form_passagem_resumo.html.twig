@@ -1,6 +1,8 @@
 {% extends '@CrosierLibBase/base.html.twig' %}
 
-
+{% block up_scripts %}
+    <script src="https://assets.pagar.me/checkout/1.1.0/checkout.js"></script>
+{% endblock %}
 
 
 {% block body %}
@@ -94,9 +96,10 @@
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label for="btnFiltrar">&nbsp;</label>
-                        <a role="button" class="btn btn-primary btn-block">
-                            <i class="fas fa-forward"></i> Avançar
-                        </a>
+                        <button type="button" id="btnPagamento" class="btn btn-success btn-block"
+                                href="{{ url('tur_app_compra_informarDadosCliente') }}">
+                            <i class="fas fa-file-invoice-dollar"></i> Pagamento
+                        </button>
                     </div>
                 </div>
 
@@ -110,4 +113,42 @@
 {% endblock %}
 
 {% block down_scripts %}
+    <script>
+        $(document).ready(function () {
+
+            var button = document.querySelector('#btnPagamento');
+
+            // Abrir o modal ao clicar no botão
+            button.addEventListener('click', function () {
+                // inicia a instância do checkout
+                var checkout = new PagarMeCheckout.Checkout({
+                    encryption_key: 'ek_test_PRZKk0lxBz2qE7boo7T1kqZnzdkKrL',
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                    close: function () {
+                        console.log('The modal has been closed.');
+                    }
+                });
+
+                checkout.open({
+                    amount: {{ totais.geral|number_format(2,'','') }},
+                    customerData: 'true',
+                    createToken: 'true',
+                    items: [{
+                        id: '1',
+                        title: 'VIACAO IAPO PASSAGENS',
+                        unit_price: {{ totais.geral|number_format(2,'','') }},
+                        quantity: 1,
+                        tangible: 'false',
+                    }]
+                });
+            });
+        });
+
+
+    </script>
 {% endblock %}

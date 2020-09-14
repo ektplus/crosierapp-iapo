@@ -141,6 +141,10 @@ class CompraController extends FormListController
         $params['viagem'] = $viagem;
         $params['dadosPassageiros'] = $dadosPassageiros;
         $params['totais'] = $totais;
+
+        $session->set('dadosPassageiros', $dadosPassageiros);
+        $session->set('totais', $totais);
+
         return $this->render('Turismo/App/form_passagem_resumo.html.twig', $params);
     }
 
@@ -157,6 +161,22 @@ class CompraController extends FormListController
     {
         $params = [];
         return $this->render('Turismo/App/form_passagem_dadosCliente.html.twig', $params);
+    }
+
+    /**
+     *
+     * @Route("/app/tur/compra/pagtoIni", name="tur_app_compra_pagtoIni")
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function pagtoIni(Request $request, SessionInterface $session)
+    {
+        $session->set('dadosCliente', $request->get('dadosCliente'));
+        $params = [];
+        $params['dadosCliente'] = $session->get('dadosCliente');
+        $params['totais'] = $session->get('totais');
+        return $this->render('Turismo/App/form_passagem_pagtoIni.html.twig', $params);
     }
 
 
