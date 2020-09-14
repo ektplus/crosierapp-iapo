@@ -24,14 +24,34 @@ $(document).ready(function () {
     let $filter_dts = $('#filter_dts');
 
     let $filter_cidadeOrigem = $('#filter_cidadeOrigem');
+    let $filter_cidadeDestino = $('#filter_cidadeDestino');
 
     $filter_cidadeOrigem.select2({
             width: '100%',
             data: $filter_cidadeOrigem.data('options')
         }
     ).on('select2:select', function () {
-
+        build_filter_cidadeDestino();
     });
+
+    function build_filter_cidadeDestino() {
+        $filter_cidadeDestino.empty().trigger("change");
+        if ($filter_cidadeOrigem.select2('data')[0]['id']) {
+            $filter_cidadeDestino.select2({
+                    width: '100%',
+                    data: $filter_cidadeOrigem.select2('data')[0].destinos
+                }
+            ).on('select2:select', function () {
+
+            });
+        } else {
+            $filter_cidadeDestino.select2({
+                    width: '100%',
+                    data: [{"id": "", "text": "Selecione..."}]
+                }
+            );
+        }
+    }
 
 
     $filter_dts.daterangepicker(
@@ -86,5 +106,12 @@ $(document).ready(function () {
 
     });
 
+
+
+    function iniForm() {
+        build_filter_cidadeDestino();
+    }
+
+    iniForm();
 
 });

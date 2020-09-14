@@ -1,0 +1,113 @@
+{% extends '@CrosierLibBase/base.html.twig' %}
+
+
+
+
+{% block body %}
+
+    <div class="container-sm" style="margin-bottom: 50px">
+
+        <div class="row mb-2">
+            <div class="col-12 text-center">
+                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
+                     alt="Card image cap">
+            </div>
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Resumo</h3>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col">
+                        {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                    </div>
+                </div>
+
+
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.destinoCidade }}
+                                até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Saída: {{ viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
+                            Retorno: {{ viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
+                        </h6>
+                        <p class="card-text">
+                            Total Passagens:
+                            <strong>R$ {{ totais.passagens|number_format(2,',','.') }}</strong><br/>
+                            Total Bagagens Extra:
+                            <strong>R$ {{ totais.bagagens|number_format(2,',','.') }}</strong><br/>
+                            Total Taxas:
+                            <strong>R$ {{ totais.taxas|number_format(2,',','.') }}</strong><br/>
+                        <hr/>
+                        Total Geral:
+                        <strong>R$ {{ totais.geral|number_format(2,',','.') }}</strong><br/>
+                        </p>
+                    </div>
+                </div>
+
+                {% for dadoPassageiro in dadosPassageiros %}
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <strong>{{ dadoPassageiro.nome }}</strong>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Poltrona: {{ dadoPassageiro.poltrona }}<br/>
+                                RG: {{ dadoPassageiro.rg }}
+                            </h6>
+                            <p class="card-text">
+                                Passagem:
+                                <strong>R$ {{ viagem.valorPoltrona|number_format(2,',','.') }}</strong><br/>
+                                Taxas:
+                                <strong>R$ {{ viagem.valorTaxas|number_format(2,',','.') }}</strong><br/>
+                                {% if dadoPassageiro.total_bagagens|default(false) %}
+                                    Bagagens extra:
+                                    <strong>R$ {{ dadoPassageiro.total_bagagens|number_format(2,',','.') }}</strong>
+                                    <br/>
+                                {% endif %}
+                            </p>
+                            <hr/>
+                            <p class="card-text">Total:
+                                <strong>R$ {{ viagem.valorPoltrona|number_format(2,',','.') }}</strong></p>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="btnFiltrar">&nbsp;</label>
+                        <a role="button" class="btn btn-primary btn-block">
+                            <i class="fas fa-forward"></i> Avançar
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+{% block down_scripts %}
+{% endblock %}

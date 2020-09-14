@@ -1,0 +1,90 @@
+{% extends '@CrosierLibBase/base.html.twig' %}
+
+
+
+
+{% block body %}
+
+    <div class="container-sm" style="margin-bottom: 50px">
+
+        <div class="row mb-2">
+            <div class="col-12 text-center">
+                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
+                     alt="Card image cap">
+            </div>
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Selecionar poltronas</h3>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col">
+                        {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col text-center">
+                        Frente
+                        <hr>
+                    </div>
+                </div>
+
+                <form action="{{ url('tur_app_compra_informarDadosPassageiros') }}" method="post">
+                    {% set p=0 %}
+                    {% for i in 1..10 %}
+                        <div class="row mb-2">
+                            {% for j in 1..4 %}
+                                {% set p=p+1 %}
+                                <div class="col-3">
+
+                                    <div class="btn-group-toggle" data-toggle="buttons">
+                                        <label class="btn btn-outline-success btn-block">
+                                            <input type="checkbox" id="poltrona_{{ p }}" name="poltronas[{{ p }}]" autocomplete="off"> {{ p }}
+                                        </label>
+                                    </div>
+
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="btnFiltrar">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-block" id="btnFiltrar" title="Pesquisar">
+                                <i class="fas fa-forward"></i> Avançar
+                            </button>
+                        </div>
+                    </div>
+
+
+                </form>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+{% block down_scripts %}
+    {{ encore_entry_script_tags('Turismo/App/form_passagem_selecionarPoltronas') }}
+{% endblock %}

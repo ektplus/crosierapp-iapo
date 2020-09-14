@@ -1,0 +1,70 @@
+{% extends '@CrosierLibBase/base.html.twig' %}
+
+
+
+
+{% block body %}
+
+    <div class="container-sm" style="margin-bottom: 50px">
+
+        <div class="row mb-2">
+            <div class="col-12 text-center">
+                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
+                     alt="Card image cap">
+            </div>
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Viagens Disponíveis</h3>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                {% for viagem in viagens %}
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <strong>De {{ viagem.cidade_origem }}-{{ viagem.estado_origem }}
+                                    até {{ viagem.cidade_destino }}-{{ viagem.estado_destino }}</strong>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Saída: {{ viagem.dthr_saida|date('d/m/Y H:i') }}<br>
+                                Retorno: {{ viagem.dthr_retorno|date('d/m/Y H:i') }}<br>
+                            </h6>
+                            <p class="card-text">Valor:
+                                <strong>R$ {{ viagem.valor_poltrona|number_format(2,',','.') }}</strong></p>
+
+                            <div class="row">
+                                <div class="col text-right">
+                                    <a href="{{ url('tur_app_compra_selecionarPoltronas', {'viagem': viagem.id}) }}"
+                                       class="btn btn-primary"><i class="fas fa-check"></i> Selecionar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+
+{% block down_scripts %}
+
+{% endblock %}
