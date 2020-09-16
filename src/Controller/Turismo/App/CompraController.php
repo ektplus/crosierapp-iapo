@@ -2,9 +2,13 @@
 
 namespace App\Controller\Turismo\App;
 
+use App\Entity\Turismo\Cliente;
 use App\Entity\Turismo\Viagem;
+use App\EntityHandler\Turismo\ClienteEntityHandler;
+use App\EntityHandler\Turismo\CompraEntityHandler;
 use App\Repository\Turismo\ViagemRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -16,6 +20,44 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CompraController extends FormListController
 {
+
+    private ClienteEntityHandler $clienteEntityHandler;
+
+    private CompraEntityHandler $compraEntityHandler;
+
+    /**
+     * @return ClienteEntityHandler
+     */
+    public function getClienteEntityHandler(): ClienteEntityHandler
+    {
+        return $this->clienteEntityHandler;
+    }
+
+    /**
+     * @required
+     * @param ClienteEntityHandler $clienteEntityHandler
+     */
+    public function setClienteEntityHandler(ClienteEntityHandler $clienteEntityHandler): void
+    {
+        $this->clienteEntityHandler = $clienteEntityHandler;
+    }
+
+    /**
+     * @return CompraEntityHandler
+     */
+    public function getCompraEntityHandler(): CompraEntityHandler
+    {
+        return $this->compraEntityHandler;
+    }
+
+    /**
+     * @required
+     * @param CompraEntityHandler $compraEntityHandler
+     */
+    public function setCompraEntityHandler(CompraEntityHandler $compraEntityHandler): void
+    {
+        $this->compraEntityHandler = $compraEntityHandler;
+    }
 
 
     /**
@@ -79,6 +121,7 @@ class CompraController extends FormListController
         return $this->render('Turismo/App/form_passagem_selecionarPoltronas.html.twig', $params);
     }
 
+
     /**
      *
      * @Route("/app/tur/compra/informarDadosPassageiros", name="tur_app_compra_informarDadosPassageiros")
@@ -102,11 +145,12 @@ class CompraController extends FormListController
         return $this->render('Turismo/App/form_passagem_informarDadosPassageiros.html.twig', $params);
     }
 
+
     /**
      *
      * @Route("/app/tur/compra/resumo", name="tur_app_compra_resumo")
      * @param Request $request
-     * @param Viagem $viagem
+     * @param SessionInterface $session
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function resumo(Request $request, SessionInterface $session)
@@ -114,7 +158,11 @@ class CompraController extends FormListController
         $params = [];
         $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagem'));
 
-        $rDadosPassageiros = $request->get('dadosPassageiro');
+        if ($request->get('dadosPassageiro')) {
+            $rDadosPassageiros = $request->get('dadosPassageiro');
+        } else {
+            $rDadosPassageiros = $session->get('dadosPassageiro');
+        }
 
         $totais = [
             'passagens' => 0,
@@ -126,15 +174,18 @@ class CompraController extends FormListController
         $dadosPassageiros = [];
         foreach ($rDadosPassageiros as $rDadoPassageiro) {
 
+            $rDadoPassageiro['total_bagagens'] = 0;
             if ($rDadoPassageiro['qtdeBagagens'] > 1) {
                 $rDadoPassageiro['total_bagagens'] = bcmul($rDadoPassageiro['qtdeBagagens'] - 1, $viagem->valorBagagem, 2);
                 $totais['bagagens'] = bcadd($totais['bagagens'], $rDadoPassageiro['total_bagagens'], 2);
             }
 
-            $totais['passagens'] = bcadd($totais['passagens'], $viagem->valorPoltrona);
-            $totais['taxas'] = bcadd($totais['taxas'], $viagem->valorTaxas);
+            $totais['passagens'] = bcadd($totais['passagens'], $viagem->valorPoltrona, 2);
+            $totais['taxas'] = bcadd($totais['taxas'], $viagem->valorTaxas, 2);
             $totais['geral'] = $totais['passagens'] + $totais['taxas'] + $totais['bagagens'];
 
+            $rDadoPassageiro['total'] = $rDadoPassageiro['total_bagagens'] + $viagem->valorTaxas + $viagem->valorPoltrona;
+            $rDadoPassageiro['nome'] = mb_strtoupper($rDadoPassageiro['nome']);
             $dadosPassageiros[] = $rDadoPassageiro;
         }
 
@@ -151,16 +202,101 @@ class CompraController extends FormListController
 
     /**
      *
-     * @Route("/app/tur/compra/informarDadosCliente", name="tur_app_compra_informarDadosCliente")
+     * @Route("/app/tur/compra/checkCPF", name="tur_app_compra_checkCPF")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      *
      */
-    public function informarDadosCliente(Request $request)
+    public function checkCPF(Request $request)
     {
-        $params = [];
-        return $this->render('Turismo/App/form_passagem_dadosCliente.html.twig', $params);
+        $conn = $this->getDoctrine()->getConnection();
+        $cpf = $request->get('cpf');
+        $cpf = preg_replace('/[^\d]/', '', $cpf);
+        if ($cpf) {
+            $rsCpf = $conn->fetchAll('SELECT count(*) as qt FROM iapo_tur_cliente WHERE cpf LIKE :cpf', ['cpf' => $cpf]);
+            if ($rsCpf[0]['qt'] > 0) {
+                return $this->render('Turismo/App/form_passagem_login.html.twig', ['cpf' => $cpf]);
+            } else {
+                return $this->render('Turismo/App/form_passagem_cadastroCliente.html.twig', ['cpf' => $cpf]);
+            }
+        } else {
+            throw new \RuntimeException('cpf n/d');
+        }
+    }
+
+
+    /**
+     *
+     * @Route("/app/tur/compra/login", name="tur_app_compra_login")
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function login(Request $request, SessionInterface $session)
+    {
+        try {
+            $conn = $this->getDoctrine()->getConnection();
+            $cpf = preg_replace('/[^\d]/', '', $request->get('cpf'));
+            $senha = $request->get('senha');
+            if ($cpf && $senha) {
+                $rsCliente = $conn->fetchAll('SELECT * FROM iapo_tur_cliente WHERE cpf LIKE :cpf',
+                    ['cpf' => $cpf]);
+                if ((count($rsCliente[0]) > 0) && (password_verify($senha, $rsCliente[0]['senha']))) {
+                    $session->set('cpfLogado', $cpf);
+                    return $this->render('Turismo/App/form_passagem_pagto.html.twig', ['cpf' => $cpf]);
+                } else {
+                    throw new ViewException('CPF/Senha inválidos');
+                }
+            } else {
+                throw new ViewException('CPF/Senha inválidos');
+            }
+        } catch (\Exception $e) {
+            $errMsg = 'Ocorreu um erro ao efetuar o login';
+            if ($e instanceof ViewException) {
+                $errMsg = $e->getMessage();
+            }
+            $session->set('cpfLogado', false);
+            $this->addFlash('error', $errMsg);
+            return $this->render('Turismo/App/form_passagem_login.html.twig', ['cpf' => $cpf ?? '']);
+        }
+    }
+
+
+    /**
+     *
+     * @Route("/app/tur/compra/cadastrarCliente", name="tur_app_compra_cadastrarCliente")
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function cadastrarCliente(Request $request, SessionInterface $session)
+    {
+        try {
+            $dadosCliente = $request->get('dadosCliente');
+            $cliente = new Cliente();
+            $cliente->cpf = preg_replace('/[^\d]/', '', $dadosCliente['cpf']);
+            $cliente->nome = $dadosCliente['nome'];
+            $cliente->fone = $dadosCliente['telefone'];
+            $cliente->celular = $dadosCliente['celular'];
+            $cliente->email = mb_strtolower($dadosCliente['email']);
+            if ($dadosCliente['senha1'] !== $dadosCliente['senha2']) {
+                throw new ViewException('As senhas não são iguais');
+            }
+            $cliente->senha = password_hash($dadosCliente['senha1'], PASSWORD_BCRYPT);
+            $this->clienteEntityHandler->save($cliente);
+            $session->set('cpfLogado', $cliente->cpf);
+            return $this->redirectToRoute('tur_app_compra_resumo');
+        } catch (\Exception $e) {
+            $session->set('cpfLogado', false);
+            $errMsg = 'Ocorreu um erro ao cadastrar os dados.';
+            if ($e instanceof ViewException) {
+                $errMsg = $e->getMessage();
+            }
+            $this->addFlash('error', $errMsg);
+            $params = [];
+            return $this->render('Turismo/App/form_passagem_cadastroCliente.html.twig', $params);
+        }
     }
 
     /**
@@ -176,7 +312,7 @@ class CompraController extends FormListController
         $params = [];
         $params['dadosCliente'] = $session->get('dadosCliente');
         $params['totais'] = $session->get('totais');
-        return $this->render('Turismo/App/form_passagem_pagtoIni.html.twig', $params);
+        return $this->render('form_passagem_pagto.html.twig', $params);
     }
 
 

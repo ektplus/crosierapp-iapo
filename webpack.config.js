@@ -43,6 +43,7 @@ Encore
 
     .addEntry('Turismo/App/form_passagem_pesquisarViagens', './assets/js/Turismo/App/form_passagem_pesquisarViagens.js')
     .addEntry('Turismo/App/form_passagem_selecionarPoltronas', './assets/js/Turismo/App/form_passagem_selecionarPoltronas.js')
+    .addEntry('Turismo/App/form_passagem_dadosCliente', './assets/js/Turismo/App/form_passagem_dadosCliente.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

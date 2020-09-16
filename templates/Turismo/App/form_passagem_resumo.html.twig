@@ -42,7 +42,7 @@
                 <div class="card bg-light">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.destinoCidade }}
+                            <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.origemEstado }}
                                 até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
                         </h5>
                         <h6 class="card-subtitle mb-2 text-muted">
@@ -87,21 +87,56 @@
                             </p>
                             <hr/>
                             <p class="card-text">Total:
-                                <strong>R$ {{ viagem.valorPoltrona|number_format(2,',','.') }}</strong></p>
+                                <strong>R$ {{ dadoPassageiro.total|number_format(2,',','.') }}</strong></p>
                         </div>
                     </div>
 
                 {% endfor %}
 
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label for="btnFiltrar">&nbsp;</label>
-                        <button type="button" id="btnPagamento" class="btn btn-success btn-block"
-                                href="{{ url('tur_app_compra_informarDadosCliente') }}">
-                            <i class="fas fa-file-invoice-dollar"></i> Pagamento
-                        </button>
+                {% if not (logado|default(false)) %}
+                    <div class="card text-white bg-info mb-3">
+                        <div class="card-header">Informe seu CPF</div>
+                        <div class="card-body">
+                            <form action="{{ url('tur_app_compra_checkCPF') }}" method="post">
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            <input type="text" id="cpf" name="cpf"
+                                                   class="form-control cpf" required
+                                                   value="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="btnAvancar">&nbsp;</label>
+                                        <button type="submit" class="btn btn-primary btn-block" id="btnAvancar"
+                                                title="Avançar">
+                                            <i class="fas fa-forward"></i> Avançar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="card text-white bg-info mb-3">
+                        <div class="card-body">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="btnAvancar">&nbsp;</label>
+                                    <button type="submit" class="btn btn-success btn-block" id="btnAvancar"
+                                            title="Avançar">
+                                        <i class="fas fa-file-invoice-dollar"></i> Pagamento
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
 
             </div>
         </div>

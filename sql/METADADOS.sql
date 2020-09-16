@@ -269,3 +269,86 @@ CREATE TABLE `iapo_tur_passageiro`
     CONSTRAINT `FK_iapo_tur_passageiro_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
 
 );
+
+
+--
+DROP TABLE IF EXISTS `iapo_tur_cliente`;
+
+CREATE TABLE `iapo_tur_cliente`
+(
+    `id`                 bigint(20)   NOT NULL AUTO_INCREMENT,
+
+    `cpf`                varchar(11)  NOT NULL,
+    `rg`                 varchar(20),
+    `nome`               varchar(250) NOT NULL,
+    `dt_nascimento`      date,
+
+    `fone`               varchar(20),
+    `celular`            varchar(20),
+    `email`              varchar(250),
+
+    `senha`              varchar(250),
+
+    `json_data`          json,
+
+    `inserted`           datetime     NOT NULL,
+    `updated`            datetime     NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20)   NOT NULL,
+    `user_inserted_id`   bigint(20)   NOT NULL,
+    `user_updated_id`    bigint(20)   NOT NULL,
+
+    UNIQUE KEY UK_iapo_tur_cliente (`cpf`),
+
+    PRIMARY KEY (`id`),
+
+    KEY `K_iapo_tur_cliente_estabelecimento` (`estabelecimento_id`),
+    KEY `K_iapo_tur_cliente_user_inserted` (`user_inserted_id`),
+    KEY `K_iapo_tur_cliente_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_iapo_tur_cliente_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_iapo_tur_cliente_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_iapo_tur_cliente_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
+);
+
+
+DROP TABLE IF EXISTS `iapo_tur_compra`;
+
+CREATE TABLE `iapo_tur_compra`
+(
+    `id`                 bigint(20) NOT NULL AUTO_INCREMENT,
+
+    `dt_compra`          datetime,
+    `status`             varchar(50),
+
+    `viagem_id`          BIGINT(20),
+    `cliente_id`         BIGINT(20),
+
+    `valor_total`        decimal(15, 2),
+
+    `json_data`          json,
+
+    `inserted`           datetime   NOT NULL,
+    `updated`            datetime   NOT NULL,
+    `version`            int(11),
+    `estabelecimento_id` bigint(20) NOT NULL,
+    `user_inserted_id`   bigint(20) NOT NULL,
+    `user_updated_id`    bigint(20) NOT NULL,
+
+
+    KEY `K_iapo_tur_compra_viagem` (`viagem_id`),
+    CONSTRAINT `FK_iapo_tur_compra_viagem` FOREIGN KEY (`viagem_id`) REFERENCES `iapo_tur_viagem` (`id`),
+
+    KEY `K_iapo_tur_compra_cliente` (`cliente_id`),
+    CONSTRAINT `FK_iapo_tur_compra_cliente` FOREIGN KEY (`cliente_id`) REFERENCES `iapo_tur_cliente` (`id`),
+
+    PRIMARY KEY (`id`),
+
+    KEY `K_iapo_tur_compra_estabelecimento` (`estabelecimento_id`),
+    KEY `K_iapo_tur_compra_user_inserted` (`user_inserted_id`),
+    KEY `K_iapo_tur_compra_user_updated` (`user_updated_id`),
+    CONSTRAINT `FK_iapo_tur_compra_user_inserted` FOREIGN KEY (`user_inserted_id`) REFERENCES `sec_user` (`id`),
+    CONSTRAINT `FK_iapo_tur_compra_estabelecimento` FOREIGN KEY (`estabelecimento_id`) REFERENCES `cfg_estabelecimento` (`id`),
+    CONSTRAINT `FK_iapo_tur_compra_user_updated` FOREIGN KEY (`user_updated_id`) REFERENCES `sec_user` (`id`)
+
+);

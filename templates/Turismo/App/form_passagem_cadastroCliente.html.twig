@@ -36,14 +36,14 @@
                     </div>
                 </div>
 
-                <form action="{{ url('tur_app_compra_pagtoIni') }}" method="post">
+                <form action="{{ url('tur_app_compra_cadastrarCliente') }}" method="post">
                     <div class="row">
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="dadosCliente_cpf" class="required">CPF</label>
                                 <input type="text" id="dadosCliente_cpf" name="dadosCliente[cpf]"
-                                       class="form-control cpf" required
-                                       value="">
+                                       class="form-control cpf" required readonly
+                                       value="{{ cpf }}">
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                             <div class="form-group">
                                 <label for="dadosCliente_nome" class="required">Nome</label>
                                 <input type="text" id="dadosCliente_nome" name="dadosCliente[nome]"
-                                       class="form-control" required
+                                       class="form-control focusOnReady" required
                                        value="">
                             </div>
                         </div>
@@ -86,11 +86,40 @@
                             <div class="form-group">
                                 <label for="dadosCliente_email" class="required">E-mail</label>
                                 <input type="email" id="dadosCliente_email" name="dadosCliente[email]"
-                                       class="form-control notuppercase"
+                                       class="form-control notuppercase" required
                                        value="">
                             </div>
                         </div>
                     </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="dadosCliente_senha1" class="required">Senha</label>
+                                <input type="password" id="dadosCliente_senha1" name="dadosCliente[senha1]"
+                                       class="form-control notuppercase" required
+                                       value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="dadosCliente_senha2" class="required">Repita a senha</label>
+                                <input type="password" id="dadosCliente_senha2" name="dadosCliente[senha2]"
+                                       class="form-control notuppercase" required
+                                       value="">
+                                <div class="invalid-feedback">
+                                    As senhas não são iguais.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
 
                     <div class="col-sm-12">
                         <div class="form-group">
@@ -112,4 +141,5 @@
 {% endblock %}
 
 {% block down_scripts %}
+    {{ encore_entry_script_tags('Turismo/App/form_passagem_dadosCliente') }}
 {% endblock %}
