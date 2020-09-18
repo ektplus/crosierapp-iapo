@@ -390,7 +390,7 @@ class CompraController extends FormListController
             $params['dadosCliente'] = $session->get('dadosCliente');
             $params['totais'] = $session->get('totais');
 
-            $postbackUrl = 'https://iapo.crosier.iapo.com.br/app/tur/compra/pagarmeCallback';
+            $params['postbackUrl'] = 'https://iapo.crosier.iapo.com.br/app/tur/compra/pagarmeCallback';
             // $params['postbackUrl'] = 'http://ff61070e2f7c.ngrok.io/app/tur/compra/pagarmeCallback';
 
             return $this->render('Turismo/App/form_passagem_pagto.html.twig', $params);
