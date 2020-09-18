@@ -19,12 +19,10 @@
 
             <div class="card-header">
 
-
                 <div class="row">
                     <div class="col-12">
                         <h3>Pagamento</h3>
                     </div>
-
                 </div>
 
             </div>
@@ -47,24 +45,29 @@
 {% endblock %}
 
 {% block down_scripts %}
+
     <script>
+
         $(document).ready(function () {
+
             // inicia a instância do checkout
             var checkout = new PagarMeCheckout.Checkout({
                 encryption_key: 'ek_test_PRZKk0lxBz2qE7boo7T1kqZnzdkKrL',
                 success: function (data) {
-                    console.log(data);
+                    window.location = '/app/tur/compra/pagto?result=OK&token=' + data.token + '&payment_method=' + data.payment_method
                 },
                 error: function (err) {
-                    console.log(err);
+                    console.dir(err);
+                    window.location = '/app/tur/compra/pagto?result=ERR'
                 },
                 close: function () {
-                    console.log('The modal has been closed.');
+                    window.location = '/app/tur/compra/resumo'
                 }
             });
 
             checkout.open({
                 amount: {{ app.session.get('totais').geral|number_format(2,'','') }},
+                postbackUrl: '{{ postbackUrl }}',
                 customerData: 'true',
                 createToken: 'true',
                 items: [{
@@ -76,7 +79,6 @@
                 }]
             });
         });
-
-
     </script>
+
 {% endblock %}

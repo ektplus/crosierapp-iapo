@@ -1,7 +1,6 @@
 {% extends '@CrosierLibBase/base.html.twig' %}
 
 {% block up_scripts %}
-    <script src="https://assets.pagar.me/checkout/1.1.0/checkout.js"></script>
 {% endblock %}
 
 
@@ -93,7 +92,7 @@
 
                 {% endfor %}
 
-                {% if not (logado|default(false)) %}
+                {% if not (app.session.get('idClienteLogado')|default(false)) %}
                     <div class="card text-white bg-info mb-3">
                         <div class="card-header">Informe seu CPF</div>
                         <div class="card-body">
@@ -127,10 +126,10 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label for="btnAvancar">&nbsp;</label>
-                                    <button type="submit" class="btn btn-success btn-block" id="btnAvancar"
-                                            title="Avançar">
+                                    <a role="button" class="btn btn-success btn-block" id="btnPagamento"
+                                       title="Pagamento" href="{{ url('tur_app_compra_pagto') }}">
                                         <i class="fas fa-file-invoice-dollar"></i> Pagamento
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -148,43 +147,4 @@
 {% endblock %}
 
 {% block down_scripts %}
-    <script>
-        $(document).ready(function () {
-
-            var button = document.querySelector('#btnPagamento');
-
-            // Abrir o modal ao clicar no botão
-            button.addEventListener('click', function () {
-                // inicia a instância do checkout
-                var checkout = new PagarMeCheckout.Checkout({
-                    encryption_key: 'ek_test_PRZKk0lxBz2qE7boo7T1kqZnzdkKrL',
-                    success: function (data) {
-                        console.log(data);
-                    },
-                    error: function (err) {
-                        console.log(err);
-                    },
-                    close: function () {
-                        console.log('The modal has been closed.');
-                    }
-                });
-
-                checkout.open({
-                    amount: {{ totais.geral|number_format(2,'','') }},
-                    postbackUrl: 'https://2a937e586ad9314085b34408497ed45e.m.pipedream.net',
-                    customerData: 'true',
-                    createToken: 'true',
-                    items: [{
-                        id: '1',
-                        title: 'VIACAO IAPO PASSAGENS',
-                        unit_price: {{ totais.geral|number_format(2,'','') }},
-                        quantity: 1,
-                        tangible: 'false',
-                    }]
-                });
-            });
-        });
-
-
-    </script>
 {% endblock %}

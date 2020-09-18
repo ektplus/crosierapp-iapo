@@ -4,7 +4,6 @@ namespace App\Entity\Turismo;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
-use CrosierSource\CrosierLibBaseBundle\Utils\StringUtils\StringUtils;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
@@ -25,7 +24,7 @@ class Passageiro implements EntityId
     /**
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Turismo\Viagem", inversedBy="passageiros")
-     * @ORM\JoinColumn(name="viagem_id", nullable=true)
+     * @ORM\JoinColumn(name="viagem_id")
      * @Groups("entity")
      * @MaxDepth(1)
      *
@@ -36,7 +35,7 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="cpf", type="string", nullable=false)
+     * @ORM\Column(name="cpf", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -45,7 +44,7 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="rg", type="string", nullable=false)
+     * @ORM\Column(name="rg", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -54,7 +53,7 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="nome", type="string", nullable=false)
+     * @ORM\Column(name="nome", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -63,7 +62,7 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="dt_nascimento", type="datetime", nullable=true)
+     * @ORM\Column(name="dt_nascimento", type="datetime")
      * @var \DateTime|null
      *
      * @Groups("entity")
@@ -72,7 +71,7 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="fone_fixo", type="string", nullable=false)
+     * @ORM\Column(name="fone_fixo", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -81,7 +80,7 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="fone_celular", type="string", nullable=false)
+     * @ORM\Column(name="fone_celular", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -90,7 +89,7 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="fone_whatsapp", type="string", nullable=false)
+     * @ORM\Column(name="fone_whatsapp", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -99,7 +98,7 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="fone_recados", type="string", nullable=false)
+     * @ORM\Column(name="fone_recados", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -108,7 +107,7 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="email", type="string", nullable=true)
+     * @ORM\Column(name="email", type="string")
      * @var string|null
      *
      * @Groups("entity")
@@ -117,11 +116,20 @@ class Passageiro implements EntityId
 
     /**
      *
-     * @ORM\Column(name="obs", type="string", nullable=false)
+     * @ORM\Column(name="obs", type="string")
      * @Groups("entity")
      *
      * @var string|null
      */
     public ?string $obs = null;
+
+    /**
+     *
+     * @ORM\Column(name="poltrona", type="string")
+     * @Groups("entity")
+     *
+     * @var string|null
+     */
+    public ?string $poltrona = null;
 
 }

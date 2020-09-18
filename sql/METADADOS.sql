@@ -247,6 +247,8 @@ CREATE TABLE `iapo_tur_passageiro`
     `email`              varchar(250),
     `obs`                varchar(3000),
 
+    `poltrona`           varchar(10),
+
     `inserted`           datetime     NOT NULL,
     `updated`            datetime     NOT NULL,
     `version`            int(11),
