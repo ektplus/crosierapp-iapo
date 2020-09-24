@@ -34,16 +34,22 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">
-                                <strong>De {{ viagem.cidade_origem }}-{{ viagem.estado_origem }}
-                                    até {{ viagem.cidade_destino }}-{{ viagem.estado_destino }}</strong>
+                            <h4 class="card-title">
+                                <i class="nav-icon fas fa-map-signs"></i>
+                                <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.origemEstado }}
+                                    até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
+                            </h4>
+                            {% if viagem.agencia.id != 1 %}
+                            <h5>
+                                Por <i>{{ viagem.agencia.nome }}</i>
                             </h5>
+                            {% endif %}
                             <h6 class="card-subtitle mb-2 text-muted">
-                                Saída: {{ viagem.dthr_saida|date('d/m/Y H:i') }}<br>
-                                Retorno: {{ viagem.dthr_retorno|date('d/m/Y H:i') }}<br>
+                                Saída: {{ viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
+                                Retorno: {{ viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
                             </h6>
                             <p class="card-text">Valor:
-                                <strong>R$ {{ viagem.valor_poltrona|number_format(2,',','.') }}</strong></p>
+                                <strong>R$ {{ viagem.valorPoltrona|number_format(2,',','.') }}</strong></p>
 
                             <div class="row">
                                 <div class="col text-right">
