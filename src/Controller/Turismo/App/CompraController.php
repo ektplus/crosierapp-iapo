@@ -261,8 +261,9 @@ class CompraController extends FormListController
                 $dadosPassageiros[] = $rDadoPassageiro;
             }
             $session->set('dadosPassageiros', $dadosPassageiros);
+
         } else if ($opcaoCompra === 'bagagens') {
-            $rDadoPassageiro['total_bagagens'] = bcmul($viagem->valorBagagem, $session->get('qtde'), 2);
+            $totais['bagagens'] = bcmul($viagem->valorBagagem, $session->get('qtde'), 2);
             $totais['geral'] = bcmul($viagem->valorBagagem, $session->get('qtde'), 2);
         } else {
             $this->addFlash('error', 'Opção de compra inválida');
