@@ -68,14 +68,14 @@ class CompraController extends FormListController
     /**
      *
      * @Route("/app/tur/compra/ini", name="tur_app_compra_ini")
-     * @param Request $request
+     * @param SessionInterface $session
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @throws \Exception
-     *
      */
-    public function ini(Request $request)
+    public function ini(SessionInterface $session)
     {
         $params = [];
+
+        $session->clear();
 
         /** @var ViagemRepository $repoViagens */
         $repoViagens = $this->getDoctrine()->getRepository(Viagem::class);
@@ -86,7 +86,7 @@ class CompraController extends FormListController
         $proxMes = DateTimeUtils::incMes(new \DateTime());
         $params['filter']['dts'] = (new \DateTime())->format('d/m/Y') . ' - ' . $proxMes->format('d/m/Y');
 
-        return $this->render('Turismo/App/form_passagem_pesquisarViagens.html.twig', $params);
+        return $this->render('Turismo/App/form_passagem_ini.html.twig', $params);
     }
 
 
@@ -99,6 +99,11 @@ class CompraController extends FormListController
      */
     public function listarViagens(Request $request)
     {
+        if (!$this->isCsrfTokenValid('csrf_token', $request->get('csrf_token'))) {
+            $this->addFlash('error', 'Token inválido');
+            return $this->redirectToRoute('tur_app_compra_ini');
+        }
+
         if ($request->get('filter')) {
             $filter = $request->get('filter');
             /** @var ViagemRepository $repoViagens */
@@ -117,16 +122,64 @@ class CompraController extends FormListController
 
     /**
      *
-     * @Route("/app/tur/compra/selecionarPoltronas/{viagem}", name="tur_app_compra_selecionarPoltronas", requirements={"viagem"="\d+"})
-     * @param Request $request
+     * @Route("/app/tur/compra/opcaoCompra/{viagem}", name="tur_app_compra_opcaoCompra", requirements={"viagem"="\d+"})
      * @param SessionInterface $session
      * @param Viagem $viagem
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function selecionarPoltronas(Request $request, SessionInterface $session, Viagem $viagem)
+    public function opcaoCompra(SessionInterface $session, Viagem $viagem)
     {
-        $session->set('viagem', $viagem->getId());
+        $session->set('viagemId', $viagem->getId());
+        $params['viagem'] = $viagem;
+        return $this->render('Turismo/App/form_passagem_opcaoCompra.html.twig', $params);
+    }
+
+    /**
+     *
+     * @Route("/app/tur/compra/selecionarQtde", name="tur_app_compra_selecionarQtde")
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return Response
+     */
+    public function selecionarQtde(Request $request, SessionInterface $session)
+    {
+        if ($request->get('opcaoCompra')) {
+            $session->set('opcaoCompra', $request->get('opcaoCompra'));
+            return $this->render('Turismo/App/form_passagem_selecionarQtde.html.twig');
+        } else if ($request->get('qtde')) {
+            $qtde = (int)$request->get('qtde');
+            $session->set('qtde', $qtde);
+
+            if ($session->get('opcaoCompra') === 'passagens') {
+                $rPoltronas = [];
+                for ($i = 1; $i <= $qtde; $i++) {
+                    $rPoltronas[$i] = 'on'; // simulando a seleção
+                }
+                $params = [
+                    'poltronas' => $rPoltronas
+                ];
+                return $this->redirectToRoute('tur_app_compra_informarDadosPassageiros', $params);
+            } else {
+                $session->set('dadosPassageiros', null);
+                return $this->redirectToRoute('tur_app_compra_resumo');
+            }
+        } else {
+            $this->addFlash('error', 'Ocorreu um erro ao selecionar a quantidade');
+            return $this->render('Turismo/App/form_passagem_selecionarQtde.html.twig');
+        }
+    }
+
+
+    /**
+     *
+     * @Route("/app/tur/compra/selecionarPoltronas", name="tur_app_compra_selecionarPoltronas")
+     * @param SessionInterface $session
+     * @return Response
+     */
+    public function selecionarPoltronas(SessionInterface $session)
+    {
         $params = [];
+        $session->set('opcaoCompra', 'selecionarPoltronas');
         return $this->render('Turismo/App/form_passagem_selecionarPoltronas.html.twig', $params);
     }
 
@@ -141,10 +194,18 @@ class CompraController extends FormListController
     public function informarDadosPassageiros(Request $request, SessionInterface $session)
     {
         $params = [];
+
+        if ($request->get('dadosPassageiros')) {
+            $dadosPassageiros = $request->get('dadosPassageiros');
+            $session->set('dadosPassageiros', $dadosPassageiros);
+            $session->set('qtde', count($dadosPassageiros));
+            return $this->redirectToRoute('tur_app_compra_resumo');
+        }
+
         $rPoltronas = $request->get('poltronas');
         if (!$rPoltronas) {
             $this->addFlash('warn', 'É necessário selecionar ao menos 1 poltrona');
-            return $this->redirectToRoute('tur_app_compra_selecionarPoltronas', ['viagem' => $session->get('viagem')]);
+            return $this->redirectToRoute('tur_app_compra_selecionarPoltronas', ['viagem' => $session->get('viagemId')]);
         }
         $params['poltronas'] = [];
         foreach ($rPoltronas as $k => $v) {
@@ -158,20 +219,14 @@ class CompraController extends FormListController
     /**
      *
      * @Route("/app/tur/compra/resumo", name="tur_app_compra_resumo")
-     * @param Request $request
      * @param SessionInterface $session
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function resumo(Request $request, SessionInterface $session)
+    public function resumo(SessionInterface $session)
     {
-        $params = [];
-        $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagem'));
+        $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
 
-        if ($request->get('dadosPassageiro')) {
-            $rDadosPassageiros = $request->get('dadosPassageiro');
-        } else {
-            $rDadosPassageiros = $session->get('dadosPassageiros');
-        }
+        $opcaoCompra = $session->get('opcaoCompra');
 
         $totais = [
             'passagens' => 0,
@@ -180,31 +235,43 @@ class CompraController extends FormListController
             'geral' => 0,
         ];
 
-        $dadosPassageiros = [];
-        foreach ($rDadosPassageiros as $rDadoPassageiro) {
+        if ($opcaoCompra === 'selecionarPoltronas' or $opcaoCompra === 'passagens') {
+            $rDadosPassageiros = $session->get('dadosPassageiros');
+            $dadosPassageiros = [];
+            foreach ($rDadosPassageiros as $rDadoPassageiro) {
 
-            $rDadoPassageiro['total_bagagens'] = 0;
-            if ($rDadoPassageiro['qtdeBagagens'] > 1) {
-                $rDadoPassageiro['total_bagagens'] = bcmul($rDadoPassageiro['qtdeBagagens'] - 1, $viagem->valorBagagem, 2);
-                $totais['bagagens'] = bcadd($totais['bagagens'], $rDadoPassageiro['total_bagagens'], 2);
+                $rDadoPassageiro['total_bagagens'] = 0;
+                if ($rDadoPassageiro['qtdeBagagens'] > 1) {
+                    $rDadoPassageiro['total_bagagens'] = bcmul($rDadoPassageiro['qtdeBagagens'] - 1, $viagem->valorBagagem, 2);
+                    $totais['bagagens'] = bcadd($totais['bagagens'], $rDadoPassageiro['total_bagagens'], 2);
+                }
+
+                if ($opcaoCompra === 'selecionarPoltronas') {
+                    $rDadoPassageiro['valorPassagem'] = $viagem->getValorPassagemComEscolhaPoltrona();
+                } else {
+                    $rDadoPassageiro['valorPassagem'] = $viagem->valorPoltrona;
+                }
+
+                $totais['passagens'] = bcadd($totais['passagens'], $rDadoPassageiro['valorPassagem'], 2);
+                $totais['taxas'] = bcadd($totais['taxas'], $viagem->valorTaxas, 2);
+                $totais['geral'] = $totais['passagens'] + $totais['taxas'] + $totais['bagagens'];
+
+                $rDadoPassageiro['total'] = $rDadoPassageiro['total_bagagens'] + $viagem->valorTaxas + $rDadoPassageiro['valorPassagem'];
+                $rDadoPassageiro['nome'] = mb_strtoupper($rDadoPassageiro['nome']);
+                $dadosPassageiros[] = $rDadoPassageiro;
             }
-
-            $totais['passagens'] = bcadd($totais['passagens'], $viagem->valorPoltrona, 2);
-            $totais['taxas'] = bcadd($totais['taxas'], $viagem->valorTaxas, 2);
-            $totais['geral'] = $totais['passagens'] + $totais['taxas'] + $totais['bagagens'];
-
-            $rDadoPassageiro['total'] = $rDadoPassageiro['total_bagagens'] + $viagem->valorTaxas + $viagem->valorPoltrona;
-            $rDadoPassageiro['nome'] = mb_strtoupper($rDadoPassageiro['nome']);
-            $dadosPassageiros[] = $rDadoPassageiro;
+            $session->set('dadosPassageiros', $dadosPassageiros);
+        } else if ($opcaoCompra === 'bagagens') {
+            $rDadoPassageiro['total_bagagens'] = bcmul($viagem->valorBagagem, $session->get('qtde'), 2);
+            $totais['geral'] = bcmul($viagem->valorBagagem, $session->get('qtde'), 2);
+        } else {
+            $this->addFlash('error', 'Opção de compra inválida');
+            return $this->redirectToRoute('tur_app_compra_opcaoCompra', ['viagem' => $viagem->getId()]);
         }
 
-        $params['viagem'] = $viagem;
-        $params['dadosPassageiros'] = $dadosPassageiros;
-        $params['totais'] = $totais;
-
-        $session->set('dadosPassageiros', $dadosPassageiros);
         $session->set('totais', $totais);
 
+        $params['viagem'] = $viagem;
         return $this->render('Turismo/App/form_passagem_resumo.html.twig', $params);
     }
 
@@ -307,6 +374,7 @@ class CompraController extends FormListController
         }
     }
 
+
     /**
      *
      * @Route("/app/tur/compra/pagto", name="tur_app_compra_pagto")
@@ -345,8 +413,7 @@ class CompraController extends FormListController
                     $cliente = $repoCliente->find($idClienteLogado);
                     $compra->cliente = $cliente;
 
-                    /** @var Viagem $viagem */
-                    $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagem'));
+                    $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
                     $compra->viagem = $viagem;
 
                     $compra->dtCompra = new \DateTime();
@@ -402,12 +469,10 @@ class CompraController extends FormListController
      *
      * @Route("/app/tur/compra/pagarmeCallback", name="tur_app_compra_pagarmeCallback")
      * @param Request $request
-     * @param SessionInterface $session
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function pagarmeCallback(Request $request, SessionInterface $session)
+    public function pagarmeCallback(Request $request)
     {
-
         try {
             $pagarme = new Client('ak_test_kvwHf3f5dWpGSI2zH18gJrDhMM3AXl');
             $signature = $request->server->get('HTTP_X_HUB_SIGNATURE');
@@ -448,30 +513,24 @@ class CompraController extends FormListController
             }
             return new Response($errMsg, 401);
         }
-
-
     }
 
 
     /**
      *
      * @Route("/app/tur/compra/ver", name="tur_app_compra_ver")
-     * @param Request $request
-     * @param SessionInterface $session
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function ver(Request $request, SessionInterface $session)
+    public function ver()
     {
 
-        $pagarme = new Client('ak_test_kvwHf3f5dWpGSI2zH18gJrDhMM3AXl');
-
-        $model_id = 'test_transaction_Td5J0x4WHyP1VrxQxahcoM58rMHe26';
-
-        $transactions = $pagarme->transactions()->get(['id' => $model_id]);
-
+//        $pagarme = new Client('ak_test_kvwHf3f5dWpGSI2zH18gJrDhMM3AXl');
+//
+//        $model_id = 'test_transaction_Td5J0x4WHyP1VrxQxahcoM58rMHe26';
+//
+//        $transactions = $pagarme->transactions()->get(['id' => $model_id]);
 
         return new Response('<h1>ok');
-
     }
 
 

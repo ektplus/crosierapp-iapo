@@ -188,6 +188,16 @@ class ViagemType extends AbstractType
             'required' => false
         ]);
 
+        $builder->add('valorEscolhaPoltrona', MoneyType::class, [
+            'label' => 'Valor Escolha Poltrona',
+            'currency' => 'BRL',
+            'grouping' => 'true',
+            'attr' => [
+                'class' => 'crsr-money'
+            ],
+            'required' => false
+        ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

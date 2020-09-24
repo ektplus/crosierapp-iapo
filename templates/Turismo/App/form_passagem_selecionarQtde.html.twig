@@ -1,0 +1,50 @@
+{% extends 'Turismo/App/form_passagem_base.html.twig' %}
+
+
+{% block conteudo %}
+
+    <div class="card">
+
+        <div class="card-header">
+
+
+            <div class="row">
+                <div class="col-12">
+                    <h3>Informe a quantidade de {{ app.session.get('opcaoCompra') }}</h3>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row mb-2">
+                <div class="col">
+                    {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                </div>
+            </div>
+
+            <form action="{{ url('tur_app_compra_selecionarQtde') }}" method="post">
+                <div class="row mb-2">
+                    <div class="col-6">
+                        <input type="number" id="qtde"
+                               name="qtde"
+                               class="form-control focusOnReady" required
+                               value="1">
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-primary btn-block" id="btnAvancar" title="Avançar">
+                            <i class="fas fa-forward"></i> Avançar
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}

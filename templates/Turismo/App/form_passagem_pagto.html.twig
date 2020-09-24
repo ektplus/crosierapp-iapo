@@ -1,46 +1,10 @@
-{% extends '@CrosierLibBase/base.html.twig' %}
+{% extends 'Turismo/App/form_passagem_base.html.twig' %}
 
 {% block up_scripts %}
     <script src="https://assets.pagar.me/checkout/1.1.0/checkout.js"></script>
 {% endblock %}
 
-{% block body %}
-
-    <div class="container-sm" style="margin-bottom: 50px">
-
-        <div class="row mt-3 mb-2">
-            <div class="col-12 text-center">
-                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
-                     alt="Card image cap">
-            </div>
-        </div>
-
-        <div class="card">
-
-            <div class="card-header">
-
-                <div class="row">
-                    <div class="col-12">
-                        <h3>Pagamento</h3>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="card-body">
-
-                <div class="row">
-                    <div class="col">
-                        {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-
-    </div>
-
+{% block conteudo %}
 
 {% endblock %}
 

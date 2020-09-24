@@ -1,76 +1,53 @@
-{% extends '@CrosierLibBase/base.html.twig' %}
+{% extends 'Turismo/App/form_passagem_base.html.twig' %}
 
 
+{% block conteudo %}
 
+    <div class="card">
 
-{% block body %}
-
-    <div class="container-sm" style="margin-bottom: 50px">
-
-        <div class="row mt-3 mb-2">
-            <div class="col-12 text-center">
-                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
-                     alt="Card image cap">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Viagens Disponíveis</h3>
+                </div>
             </div>
         </div>
 
-        <div class="card">
+        <div class="card-body">
 
-            <div class="card-header">
+            {% for viagem in viagens %}
 
-
-                <div class="row">
-                    <div class="col-12">
-                        <h3>Viagens Disponíveis</h3>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="card-body">
-
-                {% for viagem in viagens %}
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">
-                                <i class="nav-icon fas fa-map-signs"></i>
-                                <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.origemEstado }}
-                                    até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
-                            </h4>
-                            {% if viagem.agencia.id != 1 %}
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <i class="nav-icon fas fa-map-signs"></i>
+                            <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.origemEstado }}
+                                até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
+                        </h4>
+                        {% if viagem.agencia.id != 1 %}
                             <h5>
                                 Por <i>{{ viagem.agencia.nome }}</i>
                             </h5>
-                            {% endif %}
-                            <h6 class="card-subtitle mb-2 text-muted">
-                                Saída: {{ viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
-                                Retorno: {{ viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
-                            </h6>
-                            <p class="card-text">Valor:
-                                <strong>R$ {{ viagem.valorPoltrona|number_format(2,',','.') }}</strong></p>
+                        {% endif %}
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Saída: {{ viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
+                            Retorno: {{ viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
+                        </h6>
+{#                        <p class="card-text">Valor:#}
+{#                            <strong>R$ {{ viagem.getValorPassagemComTaxas()|number_format(2,',','.') }}</strong></p>#}
 
-                            <div class="row">
-                                <div class="col text-right">
-                                    <a href="{{ url('tur_app_compra_selecionarPoltronas', {'viagem': viagem.id}) }}"
-                                       class="btn btn-primary"><i class="fas fa-check"></i> Selecionar</a>
-                                </div>
+                        <div class="row">
+                            <div class="col text-right">
+                                <a href="{{ url('tur_app_compra_opcaoCompra', {'viagem': viagem.id}) }}"
+                                   class="btn btn-primary"><i class="fas fa-check"></i> Selecionar</a>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                {% endfor %}
+            {% endfor %}
 
-            </div>
         </div>
-
-
     </div>
-
-
-{% endblock %}
-
-{% block down_scripts %}
 
 {% endblock %}

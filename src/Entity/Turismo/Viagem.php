@@ -162,6 +162,15 @@ class Viagem implements EntityId
 
     /**
      *
+     * @ORM\Column(name="valor_escolha_poltrona", type="decimal", nullable=true)
+     * @Groups("entity")
+     *
+     * @var float|null
+     */
+    public ?float $valorEscolhaPoltrona = null;
+
+    /**
+     *
      * @ORM\OneToMany(
      *      targetEntity="Passageiro",
      *      mappedBy="viagem",
@@ -175,6 +184,21 @@ class Viagem implements EntityId
     public function __construct()
     {
         $this->passageiros = new ArrayCollection();
+    }
+
+    public function getValorPassagemComEscolhaPoltrona()
+    {
+        return bcadd($this->valorPoltrona, $this->valorEscolhaPoltrona, 2);
+    }
+
+    public function getValorPassagemComTaxas()
+    {
+        return bcadd($this->valorPoltrona, $this->valorTaxas, 2);
+    }
+
+    public function getValorPassagemComTaxasEEscolhaPoltrona()
+    {
+        return bcadd($this->getValorPassagemComTaxas(), $this->valorEscolhaPoltrona, 2);
     }
 
 }

@@ -1,0 +1,26 @@
+{% extends '@CrosierLibBase/base.html.twig' %}
+
+
+
+
+{% block body %}
+
+    <div class="container-sm" style="margin-bottom: 50px">
+
+        <div class="row mt-3 mb-2">
+            <div class="col-12 text-center">
+                <a href="{{ url('tur_app_compra_ini') }}">
+                    <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
+                         alt="Card image cap">
+                </a>
+            </div>
+        </div>
+
+        {% block conteudo %}
+        {% endblock %}
+
+
+    </div>
+
+
+{% endblock %}

@@ -1,145 +1,130 @@
-{% extends '@CrosierLibBase/base.html.twig' %}
+{% extends 'Turismo/App/form_passagem_base.html.twig' %}
 
 
+{% block conteudo %}
+
+    <div class="card">
+
+        <div class="card-header">
 
 
-{% block body %}
+            <div class="row">
+                <div class="col-12">
+                    <h3>Informe seus dados</h3>
+                </div>
 
-    <div class="container-sm" style="margin-bottom: 50px">
-
-        <div class="row mt-3 mb-2">
-            <div class="col-12 text-center">
-                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
-                     alt="Card image cap">
             </div>
+
         </div>
 
-        <div class="card">
+        <div class="card-body">
 
-            <div class="card-header">
+            <div class="row">
+                <div class="col">
+                    {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                </div>
+            </div>
 
+            <form action="{{ url('tur_app_compra_cadastrarCliente') }}" method="post">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="dadosCliente_cpf" class="required">CPF</label>
+                            <input type="text" id="dadosCliente_cpf" name="dadosCliente[cpf]"
+                                   class="form-control cpf" required readonly
+                                   value="{{ cpf }}">
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-12">
-                        <h3>Informe seus dados</h3>
+                        <div class="form-group">
+                            <label for="dadosCliente_nome" class="required">Nome</label>
+                            <input type="text" id="dadosCliente_nome" name="dadosCliente[nome]"
+                                   class="form-control focusOnReady" required
+                                   value="">
+                        </div>
                     </div>
-
                 </div>
-
-            </div>
-
-            <div class="card-body">
 
                 <div class="row">
-                    <div class="col">
-                        {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="dadosCliente_celular" class="required">Celular</label>
+                            <input type="tel" id="dadosCliente_celular" name="dadosCliente[celular]"
+                                   class="form-control telefone" required
+                                   value="">
+                        </div>
                     </div>
                 </div>
 
-                <form action="{{ url('tur_app_compra_cadastrarCliente') }}" method="post">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="dadosCliente_cpf" class="required">CPF</label>
-                                <input type="text" id="dadosCliente_cpf" name="dadosCliente[cpf]"
-                                       class="form-control cpf" required readonly
-                                       value="{{ cpf }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="dadosCliente_nome" class="required">Nome</label>
-                                <input type="text" id="dadosCliente_nome" name="dadosCliente[nome]"
-                                       class="form-control focusOnReady" required
-                                       value="">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="dadosCliente_celular" class="required">Celular</label>
-                                <input type="tel" id="dadosCliente_celular" name="dadosCliente[celular]"
-                                       class="form-control telefone" required
-                                       value="">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="dadosCliente_telefone" class="required">Telefone</label>
-                                <input type="tel" id="dadosCliente_telefone" name="dadosCliente[telefone]"
-                                       class="form-control telefone"
-                                       value="">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="dadosCliente_email" class="required">E-mail</label>
-                                <input type="email" id="dadosCliente_email" name="dadosCliente[email]"
-                                       class="form-control notuppercase" required
-                                       value="">
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="dadosCliente_senha1" class="required">Senha</label>
-                                <input type="password" id="dadosCliente_senha1" name="dadosCliente[senha1]"
-                                       class="form-control notuppercase" required
-                                       value="">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="dadosCliente_senha2" class="required">Repita a senha</label>
-                                <input type="password" id="dadosCliente_senha2" name="dadosCliente[senha2]"
-                                       class="form-control notuppercase" required
-                                       value="">
-                                <div class="invalid-feedback">
-                                    As senhas não são iguais.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-12">
                         <div class="form-group">
-                            <label for="btnFiltrar">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary btn-block" id="btnFiltrar" title="Avançar">
-                                <i class="fas fa-search"></i> Avançar
-                            </button>
+                            <label for="dadosCliente_telefone" class="required">Telefone</label>
+                            <input type="tel" id="dadosCliente_telefone" name="dadosCliente[telefone]"
+                                   class="form-control telefone"
+                                   value="">
                         </div>
                     </div>
-                </form>
+                </div>
 
-            </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="dadosCliente_email" class="required">E-mail</label>
+                            <input type="email" id="dadosCliente_email" name="dadosCliente[email]"
+                                   class="form-control notuppercase" required
+                                   value="">
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="dadosCliente_senha1" class="required">Senha</label>
+                            <input type="password" id="dadosCliente_senha1" name="dadosCliente[senha1]"
+                                   class="form-control notuppercase" required
+                                   value="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="dadosCliente_senha2" class="required">Repita a senha</label>
+                            <input type="password" id="dadosCliente_senha2" name="dadosCliente[senha2]"
+                                   class="form-control notuppercase" required
+                                   value="">
+                            <div class="invalid-feedback">
+                                As senhas não são iguais.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="btnFiltrar">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary btn-block" id="btnFiltrar" title="Avançar">
+                            <i class="fas fa-search"></i> Avançar
+                        </button>
+                    </div>
+                </div>
+            </form>
+
         </div>
-
-
     </div>
-
 
 {% endblock %}
 
 {% block down_scripts %}
-    {{ encore_entry_script_tags('Turismo/App/form_passagem_dadosCliente') }}
+    {{ encore_entry_script_tags('Turismo/App/form_passagem_cadastroCliente') }}
 {% endblock %}

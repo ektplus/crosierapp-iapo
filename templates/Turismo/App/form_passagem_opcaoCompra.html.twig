@@ -1,0 +1,61 @@
+{% extends 'Turismo/App/form_passagem_base.html.twig' %}
+
+
+{% block conteudo %}
+
+    <div class="card">
+
+        <div class="card-header">
+
+
+            <div class="row">
+                <div class="col-12">
+                    <h3>Opções de Compra</h3>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row mb-2">
+                <div class="col">
+                    {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
+                </div>
+            </div>
+
+
+            <div class="row mb-4">
+                <div class="col-12">
+                    <a class="btn btn-primary btn-block" href="{{ url('tur_app_compra_selecionarPoltronas') }}"
+                       role="button">
+                        <i class="fas fa-clipboard-check"></i> Passagem (Escolha Poltrona)
+                        <span class="badge badge-light">R$ {{ viagem.getValorPassagemComEscolhaPoltrona()|number_format(2,',','.') }}</span>
+                    </a>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-12">
+                    <a class="btn btn-outline-primary btn-block"
+                       href="{{ url('tur_app_compra_selecionarQtde', {'opcaoCompra':'passagens'}) }}" role="button">
+                        <i class="fas fa-clipboard"></i> Passagem Simples
+                        <span class="badge badge-light">R$ {{ viagem.valorPoltrona|number_format(2,',','.') }}</span>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <a class="btn btn-secondary btn-block"
+                       href="{{ url('tur_app_compra_selecionarQtde', {'opcaoCompra':'bagagens'}) }}" role="button">
+                        <i class="fas fa-suitcase"></i> Apenas Espaço Bagagem
+                        <span class="badge badge-light">R$ {{ viagem.valorBagagem|number_format(2,',','.') }}</span>
+                    </a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock %}

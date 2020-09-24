@@ -1,68 +1,57 @@
-{% extends '@CrosierLibBase/base.html.twig' %}
-
-{% block up_scripts %}
-{% endblock %}
+{% extends 'Turismo/App/form_passagem_base.html.twig' %}
 
 
-{% block body %}
+{% block conteudo %}
 
-    <div class="container-sm" style="margin-bottom: 50px">
+    <div class="card">
 
-        <div class="row mt-3 mb-2">
-            <div class="col-12 text-center">
-                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
-                     alt="Card image cap">
+        <div class="card-header">
+
+
+            <div class="row">
+                <div class="col-12">
+                    <h3>Resumo</h3>
+                </div>
+
             </div>
+
         </div>
 
-        <div class="card">
+        <div class="card-body">
 
-            <div class="card-header">
-
-
-                <div class="row">
-                    <div class="col-12">
-                        <h3>Resumo</h3>
-                    </div>
-
+            <div class="row">
+                <div class="col">
+                    {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
                 </div>
-
             </div>
 
-            <div class="card-body">
 
-                <div class="row">
-                    <div class="col">
-                        {% include '@CrosierLibBase/Util/flashesOnAlerts.html.twig' %}
-                    </div>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.origemEstado }}
+                            até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        Saída: {{ viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
+                        Retorno: {{ viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
+                    </h6>
+                    <p class="card-text">
+                        Total Passagens:
+                        <strong>R$ {{ app.session.get('totais').passagens|number_format(2,',','.') }}</strong><br/>
+                        Total Bagagens Extra:
+                        <strong>R$ {{ app.session.get('totais').bagagens|number_format(2,',','.') }}</strong><br/>
+                        Total Taxas:
+                        <strong>R$ {{ app.session.get('totais').taxas|number_format(2,',','.') }}</strong><br/>
+                    <hr/>
+                    Total Geral:
+                    <strong>R$ {{ app.session.get('totais').geral|number_format(2,',','.') }}</strong><br/>
+                    </p>
                 </div>
+            </div>
 
-
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.origemEstado }}
-                                até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
-                        </h5>
-                        <h6 class="card-subtitle mb-2 text-muted">
-                            Saída: {{ viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
-                            Retorno: {{ viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
-                        </h6>
-                        <p class="card-text">
-                            Total Passagens:
-                            <strong>R$ {{ totais.passagens|number_format(2,',','.') }}</strong><br/>
-                            Total Bagagens Extra:
-                            <strong>R$ {{ totais.bagagens|number_format(2,',','.') }}</strong><br/>
-                            Total Taxas:
-                            <strong>R$ {{ totais.taxas|number_format(2,',','.') }}</strong><br/>
-                        <hr/>
-                        Total Geral:
-                        <strong>R$ {{ totais.geral|number_format(2,',','.') }}</strong><br/>
-                        </p>
-                    </div>
-                </div>
-
-                {% for dadoPassageiro in dadosPassageiros %}
+            {% if app.session.get('dadosPassageiros')|default(false) %}
+                {% for dadoPassageiro in app.session.get('dadosPassageiros') %}
 
                     <div class="card">
                         <div class="card-body">
@@ -75,7 +64,7 @@
                             </h6>
                             <p class="card-text">
                                 Passagem:
-                                <strong>R$ {{ viagem.valorPoltrona|number_format(2,',','.') }}</strong><br/>
+                                <strong>R$ {{ dadoPassageiro.valorPassagem|number_format(2,',','.') }}</strong><br/>
                                 Taxas:
                                 <strong>R$ {{ viagem.valorTaxas|number_format(2,',','.') }}</strong><br/>
                                 {% if dadoPassageiro.total_bagagens|default(false) %}
@@ -91,60 +80,54 @@
                     </div>
 
                 {% endfor %}
+            {% endif %}
 
-                {% if not (app.session.get('idClienteLogado')|default(false)) %}
-                    <div class="card text-white bg-info mb-3">
-                        <div class="card-header">Informe seu CPF</div>
-                        <div class="card-body">
-                            <form action="{{ url('tur_app_compra_checkCPF') }}" method="post">
+            {% if not (app.session.get('idClienteLogado')|default(false)) %}
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header"><h3>Para continuar, informe seu CPF</h3></div>
+                    <div class="card-body">
+                        <form action="{{ url('tur_app_compra_checkCPF') }}" method="post">
 
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <input type="text" id="cpf" name="cpf"
-                                                   class="form-control cpf" required
-                                                   value="">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-12">
                                     <div class="form-group">
-                                        <label for="btnAvancar">&nbsp;</label>
-                                        <button type="submit" class="btn btn-primary btn-block" id="btnAvancar"
-                                                title="Avançar">
-                                            <i class="fas fa-forward"></i> Avançar
-                                        </button>
+                                        <input type="text" id="cpf" name="cpf"
+                                               class="form-control cpf" required
+                                               value="">
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="card text-white bg-info mb-3">
-                        <div class="card-body">
+                            </div>
+
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label for="btnAvancar">&nbsp;</label>
-                                    <a role="button" class="btn btn-success btn-block" id="btnPagamento"
-                                       title="Pagamento" href="{{ url('tur_app_compra_pagto') }}">
-                                        <i class="fas fa-file-invoice-dollar"></i> Pagamento
-                                    </a>
+                                    <button type="submit" class="btn btn-primary btn-block" id="btnAvancar"
+                                            title="Avançar">
+                                        <i class="fas fa-forward"></i> Avançar
+                                    </button>
                                 </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="btnAvancar">&nbsp;</label>
+                                <a role="button" class="btn btn-success btn-block" id="btnPagamento"
+                                   title="Pagamento" href="{{ url('tur_app_compra_pagto') }}">
+                                    <i class="fas fa-file-invoice-dollar"></i> Pagamento
+                                </a>
                             </div>
                         </div>
                     </div>
-                {% endif %}
+                </div>
+            {% endif %}
 
 
-            </div>
         </div>
-
-
     </div>
 
-
-{% endblock %}
-
-{% block down_scripts %}
 {% endblock %}

@@ -62,10 +62,15 @@ class ViagemRepository extends FilterRepository
      */
     public function findViagensBy(string $dts, string $cidadeOrigem, string $cidadeDestino)
     {
-
         try {
-            $params['dtIni'] = DateTimeUtils::parseDateStr(substr($dts, 0, 10))->format('Y-m-d');
+            $dtIni = DateTimeUtils::parseDateStr(substr($dts, 0, 10));
+            $hoje = (new \DateTime())->setTime(12,0);
+            if ($hoje->diff((clone $dtIni)->setTime(12,0))->days > 0) {
+                $dtIni = $hoje;
+            }
+            $params['dtIni'] = $dtIni->format('Y-m-d');
             $params['dtFim'] = DateTimeUtils::parseDateStr(substr($dts, 13, 10))->format('Y-m-d');
+
             $params['cidadeOrigem'] = substr($cidadeOrigem, 0, -3);
             $params['estadoOrigem'] = substr($cidadeOrigem, -2);
             if ($cidadeDestino !== '') {
