@@ -69,6 +69,7 @@
                 amount: {{ app.session.get('totais').geral|number_format(2,'','') }},
                 postbackUrl: '{{ postbackUrl }}',
                 customerData: 'true',
+                paymentMethods: 'credit_card',
                 createToken: 'true',
                 items: [{
                     id: '1',
