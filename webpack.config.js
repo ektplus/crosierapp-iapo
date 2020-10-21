@@ -39,6 +39,7 @@ Encore
     .addEntry('Turismo/agenciaList', './assets/js/Turismo/agenciaList.js')
     .addEntry('Turismo/itinerarioList', './assets/js/Turismo/itinerarioList.js')
     .addEntry('Turismo/viagemList', './assets/js/Turismo/viagemList.js')
+    .addEntry('Turismo/viagem_form', './assets/js/Turismo/viagem_form.js')
     .addEntry('Turismo/viagemPassageiroForm', './assets/js/Turismo/viagemPassageiroForm.js')
 
     .addEntry('Turismo/App/form_passagem_pesquisarViagens', './assets/js/Turismo/App/form_passagem_pesquisarViagens.js')

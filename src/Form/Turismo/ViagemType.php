@@ -155,7 +155,10 @@ class ViagemType extends AbstractType
 
         $builder->add('obs', TextareaType::class, [
             'label' => 'Obs',
-            'required' => false
+            'required' => false,
+            'attr' => [
+                'class' => 'summernote'
+            ]
         ]);
 
         $builder->add('valorPoltrona', MoneyType::class, [

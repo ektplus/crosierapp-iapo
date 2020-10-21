@@ -2,6 +2,7 @@
 
 namespace App\Entity\Turismo;
 
+use CrosierSource\CrosierLibBaseBundle\Doctrine\Annotations\NotUppercase;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -119,7 +120,7 @@ class Viagem implements EntityId
      *
      * @ORM\Column(name="obs", type="string", nullable=false)
      * @Groups("entity")
-     *
+     * @NotUppercase()
      * @var string|null
      */
     public ?string $obs = null;

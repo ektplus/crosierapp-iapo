@@ -25,16 +25,21 @@
                                 até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
                         </h4>
                         {% if viagem.agencia.id != 1 %}
-                            <h5>
+
+                            <div class="alert alert-primary" role="alert">
                                 Por <i>{{ viagem.agencia.nome }}</i>
-                            </h5>
+                            </div>
+
                         {% endif %}
+                        <p>
+                            {{ viagem.obs|raw }}
+                        </p>
                         <h6 class="card-subtitle mb-2 text-muted">
                             Saída: {{ viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
                             Retorno: {{ viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
                         </h6>
-{#                        <p class="card-text">Valor:#}
-{#                            <strong>R$ {{ viagem.getValorPassagemComTaxas()|number_format(2,',','.') }}</strong></p>#}
+                        {# <p class="card-text">Valor: #}
+                        {# <strong>R$ {{ viagem.getValorPassagemComTaxas()|number_format(2,',','.') }}</strong></p> #}
 
                         <div class="row">
                             <div class="col text-right">
