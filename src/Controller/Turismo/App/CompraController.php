@@ -440,9 +440,11 @@ class CompraController extends FormListController
                     $this->addFlash('error', 'Ocorreu um erro ao registrar sua compra.');
                 }
 
+                $compra->jsonData = $compra_jsonData;
+                
                 $this->compraEntityHandler->save($compra);
 
-                $compra->jsonData = $compra_jsonData;
+
 
                 $session->set('ultimaCompra', $compra->getId());
 
