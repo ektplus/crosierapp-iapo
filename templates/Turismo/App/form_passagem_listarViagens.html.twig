@@ -25,11 +25,9 @@
                                 até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
                         </h4>
                         {% if viagem.agencia.id != 1 %}
-
                             <div class="alert alert-primary" role="alert">
                                 Por <i>{{ viagem.agencia.nome }}</i>
                             </div>
-
                         {% endif %}
                         <p>
                             {{ viagem.obs|raw }}
