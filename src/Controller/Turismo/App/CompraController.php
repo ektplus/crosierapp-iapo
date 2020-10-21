@@ -404,6 +404,8 @@ class CompraController extends FormListController
                         'payment_method' => $payment_method
                     ];
 
+                    $compra_jsonData['dadosPassageiros'] = $session->get('dadosPassageiros');
+
                     $idClienteLogado = $session->get('idClienteLogado');
                     if (!$idClienteLogado) {
                         throw new ViewException('idClienteLogado n/d');
