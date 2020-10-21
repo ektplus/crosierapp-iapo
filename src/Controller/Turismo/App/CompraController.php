@@ -388,6 +388,33 @@ class CompraController extends FormListController
         if ($request->get('result')) {
             try {
                 $result = $request->get('result');
+
+                $compra = new Compra();
+
+                $compra_jsonData['dadosPassageiros'] = $session->get('dadosPassageiros');
+
+                $idClienteLogado = $session->get('idClienteLogado');
+                if (!$idClienteLogado) {
+                    throw new ViewException('idClienteLogado n/d');
+                }
+
+                $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+                /** @var Cliente $cliente */
+                $cliente = $repoCliente->find($idClienteLogado);
+                $compra->cliente = $cliente;
+
+                $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
+                $compra->viagem = $viagem;
+
+                $compra->dtCompra = new \DateTime();
+                $compra->status = 'AGUARDANDO PAGAMENTO';
+
+                $totalGeral = $session->get('totais')['geral'];
+                if (!$totalGeral) {
+                    throw new ViewException('totalGeral n/d');
+                }
+                $compra->valorTotal = $totalGeral;
+
                 if ($result === 'OK') {
                     $token = $request->get('token');
                     if (!$token) {
@@ -398,52 +425,27 @@ class CompraController extends FormListController
                         throw new ViewException('payment_method n/d');
                     }
 
-                    $compra = new Compra();
-                    $compra_jsonData = [
-                        'token' => $token,
-                        'payment_method' => $payment_method
-                    ];
-
-                    $compra_jsonData['dadosPassageiros'] = $session->get('dadosPassageiros');
-
-                    $idClienteLogado = $session->get('idClienteLogado');
-                    if (!$idClienteLogado) {
-                        throw new ViewException('idClienteLogado n/d');
-                    }
-
-                    $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
-                    /** @var Cliente $cliente */
-                    $cliente = $repoCliente->find($idClienteLogado);
-                    $compra->cliente = $cliente;
-
-                    $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
-                    $compra->viagem = $viagem;
-
-                    $compra->dtCompra = new \DateTime();
-                    $compra->status = 'AGUARDANDO PAGAMENTO';
-
-                    $totalGeral = $session->get('totais')['geral'];
-                    if (!$totalGeral) {
-                        throw new ViewException('totalGeral n/d');
-                    }
-                    $compra->valorTotal = $totalGeral;
+                    $compra_jsonData['token'] = $token;
+                    $compra_jsonData['payment_method'] = $payment_method;
 
                     $pagarme = new Client('ak_test_kvwHf3f5dWpGSI2zH18gJrDhMM3AXl');
-
                     $transactions = $pagarme->transactions()->get(['id' => $token]);
-
                     $compra_jsonData['pagarme_transaction'] = (array)$transactions;
 
-                    $compra->jsonData = $compra_jsonData;
-                    $this->compraEntityHandler->save($compra);
-
-                    $session->set('ultimaCompra', $compra->getId());
+                    $compra->status = 'PAGAMENTO RECEBIDO';
 
                     $this->addFlash('success', 'Em breve você receberá um e-mail com os dados de sua compra.');
-
                 } else {
-                    throw new ViewException('Ocorreu um erro ao registrar sua compra.');
+                    $compra->status = 'ERRO';
+                    $this->addFlash('error', 'Ocorreu um erro ao registrar sua compra.');
                 }
+
+                $this->compraEntityHandler->save($compra);
+
+                $compra->jsonData = $compra_jsonData;
+
+                $session->set('ultimaCompra', $compra->getId());
+
             } catch (\Exception $e) {
                 $errMsg = 'Ocorreu um erro';
                 if ($e instanceof ViewException) {
