@@ -12,6 +12,7 @@ CREATE TABLE `iapo_tur_veiculo`
     `apelido`             varchar(100),
     `placa`               varchar(15) NOT NULL,
     `status`              varchar(50) NOT NULL,
+    `croqui`              varchar(50) NOT NULL,
     `renavan`             varchar(50) NOT NULL,
     `dt_vencto_der`       date        NOT NULL,
     `dt_vencto_antt`      date        NOT NULL,
@@ -246,6 +247,8 @@ CREATE TABLE `iapo_tur_passageiro`
     `fone_recados`       varchar(20),
     `email`              varchar(250),
     `obs`                varchar(3000),
+
+    `json_data`          json,
 
     `poltrona`           varchar(10),
 

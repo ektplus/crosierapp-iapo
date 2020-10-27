@@ -22,7 +22,7 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="prefixo", type="string", nullable=false)
+     * @ORM\Column(name="prefixo", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -31,7 +31,7 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="apelido", type="string", nullable=false)
+     * @ORM\Column(name="apelido", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -40,7 +40,7 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="placa", type="string", nullable=false)
+     * @ORM\Column(name="placa", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -49,7 +49,7 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="status", type="string", nullable=false)
+     * @ORM\Column(name="status", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -58,7 +58,16 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="renavan", type="string", nullable=false)
+     * @ORM\Column(name="croqui", type="string")
+     * @Groups("entity")
+     *
+     * @var string|null
+     */
+    public ?string $croqui = null;
+
+    /**
+     *
+     * @ORM\Column(name="renavan", type="string")
      * @Groups("entity")
      *
      * @var string|null
@@ -67,7 +76,7 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="dt_vencto_der", type="date", nullable=false)
+     * @ORM\Column(name="dt_vencto_der", type="date")
      * @Groups("entityId")
      *
      * @var null|\DateTime
@@ -76,7 +85,7 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="dt_vencto_antt", type="date", nullable=false)
+     * @ORM\Column(name="dt_vencto_antt", type="date")
      * @Groups("entityId")
      *
      * @var null|\DateTime
@@ -85,7 +94,7 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="dt_vencto_tacografo", type="date", nullable=false)
+     * @ORM\Column(name="dt_vencto_tacografo", type="date")
      * @Groups("entityId")
      *
      * @var null|\DateTime
@@ -94,7 +103,7 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="dt_vencto_seguro", type="date", nullable=false)
+     * @ORM\Column(name="dt_vencto_seguro", type="date")
      * @Groups("entityId")
      *
      * @var null|\DateTime
@@ -103,7 +112,7 @@ class Veiculo implements EntityId
 
     /**
      *
-     * @ORM\Column(name="obs", type="string", nullable=false)
+     * @ORM\Column(name="obs", type="string")
      * @Groups("entity")
      *
      * @var string|null

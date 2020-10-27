@@ -4,9 +4,11 @@ namespace App\Controller\Turismo\App;
 
 use App\Entity\Turismo\Cliente;
 use App\Entity\Turismo\Compra;
+use App\Entity\Turismo\Passageiro;
 use App\Entity\Turismo\Viagem;
 use App\EntityHandler\Turismo\ClienteEntityHandler;
 use App\EntityHandler\Turismo\CompraEntityHandler;
+use App\EntityHandler\Turismo\PassageiroEntityHandler;
 use App\Repository\Turismo\ViagemRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -29,6 +31,8 @@ class CompraController extends FormListController
     private ClienteEntityHandler $clienteEntityHandler;
 
     private CompraEntityHandler $compraEntityHandler;
+
+    private PassageiroEntityHandler $passageiroEntityHandler;
 
     /**
      * @return ClienteEntityHandler
@@ -64,6 +68,14 @@ class CompraController extends FormListController
         $this->compraEntityHandler = $compraEntityHandler;
     }
 
+    /**
+     * @required
+     * @param PassageiroEntityHandler $passageiroEntityHandler
+     */
+    public function setPassageiroEntityHandler(PassageiroEntityHandler $passageiroEntityHandler): void
+    {
+        $this->passageiroEntityHandler = $passageiroEntityHandler;
+    }
 
     /**
      *
@@ -143,29 +155,55 @@ class CompraController extends FormListController
      */
     public function selecionarQtde(Request $request, SessionInterface $session)
     {
-        if ($request->get('opcaoCompra')) {
-            $session->set('opcaoCompra', $request->get('opcaoCompra'));
-            return $this->render('Turismo/App/form_passagem_selecionarQtde.html.twig');
-        } else if ($request->get('qtde')) {
-            $qtde = (int)$request->get('qtde');
-            $session->set('qtde', $qtde);
+        try {
+            if ($request->get('opcaoCompra')) {
+                $session->set('opcaoCompra', $request->get('opcaoCompra'));
+                return $this->render('Turismo/App/form_passagem_selecionarQtde.html.twig');
+            } else if ($request->get('qtde')) {
+                $qtde = (int)$request->get('qtde');
+                $session->set('qtde', $qtde);
 
-            if ($session->get('opcaoCompra') === 'passagens') {
-                $rPoltronas = [];
-                for ($i = 1; $i <= $qtde; $i++) {
-                    $rPoltronas[$i] = 'on'; // simulando a seleção
+                if ($session->get('opcaoCompra') === 'passagens') {
+                    /** @var ViagemRepository $repoViagem */
+                    $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
+                    /** @var Viagem $viagem */
+                    $viagem = $repoViagem->find($session->get('viagemId'));
+                    /** @var ViagemRepository $repoViagem */
+                    $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
+                    $poltronas = $repoViagem->handlePoltronas($viagem);
+
+                    $rPoltronas = [];
+                    $totalSelecionado = 0;
+
+                    foreach ($poltronas as $numPoltrona => $poltrona) {
+                        if ($poltrona === 'desocupada') {
+                            $rPoltronas[(int)$numPoltrona] = 'on'; // simulando a seleção
+                            $totalSelecionado++;
+                        }
+                        if ($totalSelecionado > $qtde) {
+                            break;
+                        }
+                    }
+
+                    if ($totalSelecionado < $qtde) {
+                        $this->addFlash('warn', 'Qtde de poltronas não disponível');
+                        return $this->render('Turismo/App/form_passagem_selecionarQtde.html.twig');
+                    }
+                    $params = [
+                        'poltronas' => $rPoltronas
+                    ];
+                    return $this->redirectToRoute('tur_app_compra_informarDadosPassageiros', $params);
+                } else {
+                    $session->set('dadosPassageiros', null);
+                    return $this->redirectToRoute('tur_app_compra_resumo');
                 }
-                $params = [
-                    'poltronas' => $rPoltronas
-                ];
-                return $this->redirectToRoute('tur_app_compra_informarDadosPassageiros', $params);
             } else {
-                $session->set('dadosPassageiros', null);
-                return $this->redirectToRoute('tur_app_compra_resumo');
+                $this->addFlash('error', 'Ocorreu um erro ao selecionar a quantidade');
+                return $this->render('Turismo/App/form_passagem_selecionarQtde.html.twig');
             }
-        } else {
-            $this->addFlash('error', 'Ocorreu um erro ao selecionar a quantidade');
-            return $this->render('Turismo/App/form_passagem_selecionarQtde.html.twig');
+        } catch (ViewException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('tur_app_compra_ini');
         }
     }
 
@@ -178,9 +216,20 @@ class CompraController extends FormListController
      */
     public function selecionarPoltronas(SessionInterface $session)
     {
-        $params = [];
-        $session->set('opcaoCompra', 'selecionarPoltronas');
-        return $this->render('Turismo/App/form_passagem_selecionarPoltronas.html.twig', $params);
+        try {
+            $params = [];
+            $session->set('opcaoCompra', 'selecionarPoltronas');
+            /** @var ViagemRepository $repoViagem */
+            $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
+            /** @var Viagem $viagem */
+            $viagem = $repoViagem->find($session->get('viagemId'));
+            $params['poltronas'] = $repoViagem->handlePoltronas($viagem);
+            $croqui = $viagem->veiculo->croqui;
+            return $this->render('Turismo/App/form_passagem_selecionarPoltronas_' . $croqui . '.html.twig', $params);
+        } catch (ViewException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('tur_app_compra_ini');
+        }
     }
 
 
@@ -441,10 +490,19 @@ class CompraController extends FormListController
                 }
 
                 $compra->jsonData = $compra_jsonData;
-                
+
                 $this->compraEntityHandler->save($compra);
 
-
+                foreach ($compra_jsonData['dadosPassageiros'] as $dadosPassageiro) {
+                    $passageiro = new Passageiro();
+                    $passageiro->viagem = $viagem;
+                    $passageiro->nome = $dadosPassageiro['nome'];
+                    $passageiro->rg = $dadosPassageiro['rg'];
+                    $passageiro->foneCelular = $dadosPassageiro['fone'] ?? '';
+                    $passageiro->poltrona = $dadosPassageiro['poltrona'];
+                    $passageiro->jsonData['compra_id'] = $compra->getId();
+                    $this->passageiroEntityHandler->save($passageiro);
+                }
 
                 $session->set('ultimaCompra', $compra->getId());
 

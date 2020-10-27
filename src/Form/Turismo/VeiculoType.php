@@ -4,6 +4,7 @@ namespace App\Form\Turismo;
 
 use App\Entity\Turismo\Veiculo;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -38,6 +39,29 @@ class VeiculoType extends AbstractType
         $builder->add('status', TextType::class, [
             'label' => 'Status',
             'required' => false,
+        ]);
+
+        $builder->add('croqui', ChoiceType::class, [
+            'label' => 'Croqui',
+            'choices' => [
+                '3740-3730' => '3740-3730',
+                '32XX' => '32XX',
+                '2301' => '2301',
+                '2400' => '2400',
+                '2500' => '2500',
+                '2501' => '2501',
+                '2502' => '2502',
+                '2600' => '2600',
+                '2900' => '2900',
+                '3010' => '3010',
+                '3030' => '3030',
+                '3100' => '3100',
+                '3600' => '3600',
+                '3601' => '3601',
+                '3602' => '3602',
+                '3700' => '3700',
+            ],
+            'attr' => ['class' => 'autoSelect2']
         ]);
 
         $builder->add('renavan', TextType::class, [

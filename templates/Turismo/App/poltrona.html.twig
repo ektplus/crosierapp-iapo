@@ -1,0 +1,8 @@
+{% set ocupada = poltronas[poltrona|strpad(2)] == 'ocupada' %}
+<div class="btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-{{ ocupada ? 'secondary' : 'outline-success' }} btn-block {{ ocupada ? 'disabled' : '' }}">
+        <input type="checkbox" title="{{ ocupada ? 'Ocupada!' : '' }}"
+               id="poltrona_{{ poltrona }}" name="poltronas[{{ poltrona }}]" {{ ocupada ? 'disabled' : '' }}
+               autocomplete="off"> {{ poltrona|strpad(2) }}  {{ ocupada ? '<i class="fas fa-ban"></i>' : '' }}
+    </label>
+</div>

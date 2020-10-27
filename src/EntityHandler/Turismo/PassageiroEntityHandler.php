@@ -31,10 +31,9 @@ class PassageiroEntityHandler extends EntityHandler
 
         $jaExiste = $repoPassageiro->findOneByFiltersSimpl(
             [
-                ['viagem', 'EQ', $passageiro->getViagem()->getId()],
+                ['viagem', 'EQ', $passageiro->viagem->getId()],
                 ['id', 'NEQ', $passageiro->getId()],
-                ['cpf', 'EQ', preg_replace("/[^0-9]/", "", $passageiro->getCpf())],
-                ['rg', 'EQ', $passageiro->getRg()],
+                ['rg', 'EQ', $passageiro->rg],
             ]
         );
 

@@ -6,6 +6,7 @@ use App\Entity\Turismo\Viagem;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
+use Doctrine\DBAL\Connection;
 
 /**
  *
@@ -64,8 +65,8 @@ class ViagemRepository extends FilterRepository
     {
         try {
             $dtIni = DateTimeUtils::parseDateStr(substr($dts, 0, 10));
-            $hoje = (new \DateTime())->setTime(12,0);
-            if ($hoje->diff((clone $dtIni)->setTime(12,0))->days > 0) {
+            $hoje = (new \DateTime())->setTime(12, 0);
+            if ($hoje->diff((clone $dtIni)->setTime(12, 0))->days > 0) {
                 $dtIni = $hoje;
             }
             $params['dtIni'] = $dtIni->format('Y-m-d');
@@ -95,6 +96,49 @@ class ViagemRepository extends FilterRepository
             return $viagens;
         } catch (\Exception $e) {
             throw new ViewException('Erro ao pesquisar viagens');
+        }
+    }
+
+    /**
+     * @param Viagem $viagem
+     * @return array
+     * @throws ViewException
+     */
+    public function handlePoltronas(Viagem $viagem): array
+    {
+
+        try {
+            $conn = $this->getEntityManager()->getConnection();
+            $sqlCroqui = 'SELECT valor FROM cfg_app_config WHERE chave = \'croquis_dos_veiculos.json\'';
+            $rsCroqui = $conn->fetchAssociative($sqlCroqui);
+            $croquis = json_decode($rsCroqui['valor'], true);
+            $veiculoCroqui = $viagem->veiculo->croqui;
+            $croqui = $croquis['veiculos'][$veiculoCroqui];
+            $poltronas = explode(',', $croqui);
+            $sqlCompras = 'SELECT json_data->>"$.dadosPassageiros" as dadosPassageiros FROM iapo_tur_compra WHERE viagem_id = :viagemId AND status IN (:statuss)';
+            $rsCompras = $conn->fetchAllAssociative($sqlCompras,
+                [
+                    'viagemId' => $viagem->getId(),
+                    'statuss' => ['PAGAMENTO RECEBIDO', 'RESERVA EFETUADA']
+                ],
+                [
+                    'statuss' => Connection::PARAM_STR_ARRAY
+                ]);
+            $rPoltronas = [];
+            foreach ($poltronas as $k => $poltrona) {
+                $rPoltronas[$poltrona] = 'desocupada';
+                foreach ($rsCompras as $compra) {
+                    $compra_jsonData = json_decode($compra['dadosPassageiros'], true);
+                    foreach ($compra_jsonData as $dadosPassageiro) {
+                        if ((int)($dadosPassageiro['poltrona'] ?? -1) === (int)$poltrona) {
+                            $rPoltronas[$poltrona] = 'ocupada';
+                        }
+                    }
+                }
+            }
+            return $rPoltronas;
+        } catch (\Throwable $e) {
+            throw new ViewException('Erro ao verificar poltronas ocupadas');
         }
     }
 
