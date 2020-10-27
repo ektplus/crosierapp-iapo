@@ -180,7 +180,7 @@ class CompraController extends FormListController
                             $rPoltronas[(int)$numPoltrona] = 'on'; // simulando a seleção
                             $totalSelecionado++;
                         }
-                        if ($totalSelecionado > $qtde) {
+                        if ($totalSelecionado >= $qtde) {
                             break;
                         }
                     }
@@ -430,7 +430,7 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/pagto", name="tur_app_compra_pagto")
      * @param Request $request
      * @param SessionInterface $session
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
      */
     public function pagto(Request $request, SessionInterface $session)
     {
@@ -438,7 +438,12 @@ class CompraController extends FormListController
             try {
                 $result = $request->get('result');
 
-                $compra = new Compra();
+                if ($session->get('compra')) {
+                    $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
+                    $compra = $repoCompra->find($session->get('compra'));
+                } else {
+                    $compra = new Compra();
+                }
 
                 $compra_jsonData['dadosPassageiros'] = $session->get('dadosPassageiros');
 
@@ -456,7 +461,7 @@ class CompraController extends FormListController
                 $compra->viagem = $viagem;
 
                 $compra->dtCompra = new \DateTime();
-                $compra->status = 'AGUARDANDO PAGAMENTO';
+
 
                 $totalGeral = $session->get('totais')['geral'];
                 if (!$totalGeral) {
@@ -486,6 +491,10 @@ class CompraController extends FormListController
                     $this->addFlash('success', 'Em breve você receberá um e-mail com os dados de sua compra.');
                 } else {
                     $compra->status = 'ERRO';
+                    $compra_jsonData['pagamento_result'] = [
+                        'msg' => $request->get('msg'),
+                        'type' => $request->get('type')
+                    ];
                     $this->addFlash('error', 'Ocorreu um erro ao registrar sua compra.');
                 }
 
@@ -493,18 +502,20 @@ class CompraController extends FormListController
 
                 $this->compraEntityHandler->save($compra);
 
-                foreach ($compra_jsonData['dadosPassageiros'] as $dadosPassageiro) {
-                    $passageiro = new Passageiro();
-                    $passageiro->viagem = $viagem;
-                    $passageiro->nome = $dadosPassageiro['nome'];
-                    $passageiro->rg = $dadosPassageiro['rg'];
-                    $passageiro->foneCelular = $dadosPassageiro['fone'] ?? '';
-                    $passageiro->poltrona = $dadosPassageiro['poltrona'];
-                    $passageiro->jsonData['compra_id'] = $compra->getId();
-                    $this->passageiroEntityHandler->save($passageiro);
+                if ($compra->status !== 'ERRO') {
+                    foreach ($compra_jsonData['dadosPassageiros'] as $dadosPassageiro) {
+                        $passageiro = new Passageiro();
+                        $passageiro->viagem = $viagem;
+                        $passageiro->nome = $dadosPassageiro['nome'];
+                        $passageiro->rg = $dadosPassageiro['rg'];
+                        $passageiro->foneCelular = $dadosPassageiro['fone'] ?? '';
+                        $passageiro->poltrona = $dadosPassageiro['poltrona'];
+                        $passageiro->jsonData['compra_id'] = $compra->getId();
+                        $this->passageiroEntityHandler->save($passageiro);
+                    }
                 }
 
-                $session->set('ultimaCompra', $compra->getId());
+                $session->set('compra', $compra->getId());
 
             } catch (\Exception $e) {
                 $errMsg = 'Ocorreu um erro';
@@ -513,7 +524,9 @@ class CompraController extends FormListController
                 }
                 $this->addFlash('error', $errMsg);
             }
-            return $this->redirectToRoute('tur_app_compra_resumo');
+            if (!isset($compra) || $compra->status !== 'ERRO') {
+                return $this->redirectToRoute('tur_app_compra_resumo');
+            }
         } else {
             if ($request->get('dadosCliente')) {
                 $session->set('dadosCliente', $request->get('dadosCliente'));

@@ -21,8 +21,7 @@
                     window.location = '/app/tur/compra/pagto?result=OK&token=' + data.token + '&payment_method=' + data.payment_method
                 },
                 error: function (err) {
-                    console.dir(err);
-                    window.location = '/app/tur/compra/pagto?result=ERR'
+                    $.get('/app/tur/compra/pagto?result=ERR&msg=' + err?.message + '&type=' + err?.type);
                 },
                 close: function () {
                     window.location = '/app/tur/compra/resumo'
