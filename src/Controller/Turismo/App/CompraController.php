@@ -611,11 +611,12 @@ class CompraController extends FormListController
                 throw new ViewException('postback inválido');
             }
             return new Response('OK');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $errMsg = 'Erro';
             if ($e instanceof ViewException) {
                 $errMsg = $e->getMessage();
             }
+            $syslog->info('ERRO: ' . $errMsg);
             return new Response($errMsg, 401);
         }
     }
