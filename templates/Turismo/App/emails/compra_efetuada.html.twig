@@ -32,14 +32,14 @@
                     </h6>
                     <p class="card-text">
                         Total Passagens:
-                        <strong>R$ {{ app.session.get('totais').passagens|number_format(2,',','.') }}</strong><br/>
+                        <strong>R$ {{ compra.getTotais().passagens|number_format(2,',','.') }}</strong><br/>
                         Total Bagagens Extra:
-                        <strong>R$ {{ app.session.get('totais').bagagens|number_format(2,',','.') }}</strong><br/>
+                        <strong>R$ {{ compra.getTotais().bagagens|number_format(2,',','.') }}</strong><br/>
                         Total Taxas:
-                        <strong>R$ {{ app.session.get('totais').taxas|number_format(2,',','.') }}</strong><br/>
+                        <strong>R$ {{ compra.getTotais().taxas|number_format(2,',','.') }}</strong><br/>
                     <hr/>
                     Total Geral:
-                    <strong>R$ {{ app.session.get('totais').geral|number_format(2,',','.') }}</strong><br/>
+                    <strong>R$ {{ compra.getTotais().geral|number_format(2,',','.') }}</strong><br/>
                     <p>
                         CARTÃO DE CRÉDITO<br>
                         **** **** **** {{ compra.getPostbackTransacaoAprovada().transaction.card.last_digits|default('****') }}<br>

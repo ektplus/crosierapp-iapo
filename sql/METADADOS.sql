@@ -259,7 +259,7 @@ CREATE TABLE `iapo_tur_passageiro`
     `user_inserted_id`   bigint(20)   NOT NULL,
     `user_updated_id`    bigint(20)   NOT NULL,
 
-    UNIQUE KEY UK_iapo_tur_passageiro (`viagem_id`, `cpf`, `rg`),
+    UNIQUE KEY UK_iapo_tur_passageiro_rg (`viagem_id`, `rg`),
 
     PRIMARY KEY (`id`),
 
