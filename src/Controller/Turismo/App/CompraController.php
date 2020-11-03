@@ -576,8 +576,10 @@ class CompraController extends FormListController
             $signature = $request->server->get('HTTP_X_HUB_SIGNATURE');
             $syslog->info('signature: ' . $signature);
             $isValidPostback = $pagarme->postbacks()->validate($request->getContent(), $signature);
+
             if ($isValidPostback) {
                 $pagarme_transaction_id = $request->get('id');
+                $syslog->info('pagarme_transaction_id: ' . $pagarme_transaction_id);
                 /** @var Connection $conn */
                 $conn = $this->getDoctrine()->getConnection();
                 $rsCompraId = $conn->fetchAllAssociative('SELECT id FROM iapo_tur_compra WHERE json_data->>"$.pagarme_transaction.id" = :pagarme_transaction_id', ['pagarme_transaction_id' => $pagarme_transaction_id]);
