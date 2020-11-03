@@ -1,0 +1,88 @@
+{% extends 'Turismo/App/form_passagem_base.html.twig' %}
+
+
+{% block conteudo %}
+
+    <div class="card">
+
+        <div class="card-header">
+
+
+            <div class="row">
+                <div class="col-12">
+                    <h3>Parabéns</h3>
+                    <h6>Sua compra foi efetuada com sucesso</h6>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <strong>De {{ compra.viagem.itinerario.origemCidade }}-{{ compra.viagem.itinerario.origemEstado }}
+                            até {{ compra.viagem.itinerario.destinoCidade }}-{{ compra.viagem.itinerario.destinoEstado }}</strong>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        Saída: {{ compra.viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
+                        Retorno: {{ compra.viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
+                    </h6>
+                    <p class="card-text">
+                        Total Passagens:
+                        <strong>R$ {{ app.session.get('totais').passagens|number_format(2,',','.') }}</strong><br/>
+                        Total Bagagens Extra:
+                        <strong>R$ {{ app.session.get('totais').bagagens|number_format(2,',','.') }}</strong><br/>
+                        Total Taxas:
+                        <strong>R$ {{ app.session.get('totais').taxas|number_format(2,',','.') }}</strong><br/>
+                    <hr/>
+                    Total Geral:
+                    <strong>R$ {{ app.session.get('totais').geral|number_format(2,',','.') }}</strong><br/>
+                    <p>
+                        CARTÃO DE CRÉDITO<br>
+                        **** **** **** {{ compra.getPostbackTransacaoAprovada().transaction.card.last_digits|default('****') }}<br>
+                        Bandeira: <b>{{ compra.getPostbackTransacaoAprovada().transaction.card_brand|default('')|upper }}</b><br>
+                        NSU: <b>{{ compra.getPostbackTransacaoAprovada().transaction.nsu }}</b><br>
+                    </p>
+                </div>
+            </div>
+
+
+            {% for dadoPassageiro in compra.jsonData.dadosPassageiros %}
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <strong>{{ dadoPassageiro.nome }}</strong>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Poltrona: {{ dadoPassageiro.poltrona }}<br/>
+                            RG: {{ dadoPassageiro.rg }}<br/>
+                            Telefone: {{ dadoPassageiro.fone }}<br/>
+                        </h6>
+                        <p class="card-text">
+                            Passagem:
+                            <strong>R$ {{ dadoPassageiro.valorPassagem|number_format(2,',','.') }}</strong><br/>
+                            Taxas:
+                            <strong>R$ {{ compra.viagem.valorTaxas|number_format(2,',','.') }}</strong><br/>
+                            {% if dadoPassageiro.total_bagagens|default(false) %}
+                                Bagagens extra:
+                                <strong>R$ {{ dadoPassageiro.total_bagagens|number_format(2,',','.') }}</strong>
+                                <br/>
+                            {% endif %}
+                        </p>
+                        <hr/>
+                        <p class="card-text">Total:
+                            <strong>R$ {{ dadoPassageiro.total|number_format(2,',','.') }}</strong></p>
+                    </div>
+                </div>
+
+            {% endfor %}
+
+
+        </div>
+    </div>
+
+{% endblock %}

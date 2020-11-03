@@ -2,6 +2,9 @@
 
 
 {% block conteudo %}
+    
+    {% set compra = app.session.get('compra') %}
+    {% set totais = compra.getTotais() %}
 
     <div class="card">
 
@@ -29,29 +32,29 @@
             <div class="card bg-light">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.origemEstado }}
-                            até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
+                        <strong>De {{ compra.viagem.itinerario.origemCidade }}-{{ compra.viagem.itinerario.origemEstado }}
+                            até {{ compra.viagem.itinerario.destinoCidade }}-{{ compra.viagem.itinerario.destinoEstado }}</strong>
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">
-                        Saída: {{ viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
-                        Retorno: {{ viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
+                        Saída: {{ compra.viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
+                        Retorno: {{ compra.viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
                     </h6>
                     <p class="card-text">
                         Total Passagens:
-                        <strong>R$ {{ app.session.get('totais').passagens|number_format(2,',','.') }}</strong><br/>
+                        <strong>R$ {{ totais.passagens|number_format(2,',','.') }}</strong><br/>
                         Total Bagagens Extra:
-                        <strong>R$ {{ app.session.get('totais').bagagens|number_format(2,',','.') }}</strong><br/>
+                        <strong>R$ {{ totais.bagagens|number_format(2,',','.') }}</strong><br/>
                         Total Taxas:
-                        <strong>R$ {{ app.session.get('totais').taxas|number_format(2,',','.') }}</strong><br/>
+                        <strong>R$ {{ totais.taxas|number_format(2,',','.') }}</strong><br/>
                     <hr/>
                     Total Geral:
-                    <strong>R$ {{ app.session.get('totais').geral|number_format(2,',','.') }}</strong><br/>
+                    <strong>R$ {{ totais.geral|number_format(2,',','.') }}</strong><br/>
                     </p>
                 </div>
             </div>
 
-            {% if app.session.get('dadosPassageiros')|default(false) %}
-                {% for dadoPassageiro in app.session.get('dadosPassageiros') %}
+            {% if compra.dadosPassageiros|default(false) %}
+                {% for dadoPassageiro in compra.dadosPassageiros %}
 
                     <div class="card">
                         <div class="card-body">
@@ -67,7 +70,7 @@
                                 Passagem:
                                 <strong>R$ {{ dadoPassageiro.valorPassagem|number_format(2,',','.') }}</strong><br/>
                                 Taxas:
-                                <strong>R$ {{ viagem.valorTaxas|number_format(2,',','.') }}</strong><br/>
+                                <strong>R$ {{ compra.viagem.valorTaxas|number_format(2,',','.') }}</strong><br/>
                                 {% if dadoPassageiro.total_bagagens|default(false) %}
                                     Bagagens extra:
                                     <strong>R$ {{ dadoPassageiro.total_bagagens|number_format(2,',','.') }}</strong>

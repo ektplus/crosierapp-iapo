@@ -80,6 +80,7 @@ class Cliente implements EntityId
      *
      * @ORM\Column(name="email", type="string")
      * @Groups("entity")
+     * @NotUppercase()
      *
      * @var string|null
      */

@@ -9,8 +9,19 @@
 
 
             <div class="row">
-                <div class="col-12">
-                    <h3>Viagens Disponíveis</h3>
+                <div class="col-sm-4">
+                    <h3>Viagens</h3>
+                </div>
+                <div class="col-sm-8 text-right">
+                    {% if not (app.session.get('idClienteLogado')|default(false)) %}
+                        <a role="button" href="{{ url('tur_app_login') }}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    {% else %}
+                        <a role="button" href="{{ url('tur_app_menuCliente') }}" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Minha conta
+                        </a>
+                    {% endif %}
                 </div>
 
             </div>

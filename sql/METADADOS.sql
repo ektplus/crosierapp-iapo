@@ -304,6 +304,7 @@ CREATE TABLE `iapo_tur_cliente`
     `user_updated_id`    bigint(20)   NOT NULL,
 
     UNIQUE KEY UK_iapo_tur_cliente (`cpf`),
+    UNIQUE KEY UK_iapo_tur_cliente_email (`email`),
 
     PRIMARY KEY (`id`),
 

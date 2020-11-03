@@ -10,6 +10,9 @@
 
 {% block down_scripts %}
 
+    {% set compra = app.session.get('compra') %}
+    {% set totais = compra.getTotais() %}
+
     <script>
 
         $(document).ready(function () {
@@ -29,7 +32,7 @@
             });
 
             checkout.open({
-                amount: {{ app.session.get('totais').geral|number_format(2,'','') }},
+                amount: {{ totais.geral|number_format(2,'','') }},
                 postbackUrl: '{{ postbackUrl }}',
                 customerData: 'true',
                 paymentMethods: 'credit_card',
@@ -37,7 +40,7 @@
                 items: [{
                     id: '1',
                     title: 'VIACAO IAPO PASSAGENS',
-                    unit_price: {{ app.session.get('totais').geral|number_format(2,'','') }},
+                    unit_price: {{ totais.geral|number_format(2,'','') }},
                     quantity: 1,
                     tangible: 'false',
                 }]

@@ -11,7 +11,9 @@ use App\EntityHandler\Turismo\CompraEntityHandler;
 use App\EntityHandler\Turismo\PassageiroEntityHandler;
 use App\Repository\Turismo\ViagemRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
+use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
+use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ArrayUtils\ArrayUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Doctrine\DBAL\Connection;
@@ -19,6 +21,9 @@ use PagarMe\Client;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -275,54 +280,27 @@ class CompraController extends FormListController
     {
         $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
 
+        $compra = $session->get('compra');
+        if (!$compra) {
+            $compra = new Compra();
+        }
+        $compra->viagem = $viagem;
+
+        $compra->jsonData['dadosPassageiros'] = $session->get('dadosPassageiros');
+
         $opcaoCompra = $session->get('opcaoCompra');
 
-        $totais = [
-            'passagens' => 0,
-            'taxas' => 0,
-            'bagagens' => 0,
-            'geral' => 0,
-        ];
+        $compra->jsonData['opcaoCompra'] = $opcaoCompra;
 
-        if ($opcaoCompra === 'selecionarPoltronas' or $opcaoCompra === 'passagens') {
-            $rDadosPassageiros = $session->get('dadosPassageiros');
-            $dadosPassageiros = [];
-            foreach ($rDadosPassageiros as $rDadoPassageiro) {
 
-                $rDadoPassageiro['total_bagagens'] = 0;
-                if ($rDadoPassageiro['qtdeBagagens'] > 1) {
-                    $rDadoPassageiro['total_bagagens'] = bcmul($rDadoPassageiro['qtdeBagagens'] - 1, $viagem->valorBagagem, 2);
-                    $totais['bagagens'] = bcadd($totais['bagagens'], $rDadoPassageiro['total_bagagens'], 2);
-                }
-
-                if ($opcaoCompra === 'selecionarPoltronas') {
-                    $rDadoPassageiro['valorPassagem'] = $viagem->getValorPassagemComEscolhaPoltrona();
-                } else {
-                    $rDadoPassageiro['valorPassagem'] = $viagem->valorPoltrona;
-                }
-
-                $totais['passagens'] = bcadd($totais['passagens'], $rDadoPassageiro['valorPassagem'], 2);
-                $totais['taxas'] = bcadd($totais['taxas'], $viagem->valorTaxas, 2);
-                $totais['geral'] = $totais['passagens'] + $totais['taxas'] + $totais['bagagens'];
-
-                $rDadoPassageiro['total'] = $rDadoPassageiro['total_bagagens'] + $viagem->valorTaxas + $rDadoPassageiro['valorPassagem'];
-                $rDadoPassageiro['nome'] = mb_strtoupper($rDadoPassageiro['nome']);
-                $dadosPassageiros[] = $rDadoPassageiro;
-            }
-            $session->set('dadosPassageiros', $dadosPassageiros);
-
-        } else if ($opcaoCompra === 'bagagens') {
-            $totais['bagagens'] = bcmul($viagem->valorBagagem, $session->get('qtde'), 2);
-            $totais['geral'] = bcmul($viagem->valorBagagem, $session->get('qtde'), 2);
-        } else {
+        if (!in_array($opcaoCompra, ['selecionarPoltronas', 'passagens', 'bagagens'])) {
             $this->addFlash('error', 'Opção de compra inválida');
             return $this->redirectToRoute('tur_app_compra_opcaoCompra', ['viagem' => $viagem->getId()]);
         }
 
-        $session->set('totais', $totais);
+        $session->set('compra', $compra);
 
-        $params['viagem'] = $viagem;
-        return $this->render('Turismo/App/form_passagem_resumo.html.twig', $params);
+        return $this->render('Turismo/App/form_passagem_resumo.html.twig', []);
     }
 
 
@@ -353,28 +331,32 @@ class CompraController extends FormListController
 
 
     /**
-     * @Route("/app/tur/compra/login", name="tur_app_compra_login")
+     * @Route("/app/tur/compra/doLogin", name="tur_app_compra_doLogin")
      * @param Request $request
      * @param SessionInterface $session
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function login(Request $request, SessionInterface $session)
+    public function doLogin(Request $request, SessionInterface $session)
     {
         try {
-            $conn = $this->getDoctrine()->getConnection();
-            $cpf = preg_replace('/[^\d]/', '', $request->get('cpf'));
-            $senha = $request->get('senha');
-            if ($cpf && $senha) {
-                $rsCliente = $conn->fetchAll('SELECT * FROM iapo_tur_cliente WHERE cpf LIKE :cpf',
-                    ['cpf' => $cpf]);
-                if ((count($rsCliente[0]) > 0) && (password_verify($senha, $rsCliente[0]['senha']))) {
-                    $session->set('idClienteLogado', $rsCliente[0]['id']);
-                    return $this->redirectToRoute('tur_app_compra_pagto');
+            $cpf = $request->get('cpf');
+            if ($cpf) {
+                $conn = $this->getDoctrine()->getConnection();
+                $cpf = preg_replace('/[^\d]/', '', $cpf);
+                $senha = $request->get('senha');
+                if ($cpf && $senha) {
+                    $rsCliente = $conn->fetchAll('SELECT * FROM iapo_tur_cliente WHERE cpf LIKE :cpf',
+                        ['cpf' => $cpf]);
+                    if ((count($rsCliente[0]) > 0) && (password_verify($senha, $rsCliente[0]['senha']))) {
+                        $session->set('idClienteLogado', $rsCliente[0]['id']);
+                        $redirectTo = $request->get('redirectTo') ?? 'tur_app_compra_pagto';
+                        return $this->redirectToRoute($redirectTo);
+                    } else {
+                        throw new ViewException('CPF/Senha inválidos');
+                    }
                 } else {
                     throw new ViewException('CPF/Senha inválidos');
                 }
-            } else {
-                throw new ViewException('CPF/Senha inválidos');
             }
         } catch (\Exception $e) {
             $errMsg = 'Ocorreu um erro ao efetuar o login';
@@ -430,19 +412,22 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/pagto", name="tur_app_compra_pagto")
      * @param Request $request
      * @param SessionInterface $session
+     * @param MailerInterface $mailer
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
      */
-    public function pagto(Request $request, SessionInterface $session)
+    public function pagto(Request $request, SessionInterface $session, MailerInterface $mailer)
     {
         if ($request->get('result')) {
             try {
                 $result = $request->get('result');
 
-                if ($session->get('compra')) {
+                $compraId = $session->get('compraId');
+                if ($compraId) {
                     $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
+                    /** @var Compra $compra */
                     $compra = $repoCompra->find($session->get('compra'));
                 } else {
-                    $compra = new Compra();
+                    $compra = $session->get('compra');
                 }
 
                 $compra_jsonData['dadosPassageiros'] = $session->get('dadosPassageiros');
@@ -458,12 +443,11 @@ class CompraController extends FormListController
                 $compra->cliente = $cliente;
 
                 $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
-                $compra->viagem = $viagem;
 
                 $compra->dtCompra = new \DateTime();
 
 
-                $totalGeral = $session->get('totais')['geral'];
+                $totalGeral = $compra->getTotais()['geral'];
                 if (!$totalGeral) {
                     throw new ViewException('totalGeral n/d');
                 }
@@ -482,11 +466,17 @@ class CompraController extends FormListController
                     $compra_jsonData['token'] = $token;
                     $compra_jsonData['payment_method'] = $payment_method;
 
-                    $pagarme = new Client('ak_test_kvwHf3f5dWpGSI2zH18gJrDhMM3AXl');
+                    /** @var AppConfigRepository $repoAppConfig */
+                    $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+                    $appConfig_pagarmekey = $repoAppConfig->findAppConfigByChave('pagarme.key');
+
+                    $pagarme = new Client($appConfig_pagarmekey->getValor());
                     $transactions = $pagarme->transactions()->get(['id' => $token]);
                     $compra_jsonData['pagarme_transaction'] = (array)$transactions;
 
                     $compra->status = 'PAGAMENTO RECEBIDO';
+
+                    $this->emailCompraEfetuada($mailer, $compra);
 
                     $this->addFlash('success', 'Em breve você receberá um e-mail com os dados de sua compra.');
                 } else {
@@ -515,7 +505,9 @@ class CompraController extends FormListController
                     }
                 }
 
-                $session->set('compra', $compra->getId());
+                // remove o atributo 'objeto' agora em favor do id da entidade
+                $session->remove('compra');
+                $session->set('compraId', $compra->getId());
 
             } catch (\Exception $e) {
                 $errMsg = 'Ocorreu um erro';
@@ -536,10 +528,10 @@ class CompraController extends FormListController
             $params['totais'] = $session->get('totais');
 
             $params['postbackUrl'] = 'https://iapo.crosier.iapo.com.br/app/tur/compra/pagarmeCallback';
-            // $params['postbackUrl'] = 'http://ff61070e2f7c.ngrok.io/app/tur/compra/pagarmeCallback';
 
             return $this->render('Turismo/App/form_passagem_pagto.html.twig', $params);
         }
+        return null;
     }
 
 
@@ -552,14 +544,14 @@ class CompraController extends FormListController
     public function pagarmeCallback(Request $request)
     {
         try {
-            $pagarme = new Client('ak_test_kvwHf3f5dWpGSI2zH18gJrDhMM3AXl');
+            $pagarme = new Client($_SERVER['pagarme.key']);
             $signature = $request->server->get('HTTP_X_HUB_SIGNATURE');
             $isValidPostback = $pagarme->postbacks()->validate($request->getContent(), $signature);
             if ($isValidPostback) {
                 $pagarme_transaction_id = $request->get('id');
                 /** @var Connection $conn */
                 $conn = $this->getDoctrine()->getConnection();
-                $rsCompraId = $conn->fetchAll('SELECT id FROM iapo_tur_compra WHERE json_data->>"$.pagarme_transaction.id" = :pagarme_transaction_id', ['pagarme_transaction_id' => $pagarme_transaction_id]);
+                $rsCompraId = $conn->fetchAllAssociative('SELECT id FROM iapo_tur_compra WHERE json_data->>"$.pagarme_transaction.id" = :pagarme_transaction_id', ['pagarme_transaction_id' => $pagarme_transaction_id]);
                 if ($rsCompraId[0]['id'] ?? false) {
                     $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
                     /** @var Compra $compra */
@@ -595,21 +587,58 @@ class CompraController extends FormListController
 
 
     /**
-     *
-     * @Route("/app/tur/compra/ver", name="tur_app_compra_ver")
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @param MailerInterface $mailer
+     * @param Compra $compra
+     * @return null
+     * @throws ViewException
      */
-    public function ver()
+    public function emailCompraEfetuada(MailerInterface $mailer, Compra $compra)
     {
+        try {
+            $params['compra'] = $compra;
+            $body = $this->renderView('Turismo/App/emails/compra_efetuada.html.twig', $params);
+            $email = (new Email())
+                ->from('app@iapo.com.br')
+                ->to($compra->cliente->email)
+                ->subject('Compra efetuada com sucesso!')
+                ->html($body);
+            $mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            throw new ViewException('Erro ao enviar e-mail');
+        }
+    }
 
-//        $pagarme = new Client('ak_test_kvwHf3f5dWpGSI2zH18gJrDhMM3AXl');
-//
-//        $model_id = 'test_transaction_Td5J0x4WHyP1VrxQxahcoM58rMHe26';
-//
-//        $transactions = $pagarme->transactions()->get(['id' => $model_id]);
 
-        return new Response('<h1>ok');
+    /**
+     *
+     * @Route("/app/tur/compra/ver/{compra}", name="tur_app_compra_ver")
+     */
+    public function ver(Compra $compra)
+    {
+        $params['compra'] = $compra;
+        return $this->render('Turismo/App/emails/compra_efetuada.html.twig', $params);
+    }
+
+
+    /**
+     *
+     * @Route("/app/tur/menuCliente", name="tur_app_menuCliente")
+     */
+    public function menuCliente()
+    {
+        $params = [];
+        return $this->render('Turismo/App/menu_cliente.html.twig', $params);
+    }
+
+    /**
+     *
+     * @Route("/app/tur/login", name="tur_app_login")
+     */
+    public function login()
+    {
+        return $this->render('Turismo/App/form_passagem_login.html.twig');
     }
 
 
 }
+

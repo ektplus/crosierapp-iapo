@@ -65,7 +65,7 @@ class ViagemRepository extends FilterRepository
     {
         try {
             $dtIni = DateTimeUtils::parseDateStr(substr($dts, 0, 10));
-            $hoje = (new \DateTime())->setTime(12, 0);
+            $hoje = (new \DateTime());//->setTime(12, 0); // precisa levar em consideração viagens do mesmo dia porém que já passaram do horário
             if ($hoje->diff((clone $dtIni)->setTime(12, 0))->days > 0) {
                 $dtIni = $hoje;
             }
@@ -140,6 +140,7 @@ class ViagemRepository extends FilterRepository
         } catch (\Throwable $e) {
             throw new ViewException('Erro ao verificar poltronas ocupadas');
         }
+
     }
 
 

@@ -23,14 +23,15 @@
                 </div>
             </div>
 
-            <form action="{{ url('tur_app_compra_login') }}" method="post">
+            <form action="{{ url('tur_app_compra_doLogin') }}" method="post">
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
                             <label for="cpf" class="required">CPF</label>
                             <input type="text" id="cpf" name="cpf"
-                                   class="form-control cpf" required
-                                   value="{{ cpf }}">
+                                   class="form-control cpf focusOnReady" required
+                                   value="{{ cpf|default('') }}">
+                            <input type="hidden" name="redirectTo" value="{{ url(redirectTo|default(false) ? redirectTo : 'tur_app_compra_ini') }}">
                         </div>
                     </div>
                 </div>
@@ -40,7 +41,7 @@
                         <div class="form-group">
                             <label for="dadosCliente_senha1" class="required">Senha</label>
                             <input type="password" id="senha" name="senha"
-                                   class="form-control notuppercase focusOnReady" required
+                                   class="form-control notuppercase" required
                                    value="">
                         </div>
                     </div>
