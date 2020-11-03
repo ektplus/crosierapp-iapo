@@ -90,7 +90,7 @@ class Cliente implements EntityId
      *
      * @ORM\Column(name="senha", type="string")
      * @Groups("entity")
-     * @NotUppercase
+     * @NotUppercase()
      * @var string|null
      */
     public ?string $senha = null;
