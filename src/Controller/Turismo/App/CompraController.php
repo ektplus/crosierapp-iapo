@@ -562,6 +562,7 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/pagarmeCallback", name="tur_app_compra_pagarmeCallback")
      * @param Request $request
      * @param MailerInterface $mailer
+     * @param SyslogBusiness $syslog
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function pagarmeCallback(Request $request, MailerInterface $mailer, SyslogBusiness $syslog)
@@ -616,7 +617,7 @@ class CompraController extends FormListController
             if ($e instanceof ViewException) {
                 $errMsg = $e->getMessage();
             }
-            $syslog->info('ERRO: ' . $errMsg);
+            $syslog->info('ERRO: ' . $errMsg, $request->getContent());
             return new Response($errMsg, 401);
         }
     }
