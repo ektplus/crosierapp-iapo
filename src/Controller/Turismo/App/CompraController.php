@@ -254,30 +254,30 @@ class CompraController extends FormListController
     {
         $params = [];
 
-        try {
-            if ($request->get('dadosPassageiros')) {
-                $dadosPassageiros = $request->get('dadosPassageiros');
-                $session->set('dadosPassageiros', $dadosPassageiros);
+        if ($request->get('dadosPassageiros')) {
+            $dadosPassageiros = $request->get('dadosPassageiros');
+            $session->set('dadosPassageiros', $dadosPassageiros);
 
-                /** @var ViagemRepository $repoViagens */
-                $repoViagens = $this->getDoctrine()->getRepository(Viagem::class);
-                $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
+            /** @var ViagemRepository $repoViagens */
+            $repoViagens = $this->getDoctrine()->getRepository(Viagem::class);
+            $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
+
+            try {
                 $repoViagens->checkRGs($viagem, $dadosPassageiros);
-
                 $session->set('qtde', count($dadosPassageiros));
                 return $this->redirectToRoute('tur_app_compra_resumo');
+            } catch (ViewException $e) {
+                $this->addFlash('error', $e->getMessage());
             }
-            $rPoltronas = $request->get('poltronas');
-            if (!$rPoltronas) {
-                $this->addFlash('warn', 'É necessário selecionar ao menos 1 poltrona');
-                return $this->redirectToRoute('tur_app_compra_selecionarPoltronas', ['viagem' => $session->get('viagemId')]);
-            }
-            $params['poltronas'] = [];
-            foreach ($rPoltronas as $k => $v) {
-                $params['poltronas'][] = $k;
-            }
-        } catch (ViewException $e) {
-            $this->addFlash('error', $e->getMessage());
+        }
+        $rPoltronas = $request->get('poltronas');
+        if (!$rPoltronas) {
+            $this->addFlash('warn', 'É necessário selecionar ao menos 1 poltrona');
+            return $this->redirectToRoute('tur_app_compra_selecionarPoltronas', ['viagem' => $session->get('viagemId')]);
+        }
+        $params['poltronas'] = [];
+        foreach ($rPoltronas as $k => $v) {
+            $params['poltronas'][] = $k;
         }
 
         return $this->render('Turismo/App/form_passagem_informarDadosPassageiros.html.twig', $params);
