@@ -140,7 +140,23 @@ class ViagemRepository extends FilterRepository
         } catch (\Throwable $e) {
             throw new ViewException('Erro ao verificar poltronas ocupadas');
         }
+    }
 
+    /**
+     * @param Viagem $viagem
+     * @param array $dadosPassageiros
+     * @throws ViewException
+     */
+    public function checkRGs(Viagem $viagem, array $dadosPassageiros): void
+    {
+        foreach ($viagem->passageiros as $passageiro) {
+            foreach ($dadosPassageiros as $dadosPassageiro) {
+                if ($dadosPassageiro['rg'] === $passageiro->rg) {
+                    throw new ViewException('Passageiro com RG ' . $passageiro->rg . ' já cadastrado na viagem');
+                }
+            }
+
+        }
     }
 
 
