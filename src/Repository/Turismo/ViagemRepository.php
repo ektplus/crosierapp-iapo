@@ -23,7 +23,7 @@ class ViagemRepository extends FilterRepository
     public function buildSelect2CidadesOrigensViagensProgramadas()
     {
         $conn = $this->getEntityManager()->getConnection();
-        $rs = $conn->fetchAll('SELECT cidade_origem, estado_origem FROM iapo_tur_itinerario WHERE id IN (SELECT itinerario_id FROM iapo_tur_viagem WHERE status = \'PROGRAMADA\') GROUP BY cidade_origem, estado_origem');
+        $rs = $conn->fetchAllAssociative('SELECT cidade_origem, estado_origem FROM iapo_tur_itinerario WHERE id IN (SELECT itinerario_id FROM iapo_tur_viagem WHERE status = \'PROGRAMADA\') GROUP BY cidade_origem, estado_origem');
 
         $stmtDestinos = $conn->prepare('SELECT cidade_destino, estado_destino FROM iapo_tur_itinerario WHERE cidade_origem = :cidadeOrigem AND estado_origem = :estadoOrigem GROUP BY cidade_destino, estado_destino ORDER BY cidade_destino, estado_destino');
 

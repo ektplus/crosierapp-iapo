@@ -10,6 +10,7 @@ use App\EntityHandler\Turismo\ClienteEntityHandler;
 use App\EntityHandler\Turismo\CompraEntityHandler;
 use App\EntityHandler\Turismo\PassageiroEntityHandler;
 use App\Repository\Turismo\ViagemRepository;
+use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Entity\Config\AppConfig;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -563,11 +564,14 @@ class CompraController extends FormListController
      * @param MailerInterface $mailer
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function pagarmeCallback(Request $request, MailerInterface $mailer)
+    public function pagarmeCallback(Request $request, MailerInterface $mailer, SyslogBusiness $syslog)
     {
         try {
+            $syslog->setApp('crosierapp-iapo')->setComponent(self::class);
+            $syslog->info('pagarmeCallback...');
             $pagarme = new Client($_SERVER['pagarme.key']);
             $signature = $request->server->get('HTTP_X_HUB_SIGNATURE');
+            $syslog->info('signature: ' . $signature);
             $isValidPostback = $pagarme->postbacks()->validate($request->getContent(), $signature);
             if ($isValidPostback) {
                 $pagarme_transaction_id = $request->get('id');
@@ -578,7 +582,10 @@ class CompraController extends FormListController
                     $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
                     /** @var Compra $compra */
                     $compra = $repoCompra->find($rsCompraId[0]['id']);
+                    $syslog->info('compra: ' . $compra->getId());
                     $postback = $request->request->all();
+                    $syslog->info('postback: ' . json_encode($postback));
+
                     if ($compra->jsonData['postbacks'] ?? false) {
                         $ultimoPostback = $compra->jsonData['postbacks'][count($compra->jsonData['postbacks']) - 1];
                         ArrayUtils::rksort($ultimoPostback);
@@ -590,7 +597,7 @@ class CompraController extends FormListController
                     } else {
                         $compra->jsonData['postbacks'][] = $postback;
                     }
-                    $this->emailCompraEfetuada($mailer, $compra);
+                    $this->emailCompraEfetuada($mailer, $compra, $syslog);
                     $this->compraEntityHandler->save($compra);
                 } else {
                     throw new ViewException('Compra não encontrada para pagarme_transaction_id = "' . $pagarme_transaction_id . '"');
@@ -615,9 +622,10 @@ class CompraController extends FormListController
      * @return null
      * @throws ViewException
      */
-    public function emailCompraEfetuada(MailerInterface $mailer, Compra $compra)
+    public function emailCompraEfetuada(MailerInterface $mailer, Compra $compra, SyslogBusiness $syslog)
     {
         try {
+            $syslog->info('emailCompraEfetuada - ' . $compra->cliente->email);
             $params['compra'] = $compra;
             $body = $this->renderView('Turismo/App/emails/compra_efetuada.html.twig', $params);
             $email = (new Email())
@@ -626,7 +634,9 @@ class CompraController extends FormListController
                 ->subject('Compra efetuada com sucesso!')
                 ->html($body);
             $mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
+            $syslog->info('emailCompraEfetuada - OK');
+        } catch (\Throwable $e) {
+            $syslog->info('emailCompraEfetuada - ERRO');
             throw new ViewException('Erro ao enviar e-mail');
         }
     }
