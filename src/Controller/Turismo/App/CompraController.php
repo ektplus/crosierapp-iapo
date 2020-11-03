@@ -569,7 +569,10 @@ class CompraController extends FormListController
         try {
             $syslog->setApp('crosierapp-iapo')->setComponent(self::class);
             $syslog->info('pagarmeCallback...');
-            $pagarme = new Client($_SERVER['pagarme.key']);
+            /** @var AppConfigRepository $repoAppConfig */
+            $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+            $appConfig_pagarmekey = $repoAppConfig->findAppConfigByChave('pagarme.key');
+            $pagarme = new Client($appConfig_pagarmekey->getValor());
             $signature = $request->server->get('HTTP_X_HUB_SIGNATURE');
             $syslog->info('signature: ' . $signature);
             $isValidPostback = $pagarme->postbacks()->validate($request->getContent(), $signature);
