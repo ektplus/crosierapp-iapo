@@ -659,9 +659,11 @@ class CompraController extends FormListController
     public function reenviarEmailCompraEfetuada(MailerInterface $mailer, SyslogBusiness $syslog, Compra $compra): Response
     {
         try {
+            $syslog->info('reenviarEmailCompraEfetuada');
             $this->emailCompraEfetuada($mailer, $syslog, $compra);
             return new Response('OK');
         } catch (ViewException $e) {
+            print_r($e->getTraceAsString());
             return new Response('ERRO: ' . $e->getMessage());
         }
     }
