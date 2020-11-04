@@ -638,7 +638,6 @@ class CompraController extends FormListController
             $params['ultimosDigitos'] = $transacaoAprovada['transaction']['card']['last_digits'] ?? '****';
             $params['bandeira'] = $transacaoAprovada['transaction']['card_brand'] ?? 'N/D';
             $params['nsu'] = $transacaoAprovada['transaction']['nsu'] ?? 'N/D';
-
             $body = $this->renderView('Turismo/App/emails/compra_efetuada.html.twig', $params);
             $email = (new Email())
                 ->from('app@iapo.com.br')

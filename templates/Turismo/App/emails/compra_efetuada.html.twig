@@ -63,20 +63,16 @@
                             Telefone: {{ dadoPassageiro.fone }}<br/>
                         </h6>
                         <p class="card-text">
-                            Passagem:
-                            <strong>R$ {{ compra.viagem.valorPassagem|number_format(2,',','.') }}</strong><br/>
-                            Taxas:
-                            <strong>R$ {{ compra.viagem.valorTaxas|number_format(2,',','.') }}</strong><br/>
-                            {% if dadoPassageiro.total_bagagens|default(false) %}
-                                Bagagens extra:
-                                <strong>R$ {{ dadoPassageiro.total_bagagens|number_format(2,',','.') }}</strong>
-                                <br/>
-                            {% endif %}
-                        </p>
+                            Total Passagens:
+                            <strong>R$ {{ compra.getTotais().passagens|number_format(2,',','.') }}</strong><br/>
+                            Total Bagagens Extra:
+                            <strong>R$ {{ compra.getTotais().bagagens|number_format(2,',','.') }}</strong><br/>
+                            Total Taxas:
+                            <strong>R$ {{ compra.getTotais().taxas|number_format(2,',','.') }}</strong><br/>
                         <hr/>
-                        <p class="card-text">Total:
-                            <strong>R$ {{ dadoPassageiro.total|number_format(2,',','.') }}</strong></p>
-                    </div>
+                        Total Geral:
+                        <strong>R$ {{ compra.getTotais().geral|number_format(2,',','.') }}</strong><br/>
+                        </p>
                 </div>
 
             {% endfor %}
