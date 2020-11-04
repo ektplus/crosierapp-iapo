@@ -27,7 +27,8 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Nome</th>
-                            <th scope="col">CPF</th>
+                            <th scope="col">RG</th>
+                            <th scope="col">Info</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
@@ -37,7 +38,11 @@
                             <tr>
                                 <td>{{ loop.index }}</td>
                                 <td>{{ passageiro.nome }}</td>
-                                <td><span class="cpf">{{ passageiro.cpf }}</span></td>
+                                <td><span class="cpf">{{ passageiro.rg }}</span></td>
+                                <td>
+                                    Poltrona: {{ passageiro.poltrona|default('?') }}<br>
+                                    Compra: {{ passageiro.jsonData.compra_id|default(0)|strpad(7) }}<br>
+                                </td>
                                 <td class="text-right">
                                         <button type="button" class="btn btn-sm btn-primary"
                                                 onclick="window.location.href='{{ url('viagem_passageiro_form', {'viagem': e.id, 'passageiro': passageiro.id} ) }}'">

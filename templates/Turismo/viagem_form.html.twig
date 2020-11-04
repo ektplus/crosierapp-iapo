@@ -39,6 +39,14 @@
                         <a class="nav-link" id="passageiros-tab" data-toggle="tab" href="#passageiros" role="tab"
                            aria-controls="profile" aria-selected="false">Passageiros</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="croqui-tab" data-toggle="tab" href="#croqui" role="tab"
+                           aria-controls="profile" aria-selected="false">Croqui</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="compras-tab" data-toggle="tab" href="#compras" role="tab"
+                           aria-controls="profile" aria-selected="false">Compras</a>
+                    </li>
                 </ul>
 
                 <div class="form-group row">
@@ -59,6 +67,8 @@
 
                     {{ include('Turismo/viagem_form_cabecalho.html.twig') }}
                     {{ include('Turismo/viagem_form_passageiros.html.twig') }}
+                    {{ include('Turismo/viagem_form_croqui.html.twig') }}
+                    {{ include('Turismo/viagem_form_compras.html.twig') }}
 
                 </div>
 

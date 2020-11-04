@@ -8,6 +8,7 @@ use App\EntityHandler\Turismo\PassageiroEntityHandler;
 use App\EntityHandler\Turismo\ViagemEntityHandler;
 use App\Form\Turismo\PassageiroType;
 use App\Form\Turismo\ViagemType;
+use App\Repository\Turismo\ViagemRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
@@ -72,6 +73,9 @@ class ViagemController extends FormListController
             'formRoute' => 'viagem_form',
             'formPageTitle' => 'Viagem'
         ];
+        /** @var ViagemRepository $repoViagem */
+        $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
+        $params['poltronas'] = $repoViagem->handlePoltronas($viagem);
         return $this->doForm($request, $viagem, $params);
     }
 

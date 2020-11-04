@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -515,7 +516,7 @@ class CompraController extends FormListController
                     foreach ($compra_jsonData['dadosPassageiros'] as $dadosPassageiro) {
                         $passageiro = new Passageiro();
                         $passageiro->viagem = $viagem;
-                        $passageiro->nome = $dadosPassageiro['nome'];
+                        $passageiro->nome = mb_strtoupper($dadosPassageiro['nome']);
                         $passageiro->rg = $dadosPassageiro['rg'];
                         $passageiro->foneCelular = $dadosPassageiro['fone'] ?? '';
                         $passageiro->poltrona = $dadosPassageiro['poltrona'];
@@ -640,7 +641,7 @@ class CompraController extends FormListController
             $params['nsu'] = $transacaoAprovada['transaction']['nsu'] ?? 'N/D';
             $body = $this->renderView('Turismo/App/emails/compra_efetuada.html.twig', $params);
             $email = (new Email())
-                ->from('app@iapo.com.br')
+                ->from(new Address('app@iapo.com.br', 'Iapó'))
                 ->to($compra->cliente->email)
                 ->subject('Compra efetuada com sucesso!')
                 ->html($body);
@@ -675,6 +676,8 @@ class CompraController extends FormListController
     /**
      *
      * @Route("/app/tur/compra/ver/{compra}", name="tur_app_compra_ver")
+     * @param Compra $compra
+     * @return Response
      */
     public function ver(Compra $compra)
     {

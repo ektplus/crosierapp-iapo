@@ -183,6 +183,17 @@ class Viagem implements EntityId
 
     /**
      *
+     * @ORM\OneToMany(
+     *      targetEntity="Compra",
+     *      mappedBy="compra",
+     *      orphanRemoval=true)
+     * @var null|Compra[]|array|Collection
+     * @Groups("entity")
+     */
+    public $compras = null;
+
+    /**
+     *
      * @ORM\Column(name="json_data", type="json")
      * @var null|array
      * @NotUppercase()
@@ -194,6 +205,7 @@ class Viagem implements EntityId
     public function __construct()
     {
         $this->passageiros = new ArrayCollection();
+        $this->compras = new ArrayCollection();
     }
 
     public function getValorPassagemComEscolhaPoltrona()

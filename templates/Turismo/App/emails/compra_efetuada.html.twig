@@ -1,11 +1,24 @@
-{% extends 'Turismo/App/form_passagem_base.html.twig' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
 
-
-{% block conteudo %}
-
+</head>
+<body>
+<div class="container-fluid">
     <div class="card">
 
         <div class="card-header">
+
+            <div class="row mt-3 mb-2">
+                <div class="col-12 text-center">
+                    <a href="{{ url('tur_app_compra_ini') }}">
+                        <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
+                             alt="Card image cap">
+                    </a>
+                </div>
+            </div>
 
 
             <div class="row">
@@ -23,7 +36,7 @@
             <div class="card bg-light">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <strong>De {{ compra.viagem.itinerario.origemCidade }}-{{ compra.viagem.itinerario.origemEstado }}
+                        Itinerário: <strong>De {{ compra.viagem.itinerario.origemCidade }}-{{ compra.viagem.itinerario.origemEstado }}
                             até {{ compra.viagem.itinerario.destinoCidade }}-{{ compra.viagem.itinerario.destinoEstado }}</strong>
                     </h5>
                     <h6 class="card-subtitle mb-2 text-muted">
@@ -42,9 +55,9 @@
                     <strong>R$ {{ compra.getTotais().geral|number_format(2,',','.') }}</strong><br/>
                     <p>
                         CARTÃO DE CRÉDITO<br>
-                        **** **** **** {{ ultimosDigitos }}<br>
-                        Bandeira: <b>{{ bandeira|upper }}</b><br>
-                        NSU: <b>{{ nsu }}</b><br>
+                        **** **** **** {{ ultimosDigitos|default('****') }}<br>
+                        Bandeira: <b>{{ bandeira|default('N/D')|upper }}</b><br>
+                        NSU: <b>{{ nsu|default('N/D') }}</b><br>
                     </p>
                 </div>
             </div>
@@ -52,33 +65,30 @@
 
             {% for dadoPassageiro in compra.jsonData.dadosPassageiros %}
 
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <strong>{{ dadoPassageiro.nome }}</strong>
-                        </h5>
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h5><strong>{{ dadoPassageiro.nome }}</strong></h5>
+
                         <h6 class="card-subtitle mb-2 text-muted">
                             Poltrona: {{ dadoPassageiro.poltrona }}<br/>
                             RG: {{ dadoPassageiro.rg }}<br/>
                             Telefone: {{ dadoPassageiro.fone }}<br/>
                         </h6>
-                        <p class="card-text">
-                            Total Passagens:
-                            <strong>R$ {{ compra.getTotais().passagens|number_format(2,',','.') }}</strong><br/>
-                            Total Bagagens Extra:
-                            <strong>R$ {{ compra.getTotais().bagagens|number_format(2,',','.') }}</strong><br/>
-                            Total Taxas:
-                            <strong>R$ {{ compra.getTotais().taxas|number_format(2,',','.') }}</strong><br/>
-                        <hr/>
-                        Total Geral:
-                        <strong>R$ {{ compra.getTotais().geral|number_format(2,',','.') }}</strong><br/>
-                        </p>
+
+                    </div>
                 </div>
 
-            {% endfor %}
+                {% endfor %}
 
 
+            </div>
         </div>
     </div>
 
-{% endblock %}
+
+</body>
+</html>
+
+
+
