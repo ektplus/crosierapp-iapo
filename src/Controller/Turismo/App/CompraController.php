@@ -22,7 +22,6 @@ use PagarMe\Client;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
@@ -603,7 +602,7 @@ class CompraController extends FormListController
                     } else {
                         $compra->jsonData['postbacks'][] = $postback;
                     }
-                    $this->emailCompraEfetuada($mailer, $compra, $syslog);
+                    $this->emailCompraEfetuada($mailer, $syslog, $compra);
                     $this->compraEntityHandler->save($compra);
                 } else {
                     throw new ViewException('Compra não encontrada para pagarme_transaction_id = "' . $pagarme_transaction_id . '"');
@@ -626,10 +625,11 @@ class CompraController extends FormListController
     /**
      * @param MailerInterface $mailer
      * @param Compra $compra
+     * @param SyslogBusiness $syslog
      * @return null
      * @throws ViewException
      */
-    public function emailCompraEfetuada(MailerInterface $mailer, Compra $compra, SyslogBusiness $syslog)
+    public function emailCompraEfetuada(MailerInterface $mailer, SyslogBusiness $syslog, Compra $compra)
     {
         try {
             $syslog->info('emailCompraEfetuada - ' . $compra->cliente->email);
@@ -643,11 +643,28 @@ class CompraController extends FormListController
             $mailer->send($email);
             $syslog->info('emailCompraEfetuada - OK');
         } catch (\Throwable $e) {
-            $syslog->info('emailCompraEfetuada - ERRO');
+            $syslog->info('emailCompraEfetuada - ERRO', $e->getMessage());
             throw new ViewException('Erro ao enviar e-mail');
         }
     }
 
+    /**
+     *
+     * @Route("/app/tur/compra/reenviarEmailCompraEfetuada/{compra}", name="tur_app_compra_reenviarEmailCompraEfetuada")
+     * @param MailerInterface $mailer
+     * @param SyslogBusiness $syslog
+     * @param Compra $compra
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
+    public function reenviarEmailCompraEfetuada(MailerInterface $mailer, SyslogBusiness $syslog, Compra $compra): Response
+    {
+        try {
+            $this->emailCompraEfetuada($mailer, $syslog, $compra);
+            return new Response('OK');
+        } catch (ViewException $e) {
+            return new Response('ERRO: ' . $e->getMessage());
+        }
+    }
 
     /**
      *
