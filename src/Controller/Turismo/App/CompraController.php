@@ -294,7 +294,6 @@ class CompraController extends FormListController
     {
         $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
 
-
         $compraId = $session->get('compraId');
         if ($compraId) {
             $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
@@ -313,7 +312,6 @@ class CompraController extends FormListController
         $opcaoCompra = $session->get('opcaoCompra');
 
         $compra->jsonData['opcaoCompra'] = $opcaoCompra;
-
 
         if (!in_array($opcaoCompra, ['selecionarPoltronas', 'passagens', 'bagagens'])) {
             $this->addFlash('error', 'Opção de compra inválida');
@@ -634,6 +632,13 @@ class CompraController extends FormListController
         try {
             $syslog->info('emailCompraEfetuada - ' . $compra->cliente->email);
             $params['compra'] = $compra;
+
+            $transacaoAprovada = $compra->getPostbackTransacaoAprovada();
+
+            $params['ultimosDigitos'] = $transacaoAprovada['transaction']['card']['last_digits'] ?? '****';
+            $params['bandeira'] = $transacaoAprovada['transaction']['card_brand'] ?? 'N/D';
+            $params['nsu'] = $transacaoAprovada['transaction']['nsu'] ?? 'N/D';
+
             $body = $this->renderView('Turismo/App/emails/compra_efetuada.html.twig', $params);
             $email = (new Email())
                 ->from('app@iapo.com.br')

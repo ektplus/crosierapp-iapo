@@ -111,7 +111,8 @@ class ViagemType extends AbstractType
             'attr' => [
                 'class' => 'crsr-money'
             ],
-            'required' => false
+            'required' => false,
+            'help' => 'Custo total da viagem',
         ]);
 
         /** @var AgenciaRepository $repoAgencia */
