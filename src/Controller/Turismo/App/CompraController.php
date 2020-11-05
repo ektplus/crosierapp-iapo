@@ -631,7 +631,7 @@ class CompraController extends FormListController
     public function emailCompraEfetuada(MailerInterface $mailer, SyslogBusiness $syslog, Compra $compra)
     {
         try {
-            $syslog->info('emailCompraEfetuada - ' . $compra->cliente->email);
+            $syslog->info('emailCompraEfetuada - id:' . $compra->getId() . ' - e-mail: ' . $compra->cliente->email);
             $params['compra'] = $compra;
 
             $transacaoAprovada = $compra->getPostbackTransacaoAprovada();

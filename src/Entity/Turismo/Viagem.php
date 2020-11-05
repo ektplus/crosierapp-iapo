@@ -177,7 +177,6 @@ class Viagem implements EntityId
      *      mappedBy="viagem",
      *      orphanRemoval=true)
      * @var null|Passageiro[]|array|Collection
-     * @Groups("entity")
      */
     public $passageiros = null;
 
@@ -185,10 +184,9 @@ class Viagem implements EntityId
      *
      * @ORM\OneToMany(
      *      targetEntity="Compra",
-     *      mappedBy="compra",
+     *      mappedBy="viagem",
      *      orphanRemoval=true)
      * @var null|Compra[]|array|Collection
-     * @Groups("entity")
      */
     public $compras = null;
 
