@@ -19,6 +19,7 @@ use CrosierSource\CrosierLibBaseBundle\Utils\ArrayUtils\ArrayUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
 use Doctrine\DBAL\Connection;
 use PagarMe\Client;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -34,11 +35,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class CompraController extends FormListController
 {
 
+    private SyslogBusiness $syslog;
+
     private ClienteEntityHandler $clienteEntityHandler;
 
     private CompraEntityHandler $compraEntityHandler;
 
     private PassageiroEntityHandler $passageiroEntityHandler;
+
+    /**
+     * @required
+     * @param SyslogBusiness $syslog
+     */
+    public function setSyslog(SyslogBusiness $syslog): void
+    {
+        $this->syslog->setApp('crosierapp-iapo')->setComponent(self::class);
+        $this->syslog = $syslog;
+    }
+
 
     /**
      * @return ClienteEntityHandler
@@ -355,7 +369,7 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/doLogin", name="tur_app_compra_doLogin")
      * @param Request $request
      * @param SessionInterface $session
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      */
     public function doLogin(Request $request, SessionInterface $session)
     {
@@ -386,8 +400,8 @@ class CompraController extends FormListController
             }
             $session->set('idClienteLogado', false);
             $this->addFlash('error', $errMsg);
-            return $this->render('Turismo/App/form_passagem_login.html.twig', ['cpf' => $cpf ?? '']);
         }
+        return $this->render('Turismo/App/form_passagem_login.html.twig', ['cpf' => $cpf ?? '']);
     }
 
 
@@ -560,25 +574,23 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/pagarmeCallback", name="tur_app_compra_pagarmeCallback")
      * @param Request $request
      * @param MailerInterface $mailer
-     * @param SyslogBusiness $syslog
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function pagarmeCallback(Request $request, MailerInterface $mailer, SyslogBusiness $syslog)
+    public function pagarmeCallback(Request $request, MailerInterface $mailer)
     {
         try {
-            $syslog->setApp('crosierapp-iapo')->setComponent(self::class);
-            $syslog->info('pagarmeCallback...');
+            $this->syslog->info('pagarmeCallback...');
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
             $appConfig_pagarmekey = $repoAppConfig->findAppConfigByChave('pagarme.key');
             $pagarme = new Client($appConfig_pagarmekey->getValor());
             $signature = $request->server->get('HTTP_X_HUB_SIGNATURE');
-            $syslog->info('signature: ' . $signature);
+            $this->syslog->info('signature: ' . $signature);
             $isValidPostback = $pagarme->postbacks()->validate($request->getContent(), $signature);
 
             if ($isValidPostback) {
                 $pagarme_transaction_id = $request->get('id');
-                $syslog->info('pagarme_transaction_id: ' . $pagarme_transaction_id);
+                $this->syslog->info('pagarme_transaction_id: ' . $pagarme_transaction_id);
                 /** @var Connection $conn */
                 $conn = $this->getDoctrine()->getConnection();
                 $rsCompraId = $conn->fetchAllAssociative('SELECT id FROM iapo_tur_compra WHERE json_data->>"$.pagarme_transaction.id" = :pagarme_transaction_id', ['pagarme_transaction_id' => $pagarme_transaction_id]);
@@ -586,9 +598,9 @@ class CompraController extends FormListController
                     $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
                     /** @var Compra $compra */
                     $compra = $repoCompra->find($rsCompraId[0]['id']);
-                    $syslog->info('compra: ' . $compra->getId());
+                    $this->syslog->info('compra: ' . $compra->getId());
                     $postback = $request->request->all();
-                    $syslog->info('postback: ' . json_encode($postback));
+                    $this->syslog->info('postback: ' . json_encode($postback));
 
                     if ($compra->jsonData['postbacks'] ?? false) {
                         $ultimoPostback = $compra->jsonData['postbacks'][count($compra->jsonData['postbacks']) - 1];
@@ -601,7 +613,7 @@ class CompraController extends FormListController
                     } else {
                         $compra->jsonData['postbacks'][] = $postback;
                     }
-                    $this->emailCompraEfetuada($mailer, $syslog, $compra);
+                    $this->emailCompraEfetuada($mailer, $compra);
                     $this->compraEntityHandler->save($compra);
                 } else {
                     throw new ViewException('Compra não encontrada para pagarme_transaction_id = "' . $pagarme_transaction_id . '"');
@@ -615,7 +627,7 @@ class CompraController extends FormListController
             if ($e instanceof ViewException) {
                 $errMsg = $e->getMessage();
             }
-            $syslog->info('ERRO: ' . $errMsg, $request->getContent());
+            $this->syslog->info('ERRO: ' . $errMsg, $request->getContent());
             return new Response($errMsg, 401);
         }
     }
@@ -624,14 +636,13 @@ class CompraController extends FormListController
     /**
      * @param MailerInterface $mailer
      * @param Compra $compra
-     * @param SyslogBusiness $syslog
      * @return null
      * @throws ViewException
      */
-    public function emailCompraEfetuada(MailerInterface $mailer, SyslogBusiness $syslog, Compra $compra)
+    public function emailCompraEfetuada(MailerInterface $mailer, Compra $compra): void
     {
         try {
-            $syslog->info('emailCompraEfetuada - id:' . $compra->getId() . ' - e-mail: ' . $compra->cliente->email);
+            $this->syslog->info('emailCompraEfetuada - id:' . $compra->getId() . ' - e-mail: ' . $compra->cliente->email);
             $params['compra'] = $compra;
 
             $transacaoAprovada = $compra->getPostbackTransacaoAprovada();
@@ -646,9 +657,9 @@ class CompraController extends FormListController
                 ->subject('Compra efetuada com sucesso!')
                 ->html($body);
             $mailer->send($email);
-            $syslog->info('emailCompraEfetuada - OK');
+            $this->syslog->info('emailCompraEfetuada - OK');
         } catch (\Throwable $e) {
-            $syslog->info('emailCompraEfetuada - ERRO', $e->getMessage());
+            $this->syslog->info('emailCompraEfetuada - ERRO', $e->getMessage());
             throw new ViewException('Erro ao enviar e-mail');
         }
     }
@@ -657,15 +668,14 @@ class CompraController extends FormListController
      *
      * @Route("/app/tur/compra/reenviarEmailCompraEfetuada/{compra}", name="tur_app_compra_reenviarEmailCompraEfetuada")
      * @param MailerInterface $mailer
-     * @param SyslogBusiness $syslog
      * @param Compra $compra
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function reenviarEmailCompraEfetuada(MailerInterface $mailer, SyslogBusiness $syslog, Compra $compra): Response
+    public function reenviarEmailCompraEfetuada(MailerInterface $mailer, Compra $compra): Response
     {
         try {
-            $syslog->info('reenviarEmailCompraEfetuada');
-            $this->emailCompraEfetuada($mailer, $syslog, $compra);
+            $this->syslog->info('reenviarEmailCompraEfetuada');
+            $this->emailCompraEfetuada($mailer, $compra);
             return new Response('OK');
         } catch (ViewException $e) {
             print_r($e->getTraceAsString());

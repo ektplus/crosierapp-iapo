@@ -1,8 +1,9 @@
-{% set ocupada = poltronas[poltrona|strpad(2)] == 'ocupada' %}
+{% set dados = poltronas[poltrona|strpad(2)] %}
+{% set ocupada = dados['status'] == 'ocupada' %}
 
 
 <button type="button"
         class="btn btn-{{ ocupada ? 'secondary' : 'success' }} btn-block {{ ocupada ? 'disabled' : '' }}"
-        title="{{ ocupada ? 'Ocupada!' : '' }}">
+        title="{{ dados.dadosPassageiro.nome|default('')|upper }}">
     {{ poltrona|strpad(2) }}  {{ ocupada ? '<i class="fas fa-ban"></i>' : '' }}
 </button>

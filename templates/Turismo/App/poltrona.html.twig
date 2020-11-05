@@ -1,4 +1,4 @@
-{% set ocupada = poltronas[poltrona|strpad(2)] == 'ocupada' %}
+{% set ocupada = poltronas[poltrona|strpad(2)]['status'] == 'ocupada' %}
 <div class="btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-{{ ocupada ? 'secondary' : 'outline-success' }} btn-block {{ ocupada ? 'disabled' : '' }}">
         <input type="checkbox" title="{{ ocupada ? 'Ocupada!' : '' }}"

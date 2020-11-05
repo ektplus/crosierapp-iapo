@@ -106,7 +106,6 @@ class ViagemRepository extends FilterRepository
      */
     public function handlePoltronas(Viagem $viagem): array
     {
-
         try {
             $conn = $this->getEntityManager()->getConnection();
             $sqlCroqui = 'SELECT valor FROM cfg_app_config WHERE chave = \'croquis_dos_veiculos.json\'';
@@ -126,12 +125,15 @@ class ViagemRepository extends FilterRepository
                 ]);
             $rPoltronas = [];
             foreach ($poltronas as $k => $poltrona) {
-                $rPoltronas[$poltrona] = 'desocupada';
+                $rPoltronas[$poltrona] = ['status' => 'desocupada'];
                 foreach ($rsCompras as $compra) {
                     $compra_jsonData = json_decode($compra['dadosPassageiros'], true);
                     foreach ($compra_jsonData as $dadosPassageiro) {
                         if ((int)($dadosPassageiro['poltrona'] ?? -1) === (int)$poltrona) {
-                            $rPoltronas[$poltrona] = 'ocupada';
+                            $rPoltronas[$poltrona] = [
+                                'status' => 'ocupada',
+                                'dadosPassageiro' => $dadosPassageiro
+                            ];
                         }
                     }
                 }
