@@ -35,7 +35,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CompraController extends FormListController
 {
 
-    private SyslogBusiness $syslog;
+    protected SyslogBusiness $syslog;
 
     private ClienteEntityHandler $clienteEntityHandler;
 
