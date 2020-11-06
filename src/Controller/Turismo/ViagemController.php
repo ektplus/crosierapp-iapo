@@ -76,9 +76,11 @@ class ViagemController extends FormListController
             'formRoute' => 'viagem_form',
             'formPageTitle' => 'Viagem'
         ];
-        /** @var ViagemRepository $repoViagem */
-        $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
-        $params['poltronas'] = $repoViagem->handlePoltronas($viagem);
+        if ($viagem && $viagem->getId()) {
+            /** @var ViagemRepository $repoViagem */
+            $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
+            $params['poltronas'] = $repoViagem->handlePoltronas($viagem);
+        }
         return $this->doForm($request, $viagem, $params);
     }
 

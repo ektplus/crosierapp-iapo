@@ -481,7 +481,8 @@ class CompraController extends FormListController
 
                     $compra->status = 'PAGAMENTO RECEBIDO';
 
-                    $this->addFlash('success', 'Em breve você receberá um e-mail com os dados de sua compra.');
+                    $this->addFlash('success', 'Compra efetuada com sucesso!');
+                    $this->addFlash('info', 'Em breve você receberá um e-mail com os dados de sua compra.');
                 } else {
                     $compra->status = 'ERRO';
                     $compra->jsonData['pagamento_result'] = [
@@ -623,7 +624,12 @@ class CompraController extends FormListController
                         $compra->jsonData['pagarme_transaction'] = $postback['transaction'];
                     }
                 }
-                $this->emailCompraEfetuada($mailer, $compra);
+                if (($postback['current_status'] ?? '') === 'authorized') {
+                    $compra->status = 'PAGAMENTO RECEBIDO';
+                    $this->emailCompraEfetuada($mailer, $compra);
+                } else {
+                    $compra->status = 'ERRO';
+                }
                 $this->compraEntityHandler->save($compra);
             } else {
                 throw new ViewException('postback inválido');
