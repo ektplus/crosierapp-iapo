@@ -574,7 +574,9 @@ class CompraController extends FormListController
         }
         $compra->valorTotal = $totalGeral;
 
-        $this->compraEntityHandler->save($compra);
+        /** @var Compra $compraR */
+        $compraR = $this->compraEntityHandler->save($compra);
+        return $compraR;
     }
 
 
