@@ -101,7 +101,7 @@ class CompraController extends FormListController
      *
      * @Route("/app/tur/compra/ini", name="tur_app_compra_ini")
      * @param SessionInterface $session
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      */
     public function ini(SessionInterface $session)
     {
@@ -131,7 +131,7 @@ class CompraController extends FormListController
      *
      * @Route("/app/tur/compra/listarViagens", name="tur_app_compra_listarViagens")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @throws \Exception
      */
     public function listarViagens(Request $request)
@@ -162,7 +162,7 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/opcaoCompra/{viagem}", name="tur_app_compra_opcaoCompra", requirements={"viagem"="\d+"})
      * @param SessionInterface $session
      * @param Viagem $viagem
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      */
     public function opcaoCompra(SessionInterface $session, Viagem $viagem)
     {
@@ -263,7 +263,7 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/informarDadosPassageiros", name="tur_app_compra_informarDadosPassageiros")
      * @param Request $request
      * @param SessionInterface $session
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      */
     public function informarDadosPassageiros(Request $request, SessionInterface $session)
     {
@@ -303,7 +303,7 @@ class CompraController extends FormListController
      *
      * @Route("/app/tur/compra/resumo", name="tur_app_compra_resumo")
      * @param SessionInterface $session
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      */
     public function resumo(SessionInterface $session)
     {
@@ -343,7 +343,7 @@ class CompraController extends FormListController
      *
      * @Route("/app/tur/compra/checkCPF", name="tur_app_compra_checkCPF")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @throws \Exception
      *
      */
@@ -410,7 +410,7 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/cadastrarCliente", name="tur_app_compra_cadastrarCliente")
      * @param Request $request
      * @param SessionInterface $session
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      */
     public function cadastrarCliente(Request $request, SessionInterface $session)
     {
@@ -447,47 +447,16 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/pagto", name="tur_app_compra_pagto")
      * @param Request $request
      * @param SessionInterface $session
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
+     * @return RedirectResponse|Response|null
      */
     public function pagto(Request $request, SessionInterface $session)
     {
-        if ($request->get('result')) {
-            try {
+        try {
+            $compra = $this->handleCompra($session);
+
+            if ($request->get('result')) {
+
                 $result = $request->get('result');
-
-                $compraId = $session->get('compraId');
-                if ($compraId) {
-                    $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
-                    /** @var Compra $compra */
-                    $compra = $repoCompra->find($compraId);
-                } else {
-                    $compra = $session->get('compra');
-                }
-
-                $compra_jsonData = $compra->jsonData;
-                $compra_jsonData['dadosPassageiros'] = $session->get('dadosPassageiros');
-
-                $idClienteLogado = $session->get('idClienteLogado');
-                if (!$idClienteLogado) {
-                    throw new ViewException('idClienteLogado n/d');
-                }
-
-                $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
-                /** @var Cliente $cliente */
-                $cliente = $repoCliente->find($idClienteLogado);
-                $compra->cliente = $cliente;
-
-                $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
-                $compra->viagem = $viagem;
-
-                $compra->dtCompra = new \DateTime();
-
-
-                $totalGeral = $compra->getTotais()['geral'];
-                if (!$totalGeral) {
-                    throw new ViewException('totalGeral n/d');
-                }
-                $compra->valorTotal = $totalGeral;
 
                 if ($result === 'OK') {
                     $token = $request->get('token');
@@ -499,8 +468,8 @@ class CompraController extends FormListController
                         throw new ViewException('payment_method n/d');
                     }
 
-                    $compra_jsonData['token'] = $token;
-                    $compra_jsonData['payment_method'] = $payment_method;
+                    $compra->jsonData['token'] = $token;
+                    $compra->jsonData['payment_method'] = $payment_method;
 
                     /** @var AppConfigRepository $repoAppConfig */
                     $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
@@ -508,28 +477,24 @@ class CompraController extends FormListController
 
                     $pagarme = new Client($appConfig_pagarmekey->getValor());
                     $transactions = $pagarme->transactions()->get(['id' => $token]);
-                    $compra_jsonData['pagarme_transaction'] = (array)$transactions;
+                    $compra->jsonData['pagarme_transaction'] = (array)$transactions;
 
                     $compra->status = 'PAGAMENTO RECEBIDO';
 
                     $this->addFlash('success', 'Em breve você receberá um e-mail com os dados de sua compra.');
                 } else {
                     $compra->status = 'ERRO';
-                    $compra_jsonData['pagamento_result'] = [
+                    $compra->jsonData['pagamento_result'] = [
                         'msg' => $request->get('msg'),
                         'type' => $request->get('type')
                     ];
                     $this->addFlash('error', 'Ocorreu um erro ao registrar sua compra.');
                 }
 
-                $compra->jsonData = $compra_jsonData;
-
-                $this->compraEntityHandler->save($compra);
-
                 if ($compra->status !== 'ERRO') {
-                    foreach ($compra_jsonData['dadosPassageiros'] as $dadosPassageiro) {
+                    foreach ($compra->jsonData['dadosPassageiros'] as $dadosPassageiro) {
                         $passageiro = new Passageiro();
-                        $passageiro->viagem = $viagem;
+                        $passageiro->viagem = $compra->viagem;
                         $passageiro->nome = mb_strtoupper($dadosPassageiro['nome']);
                         $passageiro->rg = $dadosPassageiro['rg'];
                         $passageiro->foneCelular = $dadosPassageiro['fone'] ?? '';
@@ -539,44 +504,89 @@ class CompraController extends FormListController
                     }
                 }
 
+                $this->compraEntityHandler->save($compra);
+
                 // remove o atributo 'objeto' agora em favor do id da entidade
                 $session->remove('compra');
                 $session->set('compraId', $compra->getId());
 
-            } catch (\Exception $e) {
-                $errMsg = 'Ocorreu um erro';
-                if ($e instanceof ViewException) {
-                    $errMsg = $e->getMessage();
-                }
-                $this->addFlash('error', $errMsg);
-            }
-            if (!isset($compra) || $compra->status !== 'ERRO') {
+
                 return $this->redirectToRoute('tur_app_compra_resumo');
-            }
-        } else {
-            if ($request->get('dadosCliente')) {
-                $session->set('dadosCliente', $request->get('dadosCliente'));
-            }
-            $params = [];
-            $params['dadosCliente'] = $session->get('dadosCliente');
-            $params['totais'] = $session->get('totais');
 
-            $params['postbackUrl'] = 'https://iapo.crosier.iapo.com.br/app/tur/compra/pagarmeCallback';
+            } else {
+                if ($request->get('dadosCliente')) {
+                    $session->set('dadosCliente', $request->get('dadosCliente'));
+                }
+                $params = [];
+                $params['dadosCliente'] = $session->get('dadosCliente');
+                $params['totais'] = $session->get('totais');
 
-            return $this->render('Turismo/App/form_passagem_pagto.html.twig', $params);
+                $params['postbackUrl'] = 'https://iapo.crosier.iapo.com.br/app/tur/compra/pagarmeCallback/' . $compra->getId() . '/';
+
+                return $this->render('Turismo/App/form_passagem_pagto.html.twig', $params);
+            }
+        } catch (\Exception $e) {
+            $errMsg = 'Ocorreu um erro';
+            if ($e instanceof ViewException) {
+                $errMsg = $e->getMessage();
+            }
+            $this->addFlash('error', $errMsg);
         }
-        return null;
+
+    }
+
+    /**
+     * @param SessionInterface $session
+     * @return Compra
+     * @throws ViewException
+     */
+    private function handleCompra(SessionInterface $session): Compra
+    {
+        $compraId = $session->get('compraId');
+        if ($compraId) {
+            $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
+            /** @var Compra $compra */
+            $compra = $repoCompra->find($compraId);
+        } else {
+            $compra = $session->get('compra');
+        }
+        $compra_jsonData = $compra->jsonData;
+        $compra_jsonData['dadosPassageiros'] = $session->get('dadosPassageiros');
+
+        $idClienteLogado = $session->get('idClienteLogado');
+        if (!$idClienteLogado) {
+            throw new ViewException('idClienteLogado n/d');
+        }
+
+        $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+        /** @var Cliente $cliente */
+        $cliente = $repoCliente->find($idClienteLogado);
+        $compra->cliente = $cliente;
+
+        $viagem = $this->getDoctrine()->getRepository(Viagem::class)->find($session->get('viagemId'));
+        $compra->viagem = $viagem;
+
+        $compra->dtCompra = new \DateTime();
+
+        $totalGeral = $compra->getTotais()['geral'];
+        if (!$totalGeral) {
+            throw new ViewException('totalGeral n/d');
+        }
+        $compra->valorTotal = $totalGeral;
+
+        $this->compraEntityHandler->save($compra);
     }
 
 
     /**
      *
-     * @Route("/app/tur/compra/pagarmeCallback", name="tur_app_compra_pagarmeCallback")
+     * @Route("/app/tur/compra/pagarmeCallback/{compra}", name="tur_app_compra_pagarmeCallback")
      * @param Request $request
      * @param MailerInterface $mailer
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @param Compra $compra
+     * @return RedirectResponse|Response
      */
-    public function pagarmeCallback(Request $request, MailerInterface $mailer)
+    public function pagarmeCallback(Request $request, MailerInterface $mailer, Compra $compra)
     {
         try {
             $this->syslog->info('pagarmeCallback...');
@@ -591,33 +601,23 @@ class CompraController extends FormListController
             if ($isValidPostback) {
                 $pagarme_transaction_id = $request->get('id');
                 $this->syslog->info('pagarme_transaction_id: ' . $pagarme_transaction_id);
-                /** @var Connection $conn */
-                $conn = $this->getDoctrine()->getConnection();
-                $rsCompraId = $conn->fetchAllAssociative('SELECT id FROM iapo_tur_compra WHERE json_data->>"$.pagarme_transaction.id" = :pagarme_transaction_id', ['pagarme_transaction_id' => $pagarme_transaction_id]);
-                if ($rsCompraId[0]['id'] ?? false) {
-                    $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
-                    /** @var Compra $compra */
-                    $compra = $repoCompra->find($rsCompraId[0]['id']);
-                    $this->syslog->info('compra: ' . $compra->getId());
-                    $postback = $request->request->all();
-                    $this->syslog->info('postback: ' . json_encode($postback));
+                $this->syslog->info('compra: ' . $compra->getId());
+                $postback = $request->request->all();
+                $this->syslog->info('postback: ' . json_encode($postback));
 
-                    if ($compra->jsonData['postbacks'] ?? false) {
-                        $ultimoPostback = $compra->jsonData['postbacks'][count($compra->jsonData['postbacks']) - 1];
-                        ArrayUtils::rksort($ultimoPostback);
-                        ArrayUtils::rksort($postback);
-                        if (json_encode($ultimoPostback) !== json_encode($postback)) {
-                            $compra->jsonData['postbacks'][] = $postback;
-                        }
-                        // else ... mesmo postback já salvo
-                    } else {
+                if ($compra->jsonData['postbacks'] ?? false) {
+                    $ultimoPostback = $compra->jsonData['postbacks'][count($compra->jsonData['postbacks']) - 1];
+                    ArrayUtils::rksort($ultimoPostback);
+                    ArrayUtils::rksort($postback);
+                    if (json_encode($ultimoPostback) !== json_encode($postback)) {
                         $compra->jsonData['postbacks'][] = $postback;
                     }
-                    $this->emailCompraEfetuada($mailer, $compra);
-                    $this->compraEntityHandler->save($compra);
+                    // else ... mesmo postback já salvo
                 } else {
-                    throw new ViewException('Compra não encontrada para pagarme_transaction_id = "' . $pagarme_transaction_id . '"');
+                    $compra->jsonData['postbacks'][] = $postback;
                 }
+                $this->emailCompraEfetuada($mailer, $compra);
+                $this->compraEntityHandler->save($compra);
             } else {
                 throw new ViewException('postback inválido');
             }
@@ -669,7 +669,7 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/reenviarEmailCompraEfetuada/{compra}", name="tur_app_compra_reenviarEmailCompraEfetuada")
      * @param MailerInterface $mailer
      * @param Compra $compra
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      */
     public function reenviarEmailCompraEfetuada(MailerInterface $mailer, Compra $compra): Response
     {
