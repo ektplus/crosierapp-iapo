@@ -614,14 +614,14 @@ class CompraController extends FormListController
                     if (json_encode($ultimoPostback) !== json_encode($postback)) {
                         $compra->jsonData['postbacks'][] = $postback;
                     }
-                    if (!isset($compra->jsonData['pagarme_transaction'])) {
-                        if (isset($postback['transaction']) && is_array($postback['transaction'])) {
-                            $compra->jsonData['pagarme_transaction'] = $postback['transaction'];
-                        }
-                    }
                     // else ... mesmo postback já salvo
                 } else {
                     $compra->jsonData['postbacks'][] = $postback;
+                }
+                if (!isset($compra->jsonData['pagarme_transaction'])) {
+                    if (isset($postback['transaction']) && is_array($postback['transaction'])) {
+                        $compra->jsonData['pagarme_transaction'] = $postback['transaction'];
+                    }
                 }
                 $this->emailCompraEfetuada($mailer, $compra);
                 $this->compraEntityHandler->save($compra);
