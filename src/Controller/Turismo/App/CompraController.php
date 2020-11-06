@@ -607,12 +607,17 @@ class CompraController extends FormListController
                 $postback = $request->request->all();
                 $this->syslog->info('postback: ' . json_encode($postback));
 
-                if ($compra->jsonData['postbacks'] ?? false) {
+                if (isset($compra->jsonData['postbacks'])) {
                     $ultimoPostback = $compra->jsonData['postbacks'][count($compra->jsonData['postbacks']) - 1];
                     ArrayUtils::rksort($ultimoPostback);
                     ArrayUtils::rksort($postback);
                     if (json_encode($ultimoPostback) !== json_encode($postback)) {
                         $compra->jsonData['postbacks'][] = $postback;
+                    }
+                    if (!isset($compra->jsonData['pagarme_transaction'])) {
+                        if (isset($postback['transaction']) && is_array($postback['transaction'])) {
+                            $compra->jsonData['pagarme_transaction'] = $postback['transaction'];
+                        }
                     }
                     // else ... mesmo postback já salvo
                 } else {
