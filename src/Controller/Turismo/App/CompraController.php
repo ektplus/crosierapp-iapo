@@ -582,7 +582,7 @@ class CompraController extends FormListController
 
     /**
      *
-     * @Route("/app/tur/compra/pagarmeCallback/{compra}", name="tur_app_compra_pagarmeCallback")
+     * @Route("/app/tur/compra/pagarmeCallback/{compra}/", name="tur_app_compra_pagarmeCallback")
      * @param Request $request
      * @param MailerInterface $mailer
      * @param Compra $compra
