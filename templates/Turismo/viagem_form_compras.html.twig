@@ -34,7 +34,19 @@
                                 <td>{{ compra.id|strpad(9) }}</td>
                                 <td>{{ compra.dtCompra|date('d/m/Y H:i') }}</td>
                                 <td>{{ compra.status }}</td>
-                                <td>{{ compra.cliente.cpf|mascararCnpjCpf }} - {{ compra.cliente.nome }}</td>
+                                <td>
+                                    <div class="float-left">
+                                        {{ compra.cliente.cpf|mascararCnpjCpf }} - {{ compra.cliente.nome }}<br>
+                                        {{ compra.cliente.email }}
+                                    </div>
+                                    <div class="text-right">
+                                        <a role="button"
+                                           data-url="{{ url('tur_viagem_reenviarEmailCompraEfetuada', {'compra' : compra.id}) }}"
+                                           data-token="{{ csrf_token('reenviarEmailCompraEfetuada') }}"
+                                           data-target="#confirmationModal" data-toggle="modal"
+                                           class="btn btn-sm btn-info" title="Reenviar o e-mail ao cliente"><i class="far fa-envelope"></i></a>
+                                    </div>
+                                </td>
                                 <td class="text-right">{{ compra.valorTotal|number_format(2,',','.') }}</td>
                                 <td class="text-right"><small>
                                         NSU: {{ compra.jsonData.pagarme_transaction.nsu|default('N/D') }} /

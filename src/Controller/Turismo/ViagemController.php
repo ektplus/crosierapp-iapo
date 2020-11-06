@@ -2,6 +2,8 @@
 
 namespace App\Controller\Turismo;
 
+use App\Controller\Turismo\App\CompraController;
+use App\Entity\Turismo\Compra;
 use App\Entity\Turismo\Passageiro;
 use App\Entity\Turismo\Viagem;
 use App\EntityHandler\Turismo\PassageiroEntityHandler;
@@ -15,8 +17,10 @@ use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -26,8 +30,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ViagemController extends FormListController
 {
 
-    /** @var PassageiroEntityHandler */
-    private $passageiroEntityHandler;
+    private PassageiroEntityHandler $passageiroEntityHandler;
 
     /**
      * @required
@@ -60,7 +63,7 @@ class ViagemController extends FormListController
      * @Route("/tur/viagem/form/{id}", name="viagem_form", defaults={"id"=null}, requirements={"id"="\d+"})
      * @param Request $request
      * @param Viagem|null $viagem
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @throws \Exception
      *
      * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
@@ -122,13 +125,13 @@ class ViagemController extends FormListController
      * @Route("/tur/viagem/delete/{id}/", name="viagem_delete", requirements={"id"="\d+"})
      * @param Request $request
      * @param Viagem $viagem
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
-    public function delete(Request $request, Viagem $viagem): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function delete(Request $request, Viagem $viagem): RedirectResponse
     {
-        return $this->doDelete($request, $viagem);
+        return $this->doDelete($request, $viagem, []);
     }
 
 
@@ -141,7 +144,7 @@ class ViagemController extends FormListController
      * @param Request $request
      * @param Viagem|null $viagem
      * @param Passageiro|null $passageiro
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @throws \Exception
      * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
@@ -154,7 +157,7 @@ class ViagemController extends FormListController
             'formRouteParams' => ['viagem' => $viagem->getId()],
             'page_title' => 'Passageiro',
             'formPageTitle' => 'Passageiro',
-            'formPageSubTitle' => 'Viagem: ' . $viagem->getItinerario()->getDescricaoMontada(),
+            'formPageSubTitle' => 'Viagem: ' . $viagem->itinerario->getDescricaoMontada(),
             'viagem' => $viagem
         ];
 
@@ -166,7 +169,7 @@ class ViagemController extends FormListController
                 try {
                     /** @var Passageiro $passageiro */
                     $passageiro = $form->getData();
-                    $passageiro->setViagem($viagem);
+                    $passageiro->viagem = $viagem;
                     $passageiro = $this->passageiroEntityHandler->save($passageiro);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
                     return $this->redirectToRoute('viagem_form', ['id' => $viagem->getId(), '_fragment' => 'passageiros']);
@@ -184,13 +187,11 @@ class ViagemController extends FormListController
                 }
             }
         }
-
         // Pode ou não ter vindo algo no $params. Independentemente disto, só adiciono form e foi-se.
         $params['form'] = $form->createView();
         $params['e'] = $passageiro;
 
         return $this->doRender($params['formView'], $params);
-
     }
 
 
@@ -200,13 +201,12 @@ class ViagemController extends FormListController
      *
      * @ParamConverter("passageiro", class="App\Entity\Turismo\Passageiro", options={"id" = "passageiro"})
      *
-     * @param Request $request
      * @param Passageiro $passageiro
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      *
      * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
-    public function passageiroDelete(Request $request, Passageiro $passageiro): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function passageiroDelete(Passageiro $passageiro): RedirectResponse
     {
         try {
             $this->passageiroEntityHandler->delete($passageiro);
@@ -214,7 +214,31 @@ class ViagemController extends FormListController
         } catch (ViewException $e) {
             $this->addFlash('error', $e->getMessage());
         }
+        return $this->redirectToRoute('viagem_form', ['id' => $passageiro->viagem->getId(), '_fragment' => 'passageiros']);
+    }
 
+
+    /**
+     *
+     * @Route("/tur/viagem/reenviarEmailCompraEfetuada/{compra}", name="tur_viagem_reenviarEmailCompraEfetuada")
+     * @param CompraController $compraController
+     * @param MailerInterface $mailer
+     * @param Compra $compra
+     * @return RedirectResponse|Response
+     */
+    public function reenviarEmailCompraEfetuada(Request $request, CompraController $compraController, MailerInterface $mailer, Compra $compra): Response
+    {
+        try {
+            if (!$this->isCsrfTokenValid('reenviarEmailCompraEfetuada', $request->get('token'))) {
+                throw new ViewException('Token inválido');
+            }
+            $compraController->emailCompraEfetuada($mailer, $compra);
+            $this->addFlash('success', 'E-mail enviado com sucesso');
+        } catch (ViewException $e) {
+            $this->addFlash('error', 'Erro ao reenviar o e-mail');
+            $this->addFlash('error', $e->getMessage());
+        }
+        return $this->redirectToRoute('viagem_form', ['id' => $compra->viagem->getId()]);
     }
 
 
