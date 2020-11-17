@@ -17,7 +17,6 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ArrayUtils\ArrayUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use Doctrine\DBAL\Connection;
 use PagarMe\Client;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -201,7 +200,7 @@ class CompraController extends FormListController
                     $totalSelecionado = 0;
 
                     foreach ($poltronas as $numPoltrona => $poltrona) {
-                        if ($poltrona === 'desocupada') {
+                        if ($poltrona['status'] === 'desocupada') {
                             $rPoltronas[(int)$numPoltrona] = 'on'; // simulando a seleção
                             $totalSelecionado++;
                         }
@@ -533,7 +532,7 @@ class CompraController extends FormListController
             }
             $this->addFlash('error', $errMsg);
         }
-
+        return $this->redirectToRoute('tur_app_compra_resumo');
     }
 
     /**
