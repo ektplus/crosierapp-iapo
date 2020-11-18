@@ -33,7 +33,6 @@
     </div>
 
 
-
 </div>
 
 
@@ -50,7 +49,17 @@
 
         async function s() {
 
-            await sleep(2000);
+            for (let i = 0; i < 30; i++) {
+                if (typeof PagarMeCheckout.Checkout === 'undefined') {
+                    await sleep(100);
+                }
+            }
+            if (typeof PagarMeCheckout.Checkout === 'undefined') {
+                alert('Ocorreu um erro ao iniciar o pagamento. Por favor, atualize a tela.');
+                window.history.go(-1);
+                return false;
+            }
+
 
             // inicia a instância do checkout
             let checkout = new PagarMeCheckout.Checkout({
