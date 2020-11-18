@@ -15,18 +15,12 @@ import 'select2-bootstrap-theme/dist/select2-bootstrap.css';
 $.fn.select2.defaults.set("theme", "bootstrap");
 $.fn.select2.defaults.set("language", "pt-BR");
 
+import 'bootstrap';
+import 'popper.js';
+
 Routing.setRoutingData(routes);
 
-import Moment from 'moment';
-
 $(document).ready(function () {
-
-    let $btnsSelPoltrona = $('.btnSelPoltrona');
-
-    $btnsSelPoltrona.on('click', function() {
-
-    });
-
 
     function iniForm() {
 
