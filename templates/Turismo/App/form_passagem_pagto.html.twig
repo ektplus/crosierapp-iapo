@@ -8,21 +8,52 @@
 
     <title>{{ page_title is defined and page_title != '' ? page_title ~ ' - Crosier' : 'Crosier' }} </title>
 
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://assets.pagar.me/checkout/1.1.0/checkout.js"></script>
+
 
     {% set compra = app.session.get('compra') %}
     {% set totais = compra.getTotais() %}
 
-    <script>
 
-        $(document).ready(function () {
+</head>
+
+<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+
+
+<div class="container-sm mt-3" style="margin-bottom: 50px">
+
+    <div class="row mt-3 mb-2">
+        <div class="col-12 text-center">
+            <a href="{{ url('tur_app_compra_ini') }}">
+                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
+                     alt="Card image cap">
+            </a>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+</body>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function s() {
+
+            await sleep(2000);
 
             // inicia a instância do checkout
-            var checkout = new PagarMeCheckout.Checkout({
+            let checkout = new PagarMeCheckout.Checkout({
                 encryption_key: 'ek_test_PRZKk0lxBz2qE7boo7T1kqZnzdkKrL',
                 success: function (data) {
                     window.location = '/app/tur/compra/pagto?result=OK&token=' + data.token + '&payment_method=' + data.payment_method
@@ -51,34 +82,13 @@
                     tangible: 'false',
                 }]
             });
-        });
-    </script>
-</head>
 
-<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+        }
 
-
-<div class="container-sm mt-3" style="margin-bottom: 50px">
-
-    <div class="row mt-3 mb-2">
-        <div class="col-12 text-center">
-            <a href="{{ url('tur_app_compra_ini') }}">
-                <img class="card-img-top" src="{{ getEnv('CROSIER_LOGO') }}" style="max-width: 200px"
-                     alt="Card image cap">
-            </a>
-        </div>
-    </div>
+        s();
 
 
-
-</div>
-
-
-</body>
-
-
-<script src="{{ crosierAsset('bundles/fosjsrouting/js/router.min.js') }}"></script>
-<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
+    });
+</script>
 
 </html>
