@@ -1,0 +1,42 @@
+{% extends '@CrosierLibBase/list_simpl.html.twig' %}
+
+
+
+{% block corpoTabela %}
+
+    <thead>
+    <tr role="row">
+        <th>Pedido</th>
+        <th>Saída</th>
+        <th>Retorno</th>
+        <th>Itinerário</th>
+        <th>Veículo / Motorista</th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for viagem in viagens %}
+        <tr role="row">
+            <td>{{ viagem.pedido }}</td>
+            <td>{{ viagem.dtHrSaida|date('d/m/Y H:i') }}</td>
+            <td>{{ viagem.dtHrRetorno|date('d/m/Y H:i') }}</td>
+            <td>{{ viagem.itinerario.descricaoMontada }}</td>
+            <td>{{ viagem.veiculo.apelido }} / {{ viagem.motorista.nome }}</td>
+            <td>{{ viagem.status }}</td>
+            <td class="text-right sorting_1">
+                <a role="button" class="btn btn-primary btn-sm" title="Visualizar" href="{{ url('viagem_visualizar', {'id': viagem.id}) }}">
+                    <i class="far fa-eye"></i>
+                </a>
+
+                <br><span class="badge badge-pill badge-info">{{ viagem.updated|date('d/m/Y H:i:s') }}</span>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+
+{% endblock %}
+
+{% block down_scripts %}
+{% endblock %}

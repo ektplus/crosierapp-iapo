@@ -3,6 +3,7 @@
 namespace App\Controller\Turismo;
 
 use App\Entity\Turismo\Agencia;
+use App\Entity\Turismo\Viagem;
 use App\EntityHandler\Turismo\AgenciaEntityHandler;
 use App\Form\Turismo\AgenciaType;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
@@ -13,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- *
  * @author Carlos Eduardo Pauluk
  */
 class AgenciaController extends FormListController
@@ -94,6 +94,7 @@ class AgenciaController extends FormListController
         return $this->doDatatablesJsList($request);
     }
 
+
     /**
      *
      * @Route("/tur/agencia/delete/{id}/", name="agencia_delete", requirements={"id"="\d+"})
@@ -105,7 +106,37 @@ class AgenciaController extends FormListController
      */
     public function delete(Request $request, Agencia $agencia): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $agencia);
+        return $this->doDelete($request, $agencia, ['listRoute' => 'agencia_list']);
+    }
+
+
+    /**
+     *
+     * @Route("/tur/agencia/listarViagens/", name="agencia_listarViagens")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     *
+     * @IsGranted("ROLE_AGENCIA", statusCode=403)
+     */
+    public function listarViagens(Request $request): Response
+    {
+        $repoAgencia = $this->getDoctrine()->getRepository(Agencia::class);
+        /** @var Agencia $agencia */
+        $agencia = $repoAgencia->findOneByFiltersSimpl([['user', 'EQ', $this->getUser()]]);
+
+        $params = [
+            'agencia' => $agencia,
+            'listId' => 'agencia_listarViagens',
+            'page_title' => 'Viagens',
+            'page_subTitle' => 'Agência: ' . $agencia->nome
+        ];
+
+        $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
+        $viagens = $repoViagem->findByFiltersSimpl([['agencia', 'EQ', $agencia]], ['dtHrRetorno' => 'DESC']);
+        $params['viagens'] = $viagens;
+
+        return $this->doRender('Turismo/agencia_viagens.html.twig', $params);
     }
 
 

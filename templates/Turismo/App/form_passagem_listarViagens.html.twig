@@ -21,8 +21,7 @@
                     <div class="card-body">
                         <h4 class="card-title">
                             <i class="nav-icon fas fa-map-signs"></i>
-                            <strong>De {{ viagem.itinerario.origemCidade }}-{{ viagem.itinerario.origemEstado }}
-                                até {{ viagem.itinerario.destinoCidade }}-{{ viagem.itinerario.destinoEstado }}</strong>
+                            <strong>{{ viagem.itinerario.descricaoMontada }}</strong>
                         </h4>
                         {% if viagem.agencia.id != 1 %}
                             <div class="alert alert-primary" role="alert">

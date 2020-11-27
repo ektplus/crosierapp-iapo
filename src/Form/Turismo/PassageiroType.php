@@ -6,6 +6,7 @@ use App\Entity\Turismo\Passageiro;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -79,6 +80,11 @@ class PassageiroType extends AbstractType
             'attr' => ['class' => 'telefone']
         ]);
 
+
+        $builder->add('poltrona', IntegerType::class, [
+            'label' => 'Poltrona',
+            'required' => true,
+        ]);
 
         $builder->add('obs', TextareaType::class, [
             'label' => 'Obs',

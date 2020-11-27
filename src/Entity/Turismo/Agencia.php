@@ -4,6 +4,7 @@ namespace App\Entity\Turismo;
 
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityId;
 use CrosierSource\CrosierLibBaseBundle\Entity\EntityIdTrait;
+use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -145,5 +146,16 @@ class Agencia implements EntityId
      * @var string|null
      */
     public ?string $obs = null;
+
+
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="CrosierSource\CrosierLibBaseBundle\Entity\Security\User")
+     * @ORM\JoinColumn(name="user_id", nullable=true)
+     * @Groups("entity")
+     *
+     * @var User|null
+     */
+    public ?User $user = null;
 
 }

@@ -3,6 +3,10 @@
 namespace App\Form\Turismo;
 
 use App\Entity\Turismo\Agencia;
+use CrosierSource\CrosierLibBaseBundle\Entity\Security\User;
+use CrosierSource\CrosierLibBaseBundle\Repository\Security\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
@@ -17,6 +21,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class AgenciaType extends AbstractType
 {
+
+    private EntityManagerInterface $doctrine;
+
+    /**
+     * @required
+     * @param EntityManagerInterface $doctrine
+     */
+    public function setDoctrine(EntityManagerInterface $doctrine): void
+    {
+        $this->doctrine = $doctrine;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -131,6 +146,18 @@ class AgenciaType extends AbstractType
         $builder->add('obs', TextareaType::class, [
             'label' => 'Obs',
             'required' => false
+        ]);
+
+        /** @var UserRepository $repoUser */
+        $repoUser = $this->doctrine->getRepository(User::class);
+        $builder->add('user', EntityType::class, [
+            'label' => 'Usuário',
+            'class' => User::class,
+            'choice_label' => 'username',
+            'choices' => $repoUser->findAll(['username' => 'ASC']),
+            'attr' => [
+                'class' => 'autoSelect2'
+            ],
         ]);
 
     }

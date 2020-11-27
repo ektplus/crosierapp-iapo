@@ -105,7 +105,7 @@ class MotoristaController extends FormListController
      */
     public function delete(Request $request, Motorista $motorista): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $motorista);
+        return $this->doDelete($request, $motorista, ['listRoute' => 'motorista_list']);
     }
 
 

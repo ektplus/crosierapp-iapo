@@ -1,0 +1,256 @@
+{% extends '@CrosierLibBase/index.html.twig' %}
+
+
+
+
+{% block page_content %}
+
+<div class="container" style="margin-bottom: 50px">
+    <div class="card">
+        <div class="card-header">
+
+            <div class="row">
+                <div class="col-8">
+                    <h3>Viagem</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-md-2 col-sm-12">
+                    <div class="form-group">
+                        <label for="viagem_pedido">Pedido</label>
+                        <input class="form-control disabled" readonly="readonly" id="viagem_pedido" value="{{ viagem.pedido }}">
+                    </div>
+                </div>
+
+                <div class="col-md-5 col-sm-12">
+                    <div class="form-group">
+                        <label for="viagem_saida">Saída</label>
+                        <input class="form-control disabled" readonly="readonly" id="viagem_saida" value="{{ viagem.dtHrSaida|date('d/m/Y H:i') }}">
+                    </div>
+                </div>
+
+                <div class="col-md-5 col-sm-12">
+                    <div class="form-group">
+                        <label for="viagem_retorno">Retorno</label>
+                        <input class="form-control disabled" readonly="readonly" id="viagem_retorno" value="{{ viagem.dtHrRetorno|date('d/m/Y H:i') }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label for="viagem_itinerario">Itinerário</label>
+                        <input class="form-control disabled" readonly="readonly" id="viagem_itinerario" value="{{ viagem.itinerario.descricaoMontada }}">
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="viagem_motorista">Motorista</label>
+                        <input class="form-control disabled" readonly="readonly" id="viagem_motorista" value="{{ viagem.motorista.nome }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="viagem_valorPoltrona">Valor Poltrona</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input class="form-control disabled text-right" readonly="readonly" id="viagem_valorPoltrona"
+                                   value="{{ viagem.valorPoltrona|number_format(2,',','.') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="viagem_valorTaxas">Taxas</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input class="form-control disabled text-right" readonly="readonly" id="viagem_valorTaxas"
+                                   value="{{ viagem.valorTaxas|number_format(2,',','.') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="viagem_valorEscolhaPoltrona">Valor Escolha Poltrona</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input class="form-control disabled text-right" readonly="readonly" id="viagem_valorEscolhaPoltrona"
+                                   value="{{ viagem.valorEscolhaPoltrona|number_format(2,',','.') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="viagem_valorBagagem">Valor Bagagem</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input class="form-control disabled text-right" readonly="readonly" id="viagem_valorBagagem"
+                                   value="{{ viagem.valorBagagem|number_format(2,',','.') }}">
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div class="card">
+                <div class="card-header">
+
+                    <div class="row">
+                        <div class="col-8">
+                            <h5>Passageiros</h5>
+                        </div>
+
+                        <div class="col-4 text-right">
+                            <button type="button" class="btn btn-primary"
+                                    onclick="window.location.href='{{ url('viagem_passageiro_form', {'viagem': viagem.id, 'rtf': true}) }}'">
+                                <i class="fas fa-file" aria-hidden="true"></i> Novo
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="table-responsive-sm">
+                        <table class="table table-sm table-striped table-hover">
+
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Nome</th>
+                                <th scope="col">RG</th>
+                                <th scope="col">Info</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for passageiro in viagem.passageiros %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ passageiro.nome }}</td>
+                                    <td><span class="cpf">{{ passageiro.rg }}</span></td>
+                                    <td>
+                                        Poltrona: {{ passageiro.poltrona|default('?') }}<br>
+                                        Compra: {{ passageiro.jsonData.compra_id|default(0)|strpad(7) }}<br>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+
+
+                    {% if viagem.id %}
+                        {% include 'Turismo/croquis/' ~ viagem.veiculo.croqui ~ '.html.twig' %}
+                    {% endif %}
+
+
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-header">
+
+                    <div class="row">
+                        <div class="col-8">
+                            <h5>Compras</h5>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="table-responsive-sm">
+                        <table class="table table-sm table-striped table-hover">
+
+                            <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Cliente</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Obs</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for compra in viagem.compras %}
+                                <tr>
+                                    <td>{{ compra.id|strpad(9) }}</td>
+                                    <td>{{ compra.dtCompra|date('d/m/Y H:i') }}</td>
+                                    <td>{{ compra.status }}</td>
+                                    <td>
+                                        <div class="float-left">
+                                            {{ compra.cliente.cpf|mascararCnpjCpf }} - {{ compra.cliente.nome }}<br>
+                                            {{ compra.cliente.email }}
+                                        </div>
+                                        <div class="text-right">
+                                            <a role="button"
+                                               data-url="{{ url('tur_viagem_reenviarEmailCompraEfetuada', {'compra' : compra.id}) }}"
+                                               data-token="{{ csrf_token('reenviarEmailCompraEfetuada') }}"
+                                               data-target="#confirmationModal" data-toggle="modal"
+                                               class="btn btn-sm btn-info" title="Reenviar o e-mail ao cliente"><i class="far fa-envelope"></i></a>
+                                        </div>
+                                    </td>
+                                    <td class="text-right">{{ compra.valorTotal|number_format(2,',','.') }}</td>
+                                    <td class="text-right"><small>
+                                            NSU: {{ compra.jsonData.pagarme_transaction.nsu|default('N/D') }} /
+                                            {{ compra.jsonData.pagarme_transaction.card.brand|default('N/D')|upper }} /
+                                            Últ 4 díg: {{ compra.jsonData.pagarme_transaction.card.last_digits|default('****') }}
+                                            <br>
+                                            {% if (compra.jsonData.dadosPassageiros) %}
+                                                {% for passageiro in compra.jsonData.dadosPassageiros %}
+                                                    <i>{{ passageiro.nome|upper }} - Poltrona {{ passageiro.poltrona }}</i><br>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </small>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    {% endblock %}
+
+

@@ -27,8 +27,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ViagemType extends AbstractType
 {
 
-    /** @var EntityManagerInterface */
-    private $doctrine;
+    private EntityManagerInterface $doctrine;
 
     /**
      * @required

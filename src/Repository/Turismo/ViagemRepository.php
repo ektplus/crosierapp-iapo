@@ -6,7 +6,6 @@ use App\Entity\Turismo\Viagem;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\FilterRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use Doctrine\DBAL\Connection;
 
 /**
  *
@@ -114,27 +113,17 @@ class ViagemRepository extends FilterRepository
             $veiculoCroqui = $viagem->veiculo->croqui;
             $croqui = $croquis['veiculos'][$veiculoCroqui];
             $poltronas = explode(',', $croqui);
-            $sqlCompras = 'SELECT json_data->>"$.dadosPassageiros" as dadosPassageiros FROM iapo_tur_compra WHERE viagem_id = :viagemId AND status IN (:statuss)';
-            $rsCompras = $conn->fetchAllAssociative($sqlCompras,
-                [
-                    'viagemId' => $viagem->getId(),
-                    'statuss' => ['PAGAMENTO RECEBIDO', 'RESERVA EFETUADA']
-                ],
-                [
-                    'statuss' => Connection::PARAM_STR_ARRAY
-                ]);
+            $sqlPassageiros = 'SELECT id, nome, poltrona FROM iapo_tur_passageiro WHERE viagem_id = :viagemId';
+            $rsPassageiros = $conn->fetchAllAssociative($sqlPassageiros, ['viagemId' => $viagem->getId()]);
             $rPoltronas = [];
             foreach ($poltronas as $k => $poltrona) {
                 $rPoltronas[$poltrona] = ['status' => 'desocupada'];
-                foreach ($rsCompras as $compra) {
-                    $compra_jsonData = json_decode($compra['dadosPassageiros'], true);
-                    foreach ($compra_jsonData as $dadosPassageiro) {
-                        if ((int)($dadosPassageiro['poltrona'] ?? -1) === (int)$poltrona) {
-                            $rPoltronas[$poltrona] = [
-                                'status' => 'ocupada',
-                                'dadosPassageiro' => $dadosPassageiro
-                            ];
-                        }
+                foreach ($rsPassageiros as $passageiro) {
+                    if ((int)($passageiro['poltrona'] ?? -1) === (int)$poltrona) {
+                        $rPoltronas[$poltrona] = [
+                            'status' => 'ocupada',
+                            'nomePassageiro' => $passageiro['nome']
+                        ];
                     }
                 }
             }

@@ -105,7 +105,7 @@ class ItinerarioController extends FormListController
      */
     public function delete(Request $request, Itinerario $itinerario): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $itinerario);
+        return $this->doDelete($request, $itinerario, ['listRoute' => 'itinerario_list']);
     }
 
 

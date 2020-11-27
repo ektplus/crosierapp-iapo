@@ -260,6 +260,7 @@ CREATE TABLE `iapo_tur_passageiro`
     `user_updated_id`    bigint(20)   NOT NULL,
 
     UNIQUE KEY UK_iapo_tur_passageiro_rg (`viagem_id`, `rg`),
+    UNIQUE KEY UK_iapo_tur_passageiro_poltrona (`viagem_id`, `poltrona`),
 
     PRIMARY KEY (`id`),
 

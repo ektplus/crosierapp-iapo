@@ -108,7 +108,7 @@ class PassageiroController extends FormListController
      */
     public function delete(Request $request, Passageiro $passageiro): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $passageiro);
+        return $this->doDelete($request, $passageiro, ['listRoute' => 'passageiro_list']);
     }
 
 

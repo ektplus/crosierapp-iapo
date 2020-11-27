@@ -105,7 +105,7 @@ class VeiculoController extends FormListController
      */
     public function delete(Request $request, Veiculo $veiculo): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        return $this->doDelete($request, $veiculo);
+        return $this->doDelete($request, $veiculo, ['listRoute' => 'veiculo_list']);
     }
 
 

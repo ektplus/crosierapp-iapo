@@ -17,9 +17,11 @@ use CrosierSource\CrosierLibBaseBundle\Utils\ExceptionUtils\ExceptionUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\RepositoryUtils\FilterData;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -144,13 +146,13 @@ class ViagemController extends FormListController
      * @ParamConverter("viagem", class="App\Entity\Turismo\Viagem", options={"id" = "viagem"})
      * @ParamConverter("passageiro", class="App\Entity\Turismo\Passageiro", options={"id" = "passageiro"})
      * @param Request $request
+     * @param SessionInterface $session
      * @param Viagem|null $viagem
      * @param Passageiro|null $passageiro
      * @return RedirectResponse|Response
-     * @throws \Exception
      * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
      */
-    public function passageiroForm(Request $request, Viagem $viagem, ?Passageiro $passageiro = null)
+    public function passageiroForm(Request $request, SessionInterface $session, Viagem $viagem, ?Passageiro $passageiro = null)
     {
         $params = [
             'formView' => 'Turismo/viagem_formPassageiro.html.twig',
@@ -163,6 +165,11 @@ class ViagemController extends FormListController
             'viagem' => $viagem
         ];
 
+        if ($request->get('rtf') && strpos($request->server->get('HTTP_REFERER'), $request->server->get('REQUEST_URI')) === FALSE) {
+            $sessRtb = ['viagem_passageiro_form' => $request->server->get('HTTP_REFERER')];
+            $session->set('refstoback', $sessRtb);
+        }
+
         $form = $this->createForm(PassageiroType::class, $passageiro);
         $form->handleRequest($request);
 
@@ -174,7 +181,7 @@ class ViagemController extends FormListController
                     $passageiro->viagem = $viagem;
                     $passageiro = $this->passageiroEntityHandler->save($passageiro);
                     $this->addFlash('success', 'Registro salvo com sucesso!');
-                    return $this->redirectToRoute('viagem_form', ['id' => $viagem->getId(), '_fragment' => 'passageiros']);
+                    return $this->redirectTo($request, $viagem, $params['formRoute'], $params['formRouteParams']);
                 } catch (ViewException $e) {
                     $this->addFlash('error', $e->getMessage());
                 } catch (\Exception $e) {
@@ -241,6 +248,25 @@ class ViagemController extends FormListController
             $this->addFlash('error', $e->getMessage());
         }
         return $this->redirectToRoute('viagem_form', ['id' => $compra->viagem->getId()]);
+    }
+
+    /**
+     *
+     * @Route("/tur/viagem/visualizar/{id}", name="viagem_visualizar", requirements={"id"="\d+"})
+     * @param Request $request
+     * @param Viagem|null $viagem
+     * @return RedirectResponse|Response
+     * @throws \Exception
+     *
+     * @Security("is_granted('ROLE_TURISMO') or is_granted('ROLE_AGENCIA')")
+     */
+    public function visualizar(Request $request, Viagem $viagem = null)
+    {
+        $params['viagem'] = $viagem;
+        /** @var ViagemRepository $repoViagem */
+        $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
+        $params['poltronas'] = $repoViagem->handlePoltronas($viagem);
+        return $this->doRender('Turismo/viagem_visualizar.html.twig', $params);
     }
 
 

@@ -37,6 +37,8 @@ class PassageiroEntityHandler extends EntityHandler
             ]
         );
 
+        $passageiro->cpf = preg_replace("/[^0-9]/", "", $passageiro->cpf);
+
         if ($jaExiste) {
             throw new ViewException('Passageiro com o mesmo CPF/RG já incluído nesta viagem');
         }

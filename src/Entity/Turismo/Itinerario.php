@@ -93,13 +93,6 @@ class Itinerario implements EntityId
      */
     public ?string $obs = null;
 
-    /**
-     * Transient.
-     * @Groups("entity")
-     *
-     * @var string|null
-     */
-    public ?string $descricaoMontada = null;
 
 
     /**
@@ -107,8 +100,7 @@ class Itinerario implements EntityId
      */
     public function getDescricaoMontada(): ?string
     {
-        $this->descricaoMontada = 'De ' . $this->origemCidade . '-' . $this->origemEstado . ' até ' . $this->destinoCidade . '-' . $this->destinoEstado . ' (' . $this->veiculo->apelido . ')';
-        return $this->descricaoMontada;
+        return 'De ' . $this->origemCidade . '-' . $this->origemEstado . ' até ' . $this->destinoCidade . '-' . $this->destinoEstado . ' (' . $this->veiculo->apelido . ')';
     }
 
 
