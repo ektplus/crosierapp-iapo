@@ -317,6 +317,7 @@ class CompraController extends FormListController
             $compra = $session->get('compra');
         } else {
             $compra = new Compra();
+            $compra->status = 'NOVA';
         }
 
         $compra->viagem = $viagem;
