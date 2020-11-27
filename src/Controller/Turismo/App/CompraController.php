@@ -333,6 +333,8 @@ class CompraController extends FormListController
             return $this->redirectToRoute('tur_app_compra_opcaoCompra', ['viagem' => $viagem->getId()]);
         }
 
+        $this->compraEntityHandler->save($compra);
+
         $session->set('compra', $compra);
 
         return $this->render('Turismo/App/form_passagem_resumo.html.twig', []);
