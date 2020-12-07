@@ -9,6 +9,7 @@ use App\Entity\Turismo\Viagem;
 use App\EntityHandler\Turismo\ClienteEntityHandler;
 use App\EntityHandler\Turismo\CompraEntityHandler;
 use App\EntityHandler\Turismo\PassageiroEntityHandler;
+use App\Repository\Turismo\CompraRepository;
 use App\Repository\Turismo\ViagemRepository;
 use CrosierSource\CrosierLibBaseBundle\Business\Config\SyslogBusiness;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
@@ -144,11 +145,24 @@ class CompraController extends FormListController
             $filter = $request->get('filter');
             /** @var ViagemRepository $repoViagens */
             $repoViagens = $this->getDoctrine()->getRepository(Viagem::class);
-            $params['viagens'] = $repoViagens->findViagensBy($filter['dts'], $filter['cidadeOrigem'], $filter['cidadeDestino']);
-            if (count($params['viagens']) < 1) {
+            $viagens = $repoViagens->findViagensBy($filter['dts'], $filter['cidadeOrigem'], $filter['cidadeDestino']);
+            if (count($viagens) < 1) {
                 $this->addFlash('warn', 'Nenhuma viagem encontrada na pesquisa.');
                 return $this->redirectToRoute('tur_app_compra_ini', $filter);
             }
+
+            /** @var AppConfigRepository $repoAppConfig */
+            $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+            $minutos = $repoAppConfig->findAppConfigByChave('minutos_bloqueio_compras_antes_saida_viagem')->getValor();
+            /** @var Viagem $viagem */
+            foreach ($viagens as $viagem) {
+                $viagem->bloqueadaTempoExpirado = false;
+                if (DateTimeUtils::diffInMinutes($viagem->dtHrSaida, new \DateTime()) < $minutos) {
+                    $viagem->bloqueadaTempoExpirado = true; // dinâmico
+                }
+            }
+
+            $params['viagens'] = $viagens;
             return $this->render('Turismo/App/form_passagem_listarViagens.html.twig', $params);
         } else {
             throw new \RuntimeException('filter n/d');
@@ -712,18 +726,39 @@ class CompraController extends FormListController
 
 
     /**
-     *
      * @Route("/app/tur/menuCliente", name="tur_app_menuCliente")
+     * @param SessionInterface $session
+     * @return RedirectResponse|Response
      */
-    public function menuCliente()
+    public function menuCliente(SessionInterface $session)
     {
+        if (!$session->get('idClienteLogado')) {
+            return $this->redirectToRoute('tur_app_login', ['rtb' => true]);
+        }
         $params = [];
+
+        try {
+            $idClienteLogado = $session->get('idClienteLogado');
+            if (!$idClienteLogado) {
+                throw new ViewException('idClienteLogado n/d');
+            }
+            $repoCliente = $this->getDoctrine()->getRepository(Cliente::class);
+            /** @var Cliente $cliente */
+            $cliente = $repoCliente->find($idClienteLogado);
+            /** @var CompraRepository $repoCompra */
+            $repoCompra = $this->getDoctrine()->getRepository(Compra::class);
+            $params['compras'] = $repoCompra->findByFiltersSimpl([['cliente', 'EQ', $cliente]]);
+
+        } catch (ViewException $e) {
+            $this->addFlash('error', 'Erro ao carregar as compras');
+        }
         return $this->render('Turismo/App/menu_cliente.html.twig', $params);
+
     }
 
     /**
      *
-     * @Route("/app/tur/login", name="tur_app_login")
+     * @Route("/app/tur/login", name="tur_app_login")s
      */
     public function login()
     {

@@ -1,0 +1,64 @@
+{% extends 'Turismo/App/form_passagem_base.html.twig' %}
+
+
+{% block conteudo %}
+
+    <div class="card">
+
+        <div class="card-header">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h3>Minhas Compras</h3>
+                </div>
+                <div class="col-sm-9 text-right">
+                    <a role="button" href="{{ url('tur_app_compra_ini') }}" class="btn btn-primary">
+                        <i class="fas fa-home"></i> Início
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            {% for compra in compras %}
+
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <i class="nav-icon fas fa-map-signs"></i>
+                            <strong>{{ compra.viagem.itinerario.descricaoMontada }}</strong>
+                        </h4>
+
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            Saída: {{ compra.viagem.dtHrSaida|date('d/m/Y H:i') }}<br>
+                            Retorno: {{ compra.viagem.dtHrRetorno|date('d/m/Y H:i') }}<br>
+                        </h6>
+                        <p class="card-text">Dt Compra: <strong>R$ {{ compra.dtCompra|date('d/m/Y H:i') }}</strong></p>
+                        <p class="card-text">Valor: <strong>R$ {{ compra.viagem.getValorPassagemComTaxas()|number_format(2,',','.') }}</strong></p>
+                        <p class="card-text">Status: <strong>{{ compra.status }}</strong></p>
+
+                        {% if compra.status != 'ERRO' %}
+                            <div class="text-right">
+                                <a role="button"
+                                   data-url="{{ url('tur_viagem_reenviarEmailCompraEfetuada', {'compra' : compra.id, 'rtr': true}) }}"
+                                   data-token="{{ csrf_token('reenviarEmailCompraEfetuada') }}"
+                                   data-target="#confirmationModal" data-toggle="modal"
+                                   class="btn btn-sm btn-info" title="Reenviar o e-mail ao cliente">
+                                    <i class="far fa-envelope"></i> Reenviar e-mail
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+
+                        </div>
+
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
+
+{% endblock %}

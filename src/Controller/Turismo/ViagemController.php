@@ -229,7 +229,8 @@ class ViagemController extends FormListController
 
     /**
      *
-     * @Route("/tur/viagem/reenviarEmailCompraEfetuada/{compra}", name="tur_viagem_reenviarEmailCompraEfetuada")
+     * @Route("/app/tur/viagem/reenviarEmailCompraEfetuada/{compra}", name="tur_viagem_reenviarEmailCompraEfetuada")
+     * @param Request $request
      * @param CompraController $compraController
      * @param MailerInterface $mailer
      * @param Compra $compra
@@ -246,6 +247,9 @@ class ViagemController extends FormListController
         } catch (ViewException $e) {
             $this->addFlash('error', 'Erro ao reenviar o e-mail');
             $this->addFlash('error', $e->getMessage());
+        }
+        if ($request->get('rtr')) {
+            return $this->redirect($request->server->get('HTTP_REFERER'));
         }
         return $this->redirectToRoute('viagem_form', ['id' => $compra->viagem->getId()]);
     }
