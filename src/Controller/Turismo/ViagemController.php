@@ -3,6 +3,7 @@
 namespace App\Controller\Turismo;
 
 use App\Controller\Turismo\App\CompraController;
+use App\Entity\Turismo\Agencia;
 use App\Entity\Turismo\Compra;
 use App\Entity\Turismo\Passageiro;
 use App\Entity\Turismo\Viagem;
@@ -10,6 +11,7 @@ use App\EntityHandler\Turismo\PassageiroEntityHandler;
 use App\EntityHandler\Turismo\ViagemEntityHandler;
 use App\Form\Turismo\PassageiroType;
 use App\Form\Turismo\ViagemType;
+use App\Repository\Turismo\AgenciaRepository;
 use App\Repository\Turismo\ViagemRepository;
 use CrosierSource\CrosierLibBaseBundle\Controller\FormListController;
 use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
@@ -24,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  *
@@ -150,10 +153,26 @@ class ViagemController extends FormListController
      * @param Viagem|null $viagem
      * @param Passageiro|null $passageiro
      * @return RedirectResponse|Response
-     * @IsGranted("ROLE_TURISMO_ADMIN", statusCode=403)
+     * @Security("is_granted('ROLE_TURISMO_ADMIN') or is_granted('ROLE_AGENCIA')")
      */
     public function passageiroForm(Request $request, SessionInterface $session, Viagem $viagem, ?Passageiro $passageiro = null)
     {
+        if ($this->isGranted('ROLE_AGENCIA') && !$this->isGranted('ROLE_TURISMO_ADMIN')) {
+            /** @var AgenciaRepository $repoAgencia */
+            $repoAgencia = $this->getDoctrine()->getRepository(Agencia::class);
+            $rsAgencias = $repoAgencia->findByFiltersSimpl([['user', 'EQ', $this->getUser()]]);
+            $permitido = false;
+            foreach ($rsAgencias as $agencia) {
+                if ($viagem->agencia->getId() === $agencia->getId()) {
+                    $permitido = true;
+                    break;
+                }
+            }
+            if (!$permitido) {
+                throw new AccessDeniedException('Não permitido');
+            }
+        }
+
         $params = [
             'formView' => 'Turismo/viagem_formPassageiro.html.twig',
             'formJS' => 'Turismo/viagemPassageiroForm.js',
