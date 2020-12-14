@@ -128,9 +128,11 @@ class AgenciaController extends FormListController
         $params = [
             'agencia' => $agencia,
             'listId' => 'agencia_listarViagens',
-            'page_title' => 'Viagens',
-            'page_subTitle' => 'Agência: ' . $agencia->nome
+            'page_title' => 'Viagens'
         ];
+        if ($agencia) {
+            $params['page_subTitle'] = 'Agência: ' . $agencia->nome;
+        }
 
         $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
         $viagens = $repoViagem->findByFiltersSimpl([['agencia', 'EQ', $agencia]], ['dtHrRetorno' => 'DESC']);
