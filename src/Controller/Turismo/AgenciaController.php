@@ -132,6 +132,8 @@ class AgenciaController extends FormListController
         ];
         if ($agencia) {
             $params['page_subTitle'] = 'Agência: ' . $agencia->nome;
+        } else {
+            $params['formRoute'] = 'agencia_form';
         }
 
         $repoViagem = $this->getDoctrine()->getRepository(Viagem::class);
