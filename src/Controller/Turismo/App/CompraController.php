@@ -190,7 +190,7 @@ class CompraController extends FormListController
      * @param SessionInterface $session
      * @return Response
      */
-    public function selecionarQtde(Request $request, SessionInterface $session)
+    public function selecionarQtde(Request $request, SessionInterface $session): Response
     {
         try {
             if ($request->get('opcaoCompra')) {
@@ -251,7 +251,7 @@ class CompraController extends FormListController
      * @param SessionInterface $session
      * @return Response
      */
-    public function selecionarPoltronas(SessionInterface $session)
+    public function selecionarPoltronas(SessionInterface $session): Response
     {
         try {
             $params = [];
@@ -316,6 +316,7 @@ class CompraController extends FormListController
      * @Route("/app/tur/compra/resumo", name="tur_app_compra_resumo")
      * @param SessionInterface $session
      * @return RedirectResponse|Response
+     * @throws ViewException
      */
     public function resumo(SessionInterface $session)
     {
@@ -390,6 +391,7 @@ class CompraController extends FormListController
     {
         try {
             $cpf = $request->get('cpf');
+            $this->syslog->info('doLogin - cpf: ' . $cpf);
             if ($cpf) {
                 $conn = $this->getDoctrine()->getConnection();
                 $cpf = preg_replace('/[^\d]/', '', $cpf);
@@ -415,6 +417,7 @@ class CompraController extends FormListController
             }
             $session->set('idClienteLogado', false);
             $this->addFlash('error', $errMsg);
+            $this->syslog->err('doLogin - erro: ' . $errMsg);
         }
         return $this->render('Turismo/App/form_passagem_login.html.twig', ['cpf' => $cpf ?? '']);
     }
@@ -443,6 +446,7 @@ class CompraController extends FormListController
             $cliente->senha = password_hash($dadosCliente['senha1'], PASSWORD_BCRYPT);
             $this->clienteEntityHandler->save($cliente);
             $session->set('idClienteLogado', $cliente->getId());
+            $this->syslog->info('cadastrarCliente - sucesso (CPF: ' . $cliente->cpf . ', NOME: ' . $cliente->nome . ')');
             return $this->redirectToRoute('tur_app_compra_resumo');
         } catch (\Exception $e) {
             $session->set('idClienteLogado', false);
@@ -452,6 +456,7 @@ class CompraController extends FormListController
             }
             $this->addFlash('error', $errMsg);
             $params = [];
+            $this->syslog->err($errMsg);
             return $this->render('Turismo/App/form_passagem_cadastroCliente.html.twig', $params);
         }
     }
@@ -468,10 +473,12 @@ class CompraController extends FormListController
     {
         try {
             $compra = $this->handleCompra($session);
+            $this->syslog->info('pagto - ini - compra: ' . $compra->getId());
 
             if ($request->get('result')) {
 
                 $result = $request->get('result');
+                $this->syslog->info('pagto - result - compra: ' . $compra->getId(), 'result: ' . $result);
 
                 if ($result === 'OK') {
                     $token = $request->get('token');
@@ -551,6 +558,7 @@ class CompraController extends FormListController
             if ($e instanceof ViewException) {
                 $errMsg = $e->getMessage();
             }
+            $this->syslog->err($errMsg);
             $this->addFlash('error', $errMsg);
         }
         return $this->redirectToRoute('tur_app_compra_resumo');
@@ -682,7 +690,7 @@ class CompraController extends FormListController
     /**
      * @param MailerInterface $mailer
      * @param Compra $compra
-     * @return null
+     * @return void
      * @throws ViewException
      */
     public function emailCompraEfetuada(MailerInterface $mailer, Compra $compra): void
@@ -735,7 +743,7 @@ class CompraController extends FormListController
      * @param Compra $compra
      * @return Response
      */
-    public function ver(Compra $compra)
+    public function ver(Compra $compra): Response
     {
         $params['compra'] = $compra;
         return $this->render('Turismo/App/emails/compra_efetuada.html.twig', $params);
@@ -777,7 +785,7 @@ class CompraController extends FormListController
      *
      * @Route("/app/tur/login", name="tur_app_login")s
      */
-    public function login()
+    public function login(): Response
     {
         $params['redirectTo'] = 'tur_app_compra_ini';
         return $this->render('Turismo/App/form_passagem_login.html.twig', $params);
