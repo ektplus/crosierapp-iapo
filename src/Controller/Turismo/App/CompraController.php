@@ -653,7 +653,8 @@ class CompraController extends FormListController
                         $compra->jsonData['pagarme_transaction'] = $postback['transaction'];
                     }
                 }
-                if (($postback['current_status'] ?? '') === 'authorized') {
+                $postbackCurrentStatus = ($postback['current_status'] ?? '');
+                if (!in_array($postbackCurrentStatus, ['authorized', 'paid'])) {
                     $compra->status = 'PAGAMENTO RECEBIDO';
 
                     // Realiza a captura da transação
@@ -668,7 +669,7 @@ class CompraController extends FormListController
                     $this->syslog->info('Enviando e-mail para o cliente');
                     $this->emailCompraEfetuada($mailer, $compra);
                 } else {
-                    $this->syslog->info('Setando status da compra para "ERRO". postback.current_status != "authorized" (' . $postback['current_status'] ?? '' . ')');
+                    $this->syslog->info('Setando status da compra para "ERRO". postback.current_status != "[authorized,paid]" (' . $postbackCurrentStatus . ')');
                     $compra->status = 'ERRO';
                 }
                 $this->compraEntityHandler->save($compra);
