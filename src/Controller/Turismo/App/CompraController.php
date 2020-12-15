@@ -551,6 +551,8 @@ class CompraController extends FormListController
                 $appConfig_pagarmekey = $repoAppConfig->findAppConfigByChave('pagarme.encryption_key');
                 $params['pagarme_encryption_key'] = $appConfig_pagarmekey->getValor();
 
+                $params['compraTotalEmCentavos'] = (int)number_format($compra->valorTotal,2,'','');
+
                 return $this->render('Turismo/App/form_passagem_pagto.html.twig', $params);
             }
         } catch (\Exception $e) {
