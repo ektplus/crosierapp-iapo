@@ -660,6 +660,7 @@ class CompraController extends FormListController
                     $this->syslog->info('Enviando e-mail para o cliente');
                     $this->emailCompraEfetuada($mailer, $compra);
                 } else {
+                    $this->syslog->info('Setando status da compra para "ERRO". postback.current_status != "authorized" (' . $postback['current_status'] ?? '' . ')');
                     $compra->status = 'ERRO';
                 }
                 $this->compraEntityHandler->save($compra);
