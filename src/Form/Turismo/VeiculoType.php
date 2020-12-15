@@ -66,7 +66,6 @@ class VeiculoType extends AbstractType
 
         $builder->add('renavan', TextType::class, [
             'label' => 'Renavan',
-            'required' => false,
         ]);
 
         $builder->add('dtVenctoDer', DateType::class, array(

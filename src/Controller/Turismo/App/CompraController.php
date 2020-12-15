@@ -18,7 +18,6 @@ use CrosierSource\CrosierLibBaseBundle\Exception\ViewException;
 use CrosierSource\CrosierLibBaseBundle\Repository\Config\AppConfigRepository;
 use CrosierSource\CrosierLibBaseBundle\Utils\ArrayUtils\ArrayUtils;
 use CrosierSource\CrosierLibBaseBundle\Utils\DateTimeUtils\DateTimeUtils;
-use PagarMe\Client;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -491,7 +490,7 @@ class CompraController extends FormListController
                     $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
                     $appConfig_pagarmekey = $repoAppConfig->findAppConfigByChave('pagarme.key');
 
-                    $pagarme = new Client($appConfig_pagarmekey->getValor());
+                    $pagarme = new \PagarMe\Client($appConfig_pagarmekey->getValor());
                     $transactions = $pagarme->transactions()->get(['id' => $token]);
                     $compra->jsonData['pagarme_transaction'] = (array)$transactions;
 
@@ -617,7 +616,7 @@ class CompraController extends FormListController
             /** @var AppConfigRepository $repoAppConfig */
             $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
             $appConfig_pagarmekey = $repoAppConfig->findAppConfigByChave('pagarme.key');
-            $pagarme = new Client($appConfig_pagarmekey->getValor());
+            $pagarme = new \PagarMe\Client($appConfig_pagarmekey->getValor());
             $signature = $request->server->get('HTTP_X_HUB_SIGNATURE');
             $this->syslog->info('signature: ' . $signature);
             $isValidPostback = $pagarme->postbacks()->validate($request->getContent(), $signature);
@@ -629,6 +628,7 @@ class CompraController extends FormListController
                 $postback = $request->request->all();
                 $this->syslog->info('postback: ' . json_encode($postback));
 
+                // Verifica se veio um novo postback
                 if (isset($compra->jsonData['postbacks'])) {
                     $ultimoPostback = $compra->jsonData['postbacks'][count($compra->jsonData['postbacks']) - 1];
                     ArrayUtils::rksort($ultimoPostback);
@@ -647,6 +647,17 @@ class CompraController extends FormListController
                 }
                 if (($postback['current_status'] ?? '') === 'authorized') {
                     $compra->status = 'PAGAMENTO RECEBIDO';
+
+                    // Realiza a captura da transação
+                    $this->syslog->info('Iniciando a captura da transação: ' . $pagarme_transaction_id);
+                    $pagarme = new \PagarMe\Client($appConfig_pagarmekey->getValor());
+                    $totalEmCentavos = number_format($compra->valorTotal, 2, '', '');
+                    $rCaptura = $pagarme->transactions()->capture([
+                        'id' => $pagarme_transaction_id,
+                        'amount' => $totalEmCentavos
+                    ]);
+                    $this->syslog->info('Retorno da captura da transação', json_encode($rCaptura));
+                    $this->syslog->info('Enviando e-mail para o cliente');
                     $this->emailCompraEfetuada($mailer, $compra);
                 } else {
                     $compra->status = 'ERRO';

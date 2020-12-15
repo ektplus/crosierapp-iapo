@@ -36,8 +36,10 @@
                                 <td>{{ compra.status }}</td>
                                 <td>
                                     <div class="float-left">
-                                        {{ compra.cliente.cpf|mascararCnpjCpf }} - {{ compra.cliente.nome }}<br>
-                                        {{ compra.cliente.email }}
+                                        {% if compra.cliente|default(false) %}
+                                            {{ compra.cliente.cpf|default('00000000000')|mascararCnpjCpf }} - {{ compra.cliente.nome }}<br>
+                                            {{ compra.cliente.email }}
+                                        {% endif %}
                                     </div>
                                     <div class="text-right">
                                         <a role="button"

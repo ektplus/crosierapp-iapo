@@ -5,10 +5,12 @@ namespace App\Form\Turismo;
 use App\Entity\Turismo\Agencia;
 use App\Entity\Turismo\Itinerario;
 use App\Entity\Turismo\Motorista;
+use App\Entity\Turismo\Veiculo;
 use App\Entity\Turismo\Viagem;
 use App\Repository\Turismo\AgenciaRepository;
 use App\Repository\Turismo\ItinerarioRepository;
 use App\Repository\Turismo\MotoristaRepository;
+use App\Repository\Turismo\VeiculoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -83,6 +85,20 @@ class ViagemType extends AbstractType
             'choices' => $repoItinerario->findAll(['origemCidade' => 'ASC']),
             'attr' => ['class' => 'autoSelect2'],
             'required' => true
+        ]);
+
+        /** @var VeiculoRepository $repoVeiculo */
+        $repoVeiculo = $this->doctrine->getRepository(Veiculo::class);
+        $builder->add('veiculo', EntityType::class, [
+            'label' => 'Veículo',
+            'class' => Veiculo::class,
+            'choice_label' => function (?Veiculo $veiculo) {
+                return $veiculo ? $veiculo->apelido : null;
+            },
+            'choices' => $repoVeiculo->findAll(['apelido' => 'ASC']),
+            'attr' => [
+                'class' => 'autoSelect2'
+            ],
         ]);
 
         $builder->add('flagFinanceiro', ChoiceType::class, [
