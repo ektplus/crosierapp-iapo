@@ -63,7 +63,7 @@
 
             // inicia a instância do checkout
             let checkout = new PagarMeCheckout.Checkout({
-                encryption_key: 'ek_test_PRZKk0lxBz2qE7boo7T1kqZnzdkKrL',
+                encryption_key: '{{ pagarme_encryption_key }}',
                 success: function (data) {
                     window.location = '/app/tur/compra/pagto?result=OK&token=' + data.token + '&payment_method=' + data.payment_method
                 },

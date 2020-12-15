@@ -540,6 +540,11 @@ class CompraController extends FormListController
 
                 $params['postbackUrl'] = 'https://iapo.crosier.iapo.com.br/app/tur/compra/pagarmeCallback/' . $compra->getId() . '/';
 
+                /** @var AppConfigRepository $repoAppConfig */
+                $repoAppConfig = $this->getDoctrine()->getRepository(AppConfig::class);
+                $appConfig_pagarmekey = $repoAppConfig->findAppConfigByChave('pagarme.encryption_key');
+                $params['pagarme_encryption_key'] = $appConfig_pagarmekey->getValor();
+
                 return $this->render('Turismo/App/form_passagem_pagto.html.twig', $params);
             }
         } catch (\Exception $e) {
