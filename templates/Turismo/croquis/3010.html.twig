@@ -1,0 +1,46 @@
+<div class="card" style="max-width: 600px; margin: 0 auto; float: none;">
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col text-center">
+                Frente
+            </div>
+        </div>
+
+
+        {% set j = 1 %}
+        {% for i in 1..11 %}
+            <div class="row mb-2">
+                <div class="col-3">
+                    {% include 'Turismo/poltrona.html.twig' with {'poltrona': j, 'poltronas': poltronas} %}
+                </div>
+                <div class="col-3">
+                    {% include 'Turismo/poltrona.html.twig' with {'poltrona': j+1, 'poltronas': poltronas} %}
+                </div>
+                <div class="col-3">
+                    {% include 'Turismo/poltrona.html.twig' with {'poltrona': j+3, 'poltronas': poltronas} %}
+                </div>
+                <div class="col-3">
+                    {% include 'Turismo/poltrona.html.twig' with {'poltrona': j+2, 'poltronas': poltronas} %}
+                </div>
+            </div>
+            {% set j = j+4 %}
+        {% endfor %}
+
+        <div class="row mb-2">
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 45, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 46, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-6 text-center text-muted align-text-bottom">
+                <div class="naoPoltrona">W.C.</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

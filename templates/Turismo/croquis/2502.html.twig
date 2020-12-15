@@ -1,0 +1,150 @@
+<div class="card" style="max-width: 600px; margin: 0 auto; float: none;">
+
+    <div class="card-body">
+
+        <div class="row mt-3 mb-3">
+            <div class="col text-center">
+                Frente
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12 text-center text-muted sma mt-4">
+                <hr>
+                <small>Piso Superior</small>
+                <hr>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 3, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 2, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 1, 'poltronas': poltronas} %}
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 5, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 4, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-2">
+
+            </div>
+            <div class="col-4 text-center text-muted align-text-bottom">
+                <div class="naoPoltrona">Escadas</div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 7, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 6, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-3">
+            </div>
+        </div>
+
+        {% set j = 8 %}
+        {% for i in 1..7 %}
+            <div class="row mb-2">
+                <div class="col-3">
+                    {% include 'Turismo/poltrona.html.twig' with {'poltrona': j+2, 'poltronas': poltronas} %}
+                </div>
+                <div class="col-3">
+                    {% include 'Turismo/poltrona.html.twig' with {'poltrona': j+1, 'poltronas': poltronas} %}
+                </div>
+                <div class="col-3">
+
+                </div>
+                <div class="col-3">
+                    {% include 'Turismo/poltrona.html.twig' with {'poltrona': j, 'poltronas': poltronas} %}
+                </div>
+            </div>
+            {% set j = j+3 %}
+        {% endfor %}
+
+
+
+        <div class="row mb-2">
+            <div class="col-12 text-center text-muted sma mt-4">
+                <hr>
+                <small>Piso Inferior</small>
+                <hr>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-3 text-center text-muted align-text-bottom">
+                <div class="naoPoltrona">W.C.</div>
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-2">
+            </div>
+            <div class="col-4 text-center text-muted align-text-bottom">
+                <div class="naoPoltrona">Escadas</div>
+            </div>
+        </div>
+
+
+        <div class="row mb-2">
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 31, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 30, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 29, 'poltronas': poltronas} %}
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 34, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 33, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 32, 'poltronas': poltronas} %}
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 37, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 36, 'poltronas': poltronas} %}
+            </div>
+            <div class="col-3">
+            </div>
+            <div class="col-3">
+                {% include 'Turismo/poltrona.html.twig' with {'poltrona': 35, 'poltronas': poltronas} %}
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
