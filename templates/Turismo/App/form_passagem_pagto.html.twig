@@ -76,7 +76,7 @@
             });
 
             checkout.open({
-                amount: {{ compra.totalEmCentavos }},
+                amount: {{ totais.geral|number_format(2,'','') }},
                 postbackUrl: '{{ postbackUrl }}',
                 customerData: 'true',
                 paymentMethods: 'credit_card',
@@ -86,7 +86,7 @@
                 items: [{
                     id: '1',
                     title: 'VIACAO IAPO PASSAGENS',
-                    unit_price: {{ compraTotalEmCentavos }},
+                    unit_price: {{ totais.geral|number_format(2,'','') }},
                     quantity: 1,
                     tangible: 'false',
                 }]
