@@ -4,7 +4,7 @@
     "blueimp-file-upload": "^10.8.0",
     "bootstrap": "4.4.1",
     "bootstrap-datepicker": "^1.8.0",
-    "chart.js": "^2.7.3",
+    "chart.js": "^2.9.4",
     "copy-webpack-plugin": "^5.1.1",
     "core-js": "^3.0.0",
     "datatables": "^1.10.18",
