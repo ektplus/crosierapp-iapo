@@ -18,7 +18,7 @@
     "jquery": "^3.5.0",
     "jquery-mask-plugin": "^1.14.15",
     "jquery-maskmoney": "https://github.com/plentz/jquery-maskmoney",
-    "jquery-ui": "^1.12.1",
+    "jquery-ui": "^1.13.0",
     "js-yaml": "^3.13.1",
     "jsoneditor": "^8.6.8",
     "lightbox2": "^2.11.1",
